@@ -40,7 +40,6 @@ const App = () => {
 
   useEffect(() => {
     const value = searchBarValue.toLowerCase();
-    console.log(value);
 
     if (value.length === 0) {
       setSearchResults([]);
