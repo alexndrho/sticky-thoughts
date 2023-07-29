@@ -35,7 +35,7 @@ const Thought = ({ message, author, color = NoteColor.Yellow }: NoteProps) => {
   }, [color]);
 
   return (
-    <Box bg={`${colorResult}.5`} className={classes.card}>
+    <Box bg={`${colorResult}.6`} className={classes.card}>
       <Text>{message}</Text>
       <Text ta="right">{`-${author}`}</Text>
     </Box>
