@@ -18,6 +18,10 @@ Sticky Thoughts is a wall to share your thoughts, opinions, and experiences anon
 - [Mantine](https://mantine.dev/)
 - [Tabler Icons](https://tabler-icons.io/)
 
+## Missing Features
+
+- [ ] Infinite scroll
+
 ## License
 
 [MIT](LICENSE)
