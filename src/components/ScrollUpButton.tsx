@@ -39,7 +39,11 @@ const ScrollUpButton = () => {
   return (
     <>
       {showButton && (
-        <Button className={classes.button} onClick={handleScrollUp}>
+        <Button
+          aria-label="Scroll to top"
+          className={classes.button}
+          onClick={handleScrollUp}
+        >
           <IconArrowBigUpFilled />
         </Button>
       )}
