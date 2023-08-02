@@ -17,6 +17,7 @@ import NavBar from './components/NavBar';
 import SendThoughtModal from './components/SendThoughtModal';
 import Thoughts from './components/Thoughts';
 import IThought from './types/IThought';
+import ScrollUpButton from './components/ScrollUpButton';
 
 const THOUGHTS_PER_ROW = 4;
 const THOUGHTS_PER_PAGE = THOUGHTS_PER_ROW * 5;
@@ -193,6 +194,8 @@ const App = () => {
           void fetchInitialThoughts();
         }}
       />
+
+      <ScrollUpButton />
     </>
   );
 };
