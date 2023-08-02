@@ -2,13 +2,14 @@ import { initializeApp } from 'firebase/app';
 import { collection, getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyABVlYKR1fRHwH9z5q3lUphmmsa_po6Xw4',
-  authDomain: 'sticky-thoughts-e7078.firebaseapp.com',
-  projectId: 'sticky-thoughts-e7078',
-  storageBucket: 'sticky-thoughts-e7078.appspot.com',
-  messagingSenderId: '446172173287',
-  appId: '1:446172173287:web:7936421b190eb0415a2342',
-  measurementId: 'G-W6QRFPEC18',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN as string,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID as string,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET as string,
+  messagingSenderId: import.meta.env
+    .VITE_FIREBASE_MESSAGING_SENDER_ID as string,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID as string,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID as string,
 };
 
 // Initialize Firebase
