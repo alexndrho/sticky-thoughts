@@ -1,5 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
-import { onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  getCountFromServer,
+  getDocs,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from 'firebase/firestore';
 import { Button, Container, Flex, Group, Input, Loader } from '@mantine/core';
 import { useDebouncedState, useDisclosure } from '@mantine/hooks';
 import { IconMessage, IconSearch } from '@tabler/icons-react';
@@ -9,6 +17,9 @@ import NavBar from './components/NavBar';
 import SendThoughtModal from './components/SendThoughtModal';
 import Thoughts from './components/Thoughts';
 import IThought from './types/IThought';
+
+const THOUGHTS_PER_ROW = 4;
+const THOUGHTS_PER_PAGE = THOUGHTS_PER_ROW * 5;
 
 const App = () => {
   const [loading, setLoading] = useState(false);
@@ -20,24 +31,92 @@ const App = () => {
   const [thoughts, setThoughts] = useState<IThought[]>([]);
   const [searchResults, setSearchResults] = useState<IThought[]>([]);
 
-  useEffect(() => {
+  // callbacks
+  const fetchInitialThoughts = useCallback(async () => {
     setLoading(true);
-    const q = query(thoughtsCollectionRef, orderBy('createdAt', 'desc'));
+    try {
+      const q = query(
+        thoughtsCollectionRef,
+        orderBy('createdAt', 'desc'),
+        limit(THOUGHTS_PER_PAGE)
+      );
+      const querySnapshot = await getDocs(q);
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
       setThoughts(
-        snapshot.docs.map((doc) => ({
+        querySnapshot.docs.map((doc) => ({
           ...(doc.data() as IThought),
           id: doc.id,
         }))
       );
 
       setLoading(false);
-    });
-
-    return () => unsubscribe();
+    } catch (error) {
+      setLoading(false);
+      throw error;
+    }
   }, []);
 
+  const fetchNextPageThoughts = useCallback(async () => {
+    if (!thoughts.length) return;
+
+    setLoading(true);
+    try {
+      const q = query(
+        thoughtsCollectionRef,
+        orderBy('createdAt', 'desc'),
+        where('createdAt', '<', thoughts[thoughts.length - 1].createdAt),
+        limit(THOUGHTS_PER_PAGE)
+      );
+      const querySnapshot = await getDocs(q);
+
+      setThoughts([
+        ...thoughts,
+        ...querySnapshot.docs.map((doc) => ({
+          ...(doc.data() as IThought),
+          id: doc.id,
+        })),
+      ]);
+
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      throw error;
+    }
+  }, [thoughts]);
+
+  useEffect(() => {
+    fetchInitialThoughts().catch((error) => {
+      console.error(error);
+    });
+  }, [fetchInitialThoughts]);
+
+  useEffect(() => {
+    function handleScroll() {
+      if (!thoughts.length) return;
+
+      getCountFromServer(thoughtsCollectionRef)
+        .then(async (snapshot) => {
+          if (
+            snapshot.data().count > thoughts.length &&
+            window.innerHeight + window.scrollY >=
+              document.body.offsetHeight - 500
+          ) {
+            await fetchNextPageThoughts();
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [fetchNextPageThoughts, thoughts]);
+
+  // effects
   useEffect(() => {
     const value = searchBarValue.toLowerCase();
 
@@ -94,18 +173,26 @@ const App = () => {
           </Button>
         </Flex>
 
-        {loading ? (
-          <Group my="xl" position="center">
-            <Loader />
-          </Group>
-        ) : searchRef.current?.value ? (
+        {searchRef.current?.value ? (
           <Thoughts thoughts={searchResults} />
         ) : (
           <Thoughts thoughts={thoughts} />
         )}
+
+        {loading && (
+          <Group mt="2.5rem" position="center">
+            <Loader />
+          </Group>
+        )}
       </Container>
 
-      <SendThoughtModal open={messageOpen} onClose={close} />
+      <SendThoughtModal
+        open={messageOpen}
+        onClose={close}
+        onSubmit={() => {
+          void fetchInitialThoughts();
+        }}
+      />
     </>
   );
 };

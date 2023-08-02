@@ -22,10 +22,15 @@ const MAX_MESSAGE_LENGTH = 250;
 
 interface SendThoughtModalProps {
   open: boolean;
+  onSubmit: () => void;
   onClose: () => void;
 }
 
-const SendThoughtModal = ({ open, onClose }: SendThoughtModalProps) => {
+const SendThoughtModal = ({
+  open,
+  onSubmit,
+  onClose,
+}: SendThoughtModalProps) => {
   const theme = useMantineTheme();
   const [loading, setLoading] = useState(false);
 
@@ -69,6 +74,7 @@ const SendThoughtModal = ({ open, onClose }: SendThoughtModalProps) => {
         createdAt: serverTimestamp(),
       });
 
+      onSubmit();
       onClose();
       form.reset();
 
