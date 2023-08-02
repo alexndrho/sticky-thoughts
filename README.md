@@ -6,9 +6,21 @@ Sticky Thoughts is a wall to share your thoughts, opinions, and experiences anon
 
 1. Clone this repo
 2. Run `npm install`
-3. Run `npm run dev`
-4. Navigate to `localhost:5173`
-5. 🎉
+3. Create a `.env.local` file in the root directory and add the following:
+
+```
+VITE_FIREBASE_API_KEY=<YOUR_API_KEY>
+VITE_FIREBASE_AUTH_DOMAIN=<YOUR_AUTH_DOMAIN>
+VITE_FIREBASE_PROJECT_ID=<YOUR_PROJECT_ID>
+VITE_FIREBASE_STORAGE_BUCKET=<YOUR_STORAGE_BUCKET>
+VITE_FIREBASE_MESSAGING_SENDER_ID=<YOUR_MESSAGING_SENDER_ID>
+VITE_FIREBASE_APP_ID=<YOUR_APP_ID>
+VITE_FIREBASE_MEASUREMENT_ID=<YOUR_MEASUREMENT_ID>
+```
+
+4. Run `npm run dev`
+5. Navigate to `localhost:5173`
+6. 🎉
 
 ## Tech Stack
 
