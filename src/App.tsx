@@ -99,7 +99,7 @@ const App = () => {
           if (
             snapshot.data().count > thoughts.length &&
             window.innerHeight + window.scrollY >=
-              document.body.offsetHeight - 500
+              document.body.offsetHeight - 1000
           ) {
             await fetchNextPageThoughts();
           }
