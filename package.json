@@ -15,11 +15,13 @@
     "@mantine/form": "^6.0.16",
     "@mantine/hooks": "^6.0.16",
     "@tabler/icons-react": "^2.24.0",
+    "bad-words": "^3.0.4",
     "firebase": "^10.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@types/bad-words": "^3.0.1",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
     "@typescript-eslint/eslint-plugin": "^5.61.0",

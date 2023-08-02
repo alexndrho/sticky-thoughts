@@ -1,3 +1,4 @@
+import Filter from 'bad-words';
 import { Box, Text, createStyles } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { NoteColor } from '../types/IThought';
@@ -25,7 +26,8 @@ interface NoteProps {
 
 const Thought = ({ message, author, color = NoteColor.Yellow }: NoteProps) => {
   const { classes } = useStyles();
-  const [colorResult, setColorResult] = useState<string>(color);
+  const [colorResult, setColorResult] = useState<NoteColor>(color);
+  const filter = new Filter();
 
   useEffect(() => {
     const validColor = Object.values(NoteColor).includes(color)
@@ -36,8 +38,8 @@ const Thought = ({ message, author, color = NoteColor.Yellow }: NoteProps) => {
 
   return (
     <Box bg={`${colorResult}.6`} className={classes.card}>
-      <Text>{message}</Text>
-      <Text ta="right">{`-${author}`}</Text>
+      <Text>{filter.clean(message)}</Text>
+      <Text ta="right">{`-${filter.clean(author)}`}</Text>
     </Box>
   );
 };
