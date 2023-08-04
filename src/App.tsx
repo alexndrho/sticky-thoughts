@@ -30,6 +30,7 @@ const App = () => {
   const [searchBarValue, setSearchBarValue] = useDebouncedState('', 250);
 
   const [thoughts, setThoughts] = useState<IThought[]>([]);
+  const [totalThoughts, setTotalThoughts] = useState(0);
   const [searchResults, setSearchResults] = useState<IThought[]>([]);
 
   // callbacks
@@ -49,6 +50,9 @@ const App = () => {
           id: doc.id,
         }))
       );
+
+      const snapshot = await getCountFromServer(thoughtsCollectionRef);
+      setTotalThoughts(snapshot.data().count);
 
       setLoading(false);
     } catch (error) {
@@ -95,19 +99,14 @@ const App = () => {
     function handleScroll() {
       if (!thoughts.length) return;
 
-      getCountFromServer(thoughtsCollectionRef)
-        .then(async (snapshot) => {
-          if (
-            snapshot.data().count > thoughts.length &&
-            window.innerHeight + window.scrollY >=
-              document.body.offsetHeight - 1000
-          ) {
-            await fetchNextPageThoughts();
-          }
-        })
-        .catch((error) => {
+      if (
+        totalThoughts > thoughts.length &&
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000
+      ) {
+        fetchNextPageThoughts().catch((error) => {
           console.error(error);
         });
+      }
     }
 
     window.addEventListener('scroll', handleScroll);
@@ -115,7 +114,7 @@ const App = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [fetchNextPageThoughts, thoughts]);
+  }, [fetchNextPageThoughts, thoughts, totalThoughts]);
 
   // effects
   useEffect(() => {
