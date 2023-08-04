@@ -29,17 +29,26 @@ const Thought = ({ message, author, color = NoteColor.Yellow }: NoteProps) => {
   const [colorResult, setColorResult] = useState<NoteColor>(color);
   const filter = new Filter();
 
+  const filterText = (text: string) => {
+    try {
+      const filteredText = filter.clean(text);
+      return filteredText;
+    } catch (error) {
+      return text;
+    }
+  };
+
   useEffect(() => {
     const validColor = Object.values(NoteColor).includes(color)
       ? color
       : NoteColor.Yellow;
     setColorResult(validColor);
-  }, [color]);
+  }, [color, message]);
 
   return (
     <Box bg={`${colorResult}.6`} className={classes.card}>
-      <Text>{filter.clean(message)}</Text>
-      <Text ta="right">{`-${filter.clean(author)}`}</Text>
+      <Text>{filterText(message)}</Text>
+      <Text ta="right">{`-${filterText(author)}`}</Text>
     </Box>
   );
 };
