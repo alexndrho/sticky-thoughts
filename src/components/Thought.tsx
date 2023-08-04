@@ -31,8 +31,7 @@ const Thought = ({ message, author, color = NoteColor.Yellow }: NoteProps) => {
 
   const filterText = (text: string) => {
     try {
-      const filteredText = filter.clean(text);
-      return filteredText;
+      return filter.clean(text);
     } catch (error) {
       return text;
     }
@@ -43,7 +42,7 @@ const Thought = ({ message, author, color = NoteColor.Yellow }: NoteProps) => {
       ? color
       : NoteColor.Yellow;
     setColorResult(validColor);
-  }, [color, message]);
+  }, [color]);
 
   return (
     <Box bg={`${colorResult}.6`} className={classes.card}>
