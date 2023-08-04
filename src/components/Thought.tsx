@@ -47,8 +47,8 @@ const Thought = ({ message, author, color = NoteColor.Yellow }: NoteProps) => {
 
   return (
     <Box bg={`${colorResult}.6`} className={classes.card}>
-      <Text>{filterText(message)}</Text>
-      <Text ta="right">{`-${filterText(author)}`}</Text>
+      <Text lineClamp={9}>{filterText(message)}</Text>
+      <Text ta="right" lineClamp={1}>{`-${filterText(author)}`}</Text>
     </Box>
   );
 };
