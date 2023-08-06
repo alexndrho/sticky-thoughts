@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 
 const useStyles = createStyles(() => ({
   button: {
-    position: 'fixed',
-    right: 20,
+    position: 'sticky',
+    left: '100%',
     bottom: 20,
     zIndex: 90,
 
