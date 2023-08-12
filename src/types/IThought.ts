@@ -3,8 +3,9 @@ import firebase from 'firebase/compat/app';
 enum NoteColor {
   Yellow = 'yellow',
   Blue = 'blue',
-  Green = 'green',
   Red = 'red',
+  Grape = 'grape',
+  Green = 'green',
   Pink = 'pink',
 }
 
