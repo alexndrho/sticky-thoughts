@@ -4,7 +4,7 @@ enum NoteColor {
   Yellow = 'yellow',
   Blue = 'blue',
   Red = 'red',
-  Grape = 'grape',
+  Violet = 'violet',
   Green = 'green',
   Pink = 'pink',
 }
