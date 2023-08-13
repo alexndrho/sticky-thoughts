@@ -154,8 +154,8 @@ const App = () => {
     <>
       <NavBar />
       <Container size="xl">
-        <Container role="main" size="lg" py="2.5rem">
-          <Flex mb="xl" gap="md">
+        <Container role="main" size="lg" py="lg">
+          <Flex mb="lg" gap="md">
             <Input
               ref={searchRef}
               icon={<IconSearch size="1em" />}
