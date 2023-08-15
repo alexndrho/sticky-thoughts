@@ -34,6 +34,8 @@ const SendThoughtModal = ({
   const theme = useMantineTheme();
   const [loading, setLoading] = useState(false);
 
+  const isTextValid = (text: string) => text.trim().length > 0;
+
   const form = useForm({
     initialValues: {
       message: '',
@@ -43,14 +45,8 @@ const SendThoughtModal = ({
     },
 
     validate: {
-      author: (value) =>
-        value.length !== 0 && value.length <= MAX_AUTHOR_LENGTH
-          ? null
-          : 'Invalid author',
-      message: (value) =>
-        value.length !== 0 && value.length <= MAX_MESSAGE_LENGTH
-          ? null
-          : 'Invalid message',
+      author: (value) => (isTextValid(value) ? null : 'Invalid author'),
+      message: (value) => (isTextValid(value) ? null : 'Invalid message'),
       color: (value) =>
         Object.values(NoteColor).includes(value) ? null : 'Invalid color',
     },
