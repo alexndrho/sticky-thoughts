@@ -92,6 +92,8 @@ const SendThoughtModal = ({
     <Modal opened={open} onClose={handleClose} title="Share a thought" centered>
       <form
         onSubmit={form.onSubmit((values) => {
+          Reflect.deleteProperty(values, 'anonymous');
+
           void handleFormSubmit(values);
         })}
       >
