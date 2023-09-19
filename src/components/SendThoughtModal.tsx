@@ -17,6 +17,7 @@ import { addDoc, serverTimestamp } from 'firebase/firestore';
 import { thoughtsCollectionRef } from '../api/firebase';
 import IThought, { NoteColor } from '../types/IThought';
 
+const ANONYMOUS_AUTHOR = 'Anonymous';
 const MAX_AUTHOR_LENGTH = 20;
 const MAX_MESSAGE_LENGTH = 250;
 
@@ -33,6 +34,7 @@ const SendThoughtModal = ({
 }: SendThoughtModalProps) => {
   const theme = useMantineTheme();
   const [loading, setLoading] = useState(false);
+  const [isAnonymous, setIsAnonymous] = useState(false);
 
   const isTextValid = (text: string) => text.trim().length > 0;
 
@@ -41,11 +43,11 @@ const SendThoughtModal = ({
       message: '',
       author: '',
       color: NoteColor.Yellow,
-      anonymous: false,
     },
 
     validate: {
-      author: (value) => (isTextValid(value) ? null : 'Invalid author'),
+      author: (value) =>
+        isTextValid(value) || isAnonymous ? null : 'Invalid author',
       message: (value) => (isTextValid(value) ? null : 'Invalid message'),
       color: (value) =>
         Object.values(NoteColor).includes(value) ? null : 'Invalid color',
@@ -56,12 +58,15 @@ const SendThoughtModal = ({
     onClose();
 
     form.reset();
+    setIsAnonymous(false);
   };
 
   const handleFormSubmit = async (
     values: Pick<IThought, 'author' | 'message' | 'color'>
   ) => {
     setLoading(true);
+
+    if (isAnonymous) values.author = ANONYMOUS_AUTHOR;
 
     try {
       await addDoc(thoughtsCollectionRef, {
@@ -73,6 +78,7 @@ const SendThoughtModal = ({
       onSubmit();
       onClose();
       form.reset();
+      setIsAnonymous(false);
 
       setLoading(false);
     } catch (error) {
@@ -84,16 +90,14 @@ const SendThoughtModal = ({
   const handleAnonymousChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    form.setFieldValue('anonymous', event.currentTarget.checked);
-    form.setFieldValue('author', 'Anonymous');
+    setIsAnonymous(event.currentTarget.checked);
+    form.clearFieldError('author');
   };
 
   return (
     <Modal opened={open} onClose={handleClose} title="Share a thought" centered>
       <form
         onSubmit={form.onSubmit((values) => {
-          Reflect.deleteProperty(values, 'anonymous');
-
           void handleFormSubmit(values);
         })}
       >
@@ -102,8 +106,9 @@ const SendThoughtModal = ({
           label="Author:"
           withAsterisk
           maxLength={MAX_AUTHOR_LENGTH}
-          disabled={form.values.anonymous || loading}
+          disabled={isAnonymous || loading}
           {...form.getInputProps('author')}
+          value={isAnonymous ? ANONYMOUS_AUTHOR : form.values.author}
         />
 
         <Textarea
@@ -124,7 +129,7 @@ const SendThoughtModal = ({
         <Switch
           mb="sm"
           label="Anonymous"
-          checked={form.values.anonymous}
+          checked={isAnonymous}
           disabled={loading}
           onChange={(e) => handleAnonymousChange(e)}
         />
