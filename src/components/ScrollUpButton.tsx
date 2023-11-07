@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 
 const useStyles = createStyles(() => ({
   button: {
-    position: 'sticky',
-    left: '100%',
-    bottom: 20,
+    position: 'fixed',
+    bottom: '1.75rem',
+    right: '2rem',
     zIndex: 90,
 
     width: '3.5rem',

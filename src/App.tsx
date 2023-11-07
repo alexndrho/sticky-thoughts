@@ -156,49 +156,47 @@ const App = () => {
   return (
     <>
       <NavBar />
-      <Container size="xl">
-        <Container role="main" size="lg" py="lg">
-          <Flex mb="lg" gap="md">
-            <Input
-              ref={searchRef}
-              icon={<IconSearch size="1em" />}
-              placeholder="Search for an author"
-              onChange={(e) => setSearchBarValue(e.currentTarget.value)}
-              styles={() => ({
-                wrapper: {
-                  flex: 1,
-                },
-              })}
-            />
+      <Container role="main" size="lg" py="lg">
+        <Flex mb="lg" gap="md">
+          <Input
+            ref={searchRef}
+            icon={<IconSearch size="1em" />}
+            placeholder="Search for an author"
+            onChange={(e) => setSearchBarValue(e.currentTarget.value)}
+            styles={() => ({
+              wrapper: {
+                flex: 1,
+              },
+            })}
+          />
 
-            <Button rightIcon={<IconMessage size="1em" />} onClick={open}>
-              Post
-            </Button>
-          </Flex>
+          <Button rightIcon={<IconMessage size="1em" />} onClick={open}>
+            Post
+          </Button>
+        </Flex>
 
-          {searchRef.current?.value ? (
-            <Thoughts thoughts={searchResults} />
-          ) : (
-            <Thoughts thoughts={thoughts} />
-          )}
+        {searchRef.current?.value ? (
+          <Thoughts thoughts={searchResults} />
+        ) : (
+          <Thoughts thoughts={thoughts} />
+        )}
 
-          {loading && (
-            <Group mt="2.5rem" position="center">
-              <Loader />
-            </Group>
-          )}
-        </Container>
-
-        <SendThoughtModal
-          open={messageOpen}
-          onClose={close}
-          onSubmit={() => {
-            void fetchInitialThoughts();
-          }}
-        />
-
-        <ScrollUpButton />
+        {loading && (
+          <Group mt="2.5rem" position="center">
+            <Loader />
+          </Group>
+        )}
       </Container>
+
+      <SendThoughtModal
+        open={messageOpen}
+        onClose={close}
+        onSubmit={() => {
+          void fetchInitialThoughts();
+        }}
+      />
+
+      <ScrollUpButton />
     </>
   );
 };
