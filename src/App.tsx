@@ -136,6 +136,8 @@ const App = () => {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       if (snapshot.empty) {
         setSearchResults([]);
+
+        setLoading(false);
       } else {
         setSearchResults(
           snapshot.docs.map((doc) => ({
@@ -143,10 +145,11 @@ const App = () => {
             id: doc.id,
           }))
         );
+
+        setLoading(false);
       }
     });
 
-    setLoading(false);
     return () => unsubscribe();
   }, [searchBarValue]);
 
