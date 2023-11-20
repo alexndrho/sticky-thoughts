@@ -13,7 +13,6 @@ import { useDebouncedState, useDisclosure } from '@mantine/hooks';
 import { IconMessage, IconSearch } from '@tabler/icons-react';
 
 import { thoughtsCollectionRef } from '../api/firebase';
-import NavBar from '../components/NavBar';
 import SendThoughtModal from '../components/SendThoughtModal';
 import Thoughts from '../components/Thoughts';
 import IThought from '../types/IThought';
@@ -155,7 +154,6 @@ const App = () => {
 
   return (
     <>
-      <NavBar />
       <Container role="main" size="lg" py="lg">
         <Flex mb="lg" gap="md">
           <Input
