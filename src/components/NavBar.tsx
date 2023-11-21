@@ -67,7 +67,7 @@ const NavBar = () => {
             Home
           </Button>
 
-          <Button variant="subtle" compact>
+          <Button component={Link} to="/about" variant="subtle" compact>
             About
           </Button>
 
@@ -88,7 +88,13 @@ const NavBar = () => {
               <Menu.Item component={Link} to="/" icon={<IconHome size="1em" />}>
                 Home
               </Menu.Item>
-              <Menu.Item icon={<IconInfoCircle size="1em" />}>About</Menu.Item>
+              <Menu.Item
+                component={Link}
+                to="/about"
+                icon={<IconInfoCircle size="1em" />}
+              >
+                About
+              </Menu.Item>
               <Menu.Item icon={<IconAddressBook size="1em" />}>
                 Contact
               </Menu.Item>
