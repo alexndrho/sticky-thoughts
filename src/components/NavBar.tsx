@@ -71,7 +71,7 @@ const NavBar = () => {
             About
           </Button>
 
-          <Button variant="subtle" compact>
+          <Button component={Link} to="/contact" variant="subtle" compact>
             Contact
           </Button>
         </Group>
@@ -95,7 +95,11 @@ const NavBar = () => {
               >
                 About
               </Menu.Item>
-              <Menu.Item icon={<IconAddressBook size="1em" />}>
+              <Menu.Item
+                component={Link}
+                to="/contact"
+                icon={<IconAddressBook size="1em" />}
+              >
                 Contact
               </Menu.Item>
             </Menu.Dropdown>
