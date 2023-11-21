@@ -43,6 +43,12 @@ const Theme = ({ children }: ThemeProps) => {
       <MantineProvider
         theme={{
           colorScheme: colorScheme,
+          globalStyles: () => ({
+            'html, body, #root': {
+              minHeight: '100%',
+              height: '100%',
+            },
+          }),
         }}
         withGlobalStyles
         withNormalizeCSS
