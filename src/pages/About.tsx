@@ -66,7 +66,15 @@ const About = () => {
           </Text>
           <Text mt="lg" fz="lg"></Text>
           <Text mt="lg" fz="lg">
-            StickyThoughts is a project by{' '}
+            StickyThoughts is an open source project available on{' '}
+            <Anchor
+              href="https://github.com/alexndrho/sticky-thoughts"
+              target="_blank"
+              inherit
+            >
+              Github
+            </Anchor>
+            , created by{' '}
             <Anchor href="https://alexndrho.dev" target="_blank" inherit>
               Alexander Gabriel Ho
             </Anchor>
