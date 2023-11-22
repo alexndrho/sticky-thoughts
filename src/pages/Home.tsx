@@ -100,7 +100,8 @@ const App = () => {
 
       if (
         totalThoughts > thoughts.length &&
-        window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000
+        window.innerHeight + window.scrollY >=
+          document.documentElement.scrollHeight - 100
       ) {
         fetchNextPageThoughts().catch((error) => {
           console.error(error);
