@@ -181,7 +181,7 @@ const App = () => {
         )}
 
         {loading && (
-          <Group mt="2.5rem" position="center">
+          <Group my="2.5rem" position="center">
             <Loader />
           </Group>
         )}
