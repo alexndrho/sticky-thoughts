@@ -55,7 +55,7 @@ const About = () => {
             </Text>
           </Title>
           <Text mt="lg" fz="lg">
-            Sticky Thoughts offers a platform where you can freely express
+            StickyThoughts offers a platform where you can freely express
             yourself and share your thoughts and experiences with others. You
             have the option to remain anonymous or not. You can post anything
             that you want including your thoughts, experiences, and even your
