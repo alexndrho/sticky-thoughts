@@ -180,11 +180,9 @@ const App = () => {
           <Thoughts thoughts={thoughts} />
         )}
 
-        {loading && (
-          <Group my="2.5rem" position="center">
-            <Loader />
-          </Group>
-        )}
+        <Group my="xl" h="2.25rem" position="center">
+          {loading && <Loader />}
+        </Group>
       </Container>
 
       <SendThoughtModal
