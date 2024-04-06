@@ -1,18 +1,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-      <loc>https://sticky-thoughts.netlify.app</loc>
+      <loc>https://stickythoughts.alexndrho.dev</loc>
       <lastmod>2023-11-22</lastmod>
       <changefreq>always</changefreq>
       <priority>1.0</priority>
   </url>
   <url>
-      <loc>https://sticky-thoughts.netlify.app/about</loc>
+      <loc>https://stickythoughts.alexndrho.dev/about</loc>
       <lastmod>2023-11-22</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8</priority>
   </url>
   <url>
-      <loc>https://sticky-thoughts.netlify.app/contact</loc>
+      <loc>https://stickythoughts.alexndrho.dev/contact</loc>
       <lastmod>2023-11-22</lastmod>
       <changefreq>yearly</changefreq>
       <priority>0.7</priority>
