@@ -9,6 +9,11 @@ import {
 } from '@mantine/core';
 import Footer from '../components/FooterBar';
 import noteImg from '../assets/note.svg';
+import { useEffect } from 'react';
+
+interface IAbout {
+  title: string;
+}
 
 const useStyles = createStyles((theme) => ({
   main: {
@@ -38,8 +43,12 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const About = () => {
+const About = ({ title }: IAbout) => {
   const { classes } = useStyles();
+
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
 
   return (
     <>

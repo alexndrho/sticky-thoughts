@@ -1,6 +1,11 @@
 import { Button, Container, Text, Title, createStyles } from '@mantine/core';
+import { useEffect } from 'react';
 import Footer from '../components/FooterBar';
 import { IconMail } from '@tabler/icons-react';
+
+interface IContact {
+  title: string;
+}
 
 const useStyles = createStyles(() => ({
   main: {
@@ -19,8 +24,12 @@ const useStyles = createStyles(() => ({
   },
 }));
 
-const Contact = () => {
+const Contact = ({ title }: IContact) => {
   const { classes } = useStyles();
+
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
 
   return (
     <>

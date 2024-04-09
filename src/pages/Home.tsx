@@ -21,7 +21,11 @@ import ScrollUpButton from '../components/ScrollUpButton';
 const THOUGHTS_PER_ROW = 4;
 const THOUGHTS_PER_PAGE = THOUGHTS_PER_ROW * 3;
 
-const Home = () => {
+interface IHome {
+  title: string;
+}
+
+const Home = ({ title }: IHome) => {
   const [loading, setLoading] = useState(false);
   const [messageOpen, { open, close }] = useDisclosure(false);
 
@@ -87,6 +91,11 @@ const Home = () => {
       throw error;
     }
   }, [thoughts]);
+
+  //useEffect
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
 
   useEffect(() => {
     fetchInitialThoughts().catch((error) => {

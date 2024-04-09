@@ -10,9 +10,22 @@ const App = () => {
       <NavBar />
 
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
+        <Route
+          path="/"
+          element={<Home title="StickyThoughts | Online Freedom Wall" />}
+        />
+        <Route
+          path="/about"
+          element={
+            <About title="About - StickyThoughts | Online Freedom Wall" />
+          }
+        />
+        <Route
+          path="/contact"
+          element={
+            <Contact title="Contact - StickyThoughts | Online Freedom Wall" />
+          }
+        />
       </Routes>
     </>
   );
