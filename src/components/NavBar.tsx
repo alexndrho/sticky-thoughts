@@ -10,7 +10,7 @@ import {
   createStyles,
   useMantineColorScheme,
 } from '@mantine/core';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   IconSun,
   IconMoon,
@@ -47,6 +47,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 const NavBar = () => {
+  const location = useLocation();
   const { classes } = useStyles();
   // eslint-disable-next-line @typescript-eslint/unbound-method
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -55,7 +56,14 @@ const NavBar = () => {
   return (
     <Header height="4rem">
       <Container role="navigation" className={classes.container} size="xl">
-        <Text component={Link} to="/" fz="xl" fw={700} className={classes.logo}>
+        <Text
+          component={Link}
+          to="/"
+          reloadDocument={location.pathname === '/'}
+          fz="xl"
+          fw={700}
+          className={classes.logo}
+        >
           Sticky
           <Text span c="blue.6" inherit>
             Thoughts
