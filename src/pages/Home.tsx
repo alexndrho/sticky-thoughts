@@ -8,8 +8,16 @@ import {
   query,
   where,
 } from 'firebase/firestore';
-import { Button, Container, Flex, Group, Input, Loader } from '@mantine/core';
-import { useDebouncedState, useDisclosure } from '@mantine/hooks';
+import {
+  Button,
+  Container,
+  Flex,
+  Group,
+  Input,
+  Kbd,
+  Loader,
+} from '@mantine/core';
+import { useDebouncedState, useDisclosure, useHotkeys } from '@mantine/hooks';
 import { IconMessage, IconSearch } from '@tabler/icons-react';
 
 import { thoughtsCollectionRef } from '../api/firebase';
@@ -92,6 +100,10 @@ const Home = ({ title }: IHome) => {
     }
   }, [thoughts]);
 
+  const focusSearchBar = () => {
+    searchRef.current?.focus();
+  };
+
   //useEffect
   useEffect(() => {
     document.title = title;
@@ -162,19 +174,33 @@ const Home = ({ title }: IHome) => {
     return () => unsubscribe();
   }, [searchBarValue]);
 
+  useHotkeys([
+    ['ctrl+K', focusSearchBar],
+    ['mod+K', focusSearchBar],
+  ]);
+
   return (
     <>
       <Container role="main" size="lg" py="lg">
         <Flex mb="lg" gap="md">
           <Input
             ref={searchRef}
-            icon={<IconSearch size="1em" />}
+            icon={<IconSearch size="1rem" />}
+            rightSectionWidth={90}
+            rightSection={
+              <Flex align="center">
+                <Kbd mr={5}>Ctrl</Kbd>
+                <span>+</span>
+                <Kbd ml={5}>K</Kbd>
+              </Flex>
+            }
             placeholder="Search for an author"
             onChange={(e) => setSearchBarValue(e.currentTarget.value)}
             styles={() => ({
               wrapper: {
                 flex: 1,
               },
+              rightSection: { pointerEvents: 'none' },
             })}
           />
 
