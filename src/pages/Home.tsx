@@ -30,11 +30,11 @@ import ScrollUpButton from '../components/ScrollUpButton';
 const THOUGHTS_PER_ROW = 4;
 const THOUGHTS_PER_PAGE = THOUGHTS_PER_ROW * 3;
 
-interface IHome {
+interface HomeProps {
   title: string;
 }
 
-const Home = ({ title }: IHome) => {
+const Home = ({ title }: HomeProps) => {
   const [loading, setLoading] = useState(false);
   const [messageOpen, { open, close }] = useDisclosure(false);
 

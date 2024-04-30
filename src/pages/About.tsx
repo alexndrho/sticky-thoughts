@@ -12,11 +12,11 @@ import Footer from '../components/FooterBar';
 import noteImg from '../assets/note.svg';
 import { useEffect } from 'react';
 
-interface IAbout {
+interface AboutProps {
   title: string;
 }
 
-const About = ({ title }: IAbout) => {
+const About = ({ title }: AboutProps) => {
   useEffect(() => {
     document.title = title;
   }, [title]);

@@ -4,11 +4,11 @@ import NavBar from '../components/NavBar';
 import Footer from '../components/FooterBar';
 import { IconMail } from '@tabler/icons-react';
 
-interface IContact {
+interface ContactProps {
   title: string;
 }
 
-const Contact = ({ title }: IContact) => {
+const Contact = ({ title }: ContactProps) => {
   useEffect(() => {
     document.title = title;
   }, [title]);
