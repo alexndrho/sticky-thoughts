@@ -33,7 +33,7 @@ const About = ({ title }: AboutProps) => {
               <Text span c="blue.6" inherit>
                 Thoughts
               </Text>
-              <Text fz="xl" fs="italic">
+              <Text span display="block" fz="xl" fs="italic">
                 A place to share your thoughts.
               </Text>
             </Title>
