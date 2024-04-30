@@ -1,5 +1,6 @@
 import { Button, Container, Flex, Text, Title } from '@mantine/core';
 import { useEffect } from 'react';
+import NavBar from '../components/NavBar';
 import Footer from '../components/FooterBar';
 import { IconMail } from '@tabler/icons-react';
 
@@ -14,6 +15,8 @@ const Contact = ({ title }: IContact) => {
 
   return (
     <>
+      <NavBar />
+
       <Container role="main" size="lg" py="7.5rem">
         <Flex direction="column" justify="center" align="center">
           <Title ta="center" c="blue">

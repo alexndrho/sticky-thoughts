@@ -22,6 +22,7 @@ import { IconMessage, IconSearch } from '@tabler/icons-react';
 
 import { thoughtsCollectionRef } from '../api/firebase';
 import SendThoughtModal from '../components/SendThoughtModal';
+import NavBar from '../components/NavBar';
 import Thoughts from '../components/Thoughts';
 import IThought from '../types/IThought';
 import ScrollUpButton from '../components/ScrollUpButton';
@@ -178,6 +179,8 @@ const Home = ({ title }: IHome) => {
 
   return (
     <>
+      <NavBar />
+
       <Container role="main" size="lg" py="lg">
         <Flex mb="lg" gap="md">
           <Input

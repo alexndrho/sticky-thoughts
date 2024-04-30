@@ -7,6 +7,7 @@ import {
   Text,
   Title,
 } from '@mantine/core';
+import NavBar from '../components/NavBar';
 import Footer from '../components/FooterBar';
 import noteImg from '../assets/note.svg';
 import { useEffect } from 'react';
@@ -22,6 +23,8 @@ const About = ({ title }: IAbout) => {
 
   return (
     <>
+      <NavBar />
+
       <Container role="main" size="lg" py="7.5rem">
         <Flex align="center" gap="md">
           <Box>
