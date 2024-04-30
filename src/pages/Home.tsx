@@ -44,6 +44,12 @@ const Home = ({ title }: IHome) => {
   const [totalThoughts, setTotalThoughts] = useState(0);
   const [searchResults, setSearchResults] = useState<IThought[]>([]);
 
+  const focusSearchBar = () => {
+    searchRef.current?.focus();
+  };
+
+  useHotkeys([['t', focusSearchBar]]);
+
   // callbacks
   const fetchInitialThoughts = useCallback(async () => {
     setLoading(true);
@@ -99,10 +105,6 @@ const Home = ({ title }: IHome) => {
       throw error;
     }
   }, [thoughts]);
-
-  const focusSearchBar = () => {
-    searchRef.current?.focus();
-  };
 
   //useEffect
   useEffect(() => {
@@ -174,11 +176,6 @@ const Home = ({ title }: IHome) => {
     return () => unsubscribe();
   }, [searchBarValue]);
 
-  useHotkeys([
-    ['ctrl+K', focusSearchBar],
-    ['mod+K', focusSearchBar],
-  ]);
-
   return (
     <>
       <Container role="main" size="lg" py="lg">
@@ -186,14 +183,7 @@ const Home = ({ title }: IHome) => {
           <Input
             ref={searchRef}
             leftSection={<IconSearch size="1rem" />}
-            rightSectionWidth={90}
-            rightSection={
-              <Flex align="center">
-                <Kbd mr={5}>Ctrl</Kbd>
-                <span>+</span>
-                <Kbd ml={5}>K</Kbd>
-              </Flex>
-            }
+            rightSection={<Kbd>t</Kbd>}
             placeholder="Search for an author"
             onChange={(e) => setSearchBarValue(e.currentTarget.value)}
             styles={() => ({
