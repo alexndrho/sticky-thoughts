@@ -18,7 +18,7 @@ const FooterBar = () => {
         borderTop: `${rem(1)} solid var(--mantine-color-default-border)`,
       }}
     >
-      <Container h="auto" size="lg" py="xl">
+      <Container h="auto" size="xl" py="xl">
         <Flex direction={{ base: 'column', lg: 'row' }} justify="space-between">
           <Box>
             <Title order={2} size="h3">
