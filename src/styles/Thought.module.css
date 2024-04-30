@@ -1,0 +1,10 @@
+.thought {
+  width: 100%;
+  aspect-ratio: 9 / 10;
+  padding: 0.75em;
+  color: var(--mantine-color-dark-9);
+  overflow-wrap: break-word;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

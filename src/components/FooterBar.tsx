@@ -3,39 +3,23 @@ import {
   Box,
   Container,
   Flex,
-  Footer,
+  Group,
   Text,
   Title,
-  createStyles,
+  rem,
 } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { IconCopyright } from '@tabler/icons-react';
 
-const useStyles = createStyles((theme) => ({
-  container: {
-    display: 'flex',
-    justifyContent: 'space-between',
-
-    [theme.fn.smallerThan('lg')]: {
-      flexDirection: 'column',
-      gap: '1.5rem',
-    },
-  },
-
-  copyRightText: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.25rem',
-  },
-}));
-
 const FooterBar = () => {
-  const { classes } = useStyles();
-
   return (
-    <Footer height="auto">
-      <Container size="lg" py="xl">
-        <Box className={classes.container}>
+    <Box
+      style={{
+        borderTop: `${rem(1)} solid var(--mantine-color-default-border)`,
+      }}
+    >
+      <Container h="auto" size="lg" py="xl">
+        <Flex direction={{ base: 'column', lg: 'row' }} justify="space-between">
           <Box>
             <Title order={2} size="h3">
               Sticky
@@ -44,17 +28,17 @@ const FooterBar = () => {
               </Text>
             </Title>
 
-            <Text fz="sm" className={classes.copyRightText}>
+            <Group gap="xs">
               <IconCopyright size="1.25em" />
 
-              <Box>
+              <Text span fz="sm">
                 2023{' '}
                 <Anchor component={Link} to="/">
                   StickyThoughts
-                </Anchor>
+                </Anchor>{' '}
                 . All rights reserved.
-              </Box>
-            </Text>
+              </Text>
+            </Group>
           </Box>
 
           <Flex direction="column">
@@ -70,9 +54,9 @@ const FooterBar = () => {
               alexndrho.dev
             </Anchor>
           </Flex>
-        </Box>
+        </Flex>
       </Container>
-    </Footer>
+    </Box>
   );
 };
 

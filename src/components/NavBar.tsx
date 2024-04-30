@@ -4,10 +4,10 @@ import {
   Button,
   Container,
   Group,
-  Header,
   Menu,
   Text,
-  createStyles,
+  rem,
+  useComputedColorScheme,
   useMantineColorScheme,
 } from '@mantine/core';
 import { Link, useLocation } from 'react-router-dom';
@@ -20,110 +20,122 @@ import {
   IconInfoCircle,
 } from '@tabler/icons-react';
 
-const useStyles = createStyles((theme) => ({
-  logo: {
-    userSelect: 'none',
-  },
-
-  container: {
-    height: '100%',
-    display: 'grid',
-    alignItems: 'center',
-    gridTemplateColumns: '1fr auto auto',
-    gridGap: '1rem',
-  },
-
-  groupLink: {
-    [theme.fn.smallerThan('xs')]: {
-      display: 'none',
-    },
-  },
-
-  hamburgerMenu: {
-    [theme.fn.largerThan('xs')]: {
-      display: 'none',
-    },
-  },
-}));
-
 const NavBar = () => {
   const location = useLocation();
-  const { classes } = useStyles();
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const isDark = colorScheme === 'dark';
+  const { setColorScheme } = useMantineColorScheme();
+  const computedColorScheme = useComputedColorScheme('light', {
+    getInitialValueInEffect: true,
+  });
 
   return (
-    <Header height="4rem">
-      <Container role="navigation" className={classes.container} size="xl">
-        <Text
-          component={Link}
-          to="/"
-          reloadDocument={location.pathname === '/'}
-          fz="xl"
-          fw={700}
-          className={classes.logo}
-        >
-          Sticky
-          <Text span c="blue.6" inherit>
-            Thoughts
+    <Box
+      style={{
+        borderBottom: `${rem(1)} solid var(--mantine-color-default-border)`,
+      }}
+    >
+      <Container role="navigation" h="4rem" size="xl">
+        <Group h="100%" justify="space-between">
+          <Text
+            component={Link}
+            to="/"
+            reloadDocument={location.pathname === '/'}
+            fz="xl"
+            fw={700}
+          >
+            Sticky
+            <Text span c="blue.6" inherit>
+              Thoughts
+            </Text>
           </Text>
-        </Text>
 
-        <Group className={classes.groupLink}>
-          <Button component={Link} to="/" variant="subtle" compact>
-            Home
-          </Button>
-
-          <Button component={Link} to="/about" variant="subtle" compact>
-            About
-          </Button>
-
-          <Button component={Link} to="/contact" variant="subtle" compact>
-            Contact
-          </Button>
-        </Group>
-
-        <Box className={classes.hamburgerMenu}>
-          <Menu shadow="md" width={110}>
-            <Menu.Target>
-              <ActionIcon aria-label="toggle menu" variant="default" size="lg">
-                <IconMenu size="1em" />
-              </ActionIcon>
-            </Menu.Target>
-
-            <Menu.Dropdown>
-              <Menu.Item component={Link} to="/" icon={<IconHome size="1em" />}>
+          <Group>
+            <Group display={{ base: 'none', xs: 'flex' }}>
+              <Button
+                component={Link}
+                to="/"
+                variant="subtle"
+                size="compact-sm"
+              >
                 Home
-              </Menu.Item>
-              <Menu.Item
+              </Button>
+
+              <Button
                 component={Link}
                 to="/about"
-                icon={<IconInfoCircle size="1em" />}
+                variant="subtle"
+                size="compact-sm"
               >
                 About
-              </Menu.Item>
-              <Menu.Item
+              </Button>
+
+              <Button
                 component={Link}
                 to="/contact"
-                icon={<IconAddressBook size="1em" />}
+                variant="subtle"
+                size="compact-sm"
               >
                 Contact
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-        </Box>
+              </Button>
+            </Group>
 
-        <ActionIcon
-          aria-label="toggle color scheme"
-          variant="default"
-          size="lg"
-          onClick={() => toggleColorScheme()}
-        >
-          {isDark ? <IconMoon size="1em" /> : <IconSun size="1em" />}
-        </ActionIcon>
+            <Box display={{ base: 'block', xs: 'none' }}>
+              <Menu shadow="md" width={110}>
+                <Menu.Target>
+                  <ActionIcon
+                    aria-label="toggle menu"
+                    variant="default"
+                    size="lg"
+                  >
+                    <IconMenu size="1em" />
+                  </ActionIcon>
+                </Menu.Target>
+
+                <Menu.Dropdown>
+                  <Menu.Item
+                    component={Link}
+                    to="/"
+                    leftSection={<IconHome size="1em" />}
+                  >
+                    Home
+                  </Menu.Item>
+                  <Menu.Item
+                    component={Link}
+                    to="/about"
+                    leftSection={<IconInfoCircle size="1em" />}
+                  >
+                    About
+                  </Menu.Item>
+                  <Menu.Item
+                    component={Link}
+                    to="/contact"
+                    leftSection={<IconAddressBook size="1em" />}
+                  >
+                    Contact
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            </Box>
+
+            <ActionIcon
+              aria-label="Toggle color scheme"
+              variant="default"
+              size="lg"
+              onClick={() =>
+                setColorScheme(
+                  computedColorScheme === 'light' ? 'dark' : 'light'
+                )
+              }
+            >
+              {computedColorScheme === 'light' ? (
+                <IconSun size="1em" />
+              ) : (
+                <IconMoon size="1em" />
+              )}
+            </ActionIcon>
+          </Group>
+        </Group>
       </Container>
-    </Header>
+    </Box>
   );
 };
 

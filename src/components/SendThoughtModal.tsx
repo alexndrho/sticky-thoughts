@@ -114,7 +114,7 @@ const SendThoughtModal = ({
         <Textarea
           label={'Message:'}
           withAsterisk
-          minRows={5}
+          rows={5}
           maxLength={MAX_MESSAGE_LENGTH}
           disabled={loading}
           {...form.getInputProps('message')}
@@ -123,7 +123,7 @@ const SendThoughtModal = ({
         <Text
           mb="sm"
           size="sm"
-          align="right"
+          ta="right"
         >{`${form.values.message.length}/${MAX_MESSAGE_LENGTH}`}</Text>
 
         <Switch
@@ -134,7 +134,7 @@ const SendThoughtModal = ({
           onChange={(e) => handleAnonymousChange(e)}
         />
 
-        <Group position="center">
+        <Group justify="center">
           {Object.values(NoteColor).map((color) => (
             <ColorSwatch
               aria-label={`thought-theme-${color}`}
@@ -156,7 +156,7 @@ const SendThoughtModal = ({
           ))}
         </Group>
 
-        <Group position="right" mt="md">
+        <Group justify="right" mt="md">
           <Button type="submit" loading={loading}>
             Submit
           </Button>

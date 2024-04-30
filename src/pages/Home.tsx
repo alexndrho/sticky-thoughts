@@ -185,7 +185,7 @@ const Home = ({ title }: IHome) => {
         <Flex mb="lg" gap="md">
           <Input
             ref={searchRef}
-            icon={<IconSearch size="1rem" />}
+            leftSection={<IconSearch size="1rem" />}
             rightSectionWidth={90}
             rightSection={
               <Flex align="center">
@@ -204,7 +204,7 @@ const Home = ({ title }: IHome) => {
             })}
           />
 
-          <Button rightIcon={<IconMessage size="1em" />} onClick={open}>
+          <Button rightSection={<IconMessage size="1em" />} onClick={open}>
             Post
           </Button>
         </Flex>
@@ -215,7 +215,7 @@ const Home = ({ title }: IHome) => {
           <Thoughts thoughts={thoughts} />
         )}
 
-        <Group my="xl" h="2.25rem" position="center">
+        <Group my="xl" h="2.25rem" justify="center">
           {loading && <Loader />}
         </Group>
       </Container>

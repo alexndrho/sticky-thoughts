@@ -1,22 +1,8 @@
 import Filter from 'bad-words';
-import { Box, Text, createStyles } from '@mantine/core';
+import { Box, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { NoteColor } from '../types/IThought';
-
-const useStyles = createStyles((theme) => ({
-  card: {
-    width: '100%',
-    aspectRatio: '9 / 10',
-    padding: '0.75em',
-
-    color: theme.colors.dark[9],
-    overflowWrap: 'break-word',
-
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-  },
-}));
+import classes from '../styles/Thought.module.css';
 
 interface NoteProps {
   message: string;
@@ -25,7 +11,6 @@ interface NoteProps {
 }
 
 const Thought = ({ message, author, color = NoteColor.Yellow }: NoteProps) => {
-  const { classes } = useStyles();
   const [colorResult, setColorResult] = useState<NoteColor>(color);
   const filter = new Filter();
 
@@ -45,7 +30,7 @@ const Thought = ({ message, author, color = NoteColor.Yellow }: NoteProps) => {
   }, [color]);
 
   return (
-    <Box role="article" bg={`${colorResult}.6`} className={classes.card}>
+    <Box role="article" bg={`${colorResult}.6`} className={classes.thought}>
       <Text lineClamp={9}>{filterText(message)}</Text>
       <Text ta="right" lineClamp={1}>{`-${filterText(author)}`}</Text>
     </Box>
