@@ -1,44 +1,26 @@
-import { Button } from '@mantine/core';
+import { Affix, Button, Transition } from '@mantine/core';
+import { useWindowScroll } from '@mantine/hooks';
 import { IconArrowBigUpFilled } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
 
 const ScrollUpButton = () => {
-  const [showButton, setShowButton] = useState(false);
-
-  const handleScroll = () => {
-    if (window.scrollY > 0) {
-      setShowButton(true);
-    } else {
-      setShowButton(false);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const handleScrollUp = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const [scroll, scrollTo] = useWindowScroll();
 
   return (
-    <>
-      {showButton && (
-        <Button
-          aria-label="Scroll to top"
-          w="3.5rem"
-          h="3.5rem"
-          pos="fixed"
-          bottom="1.75rem"
-          right="2rem"
-          style={{ zIndex: 90 }}
-          onClick={handleScrollUp}
-        >
-          <IconArrowBigUpFilled />
-        </Button>
-      )}
-    </>
+    <Affix position={{ bottom: 20, right: 20 }} zIndex={90}>
+      <Transition transition="slide-up" mounted={scroll.y > 0}>
+        {(transitionStyles) => (
+          <Button
+            aria-label="Scroll to top"
+            w="3.5rem"
+            h="3.5rem"
+            style={{ ...transitionStyles }}
+            onClick={() => scrollTo({ y: 0 })}
+          >
+            <IconArrowBigUpFilled />
+          </Button>
+        )}
+      </Transition>
+    </Affix>
   );
 };
 
