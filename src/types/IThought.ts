@@ -1,4 +1,4 @@
-import firebase from 'firebase/compat/app';
+import { FieldValue, Timestamp } from 'firebase/firestore';
 
 enum NoteColor {
   Yellow = 'yellow',
@@ -15,8 +15,13 @@ interface IThought {
   lowerCaseAuthor: string;
   message: string;
   color: NoteColor;
-  createdAt: firebase.firestore.Timestamp;
+  createdAt: Timestamp;
+}
+
+interface IThoughtSubmit extends Omit<IThought, 'id' | 'createdAt'> {
+  createdAt: FieldValue;
 }
 
 export default IThought;
+export type { IThoughtSubmit };
 export { NoteColor };

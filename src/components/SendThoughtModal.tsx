@@ -13,14 +13,14 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useForm } from '@mantine/form';
-import { addDoc, serverTimestamp } from 'firebase/firestore';
-
-import { thoughtsCollectionRef } from '../api/firebase';
+import {
+  MAX_AUTHOR_LENGTH,
+  MAX_MESSAGE_LENGTH,
+  submitThought,
+} from '../services/thought';
 import IThought, { NoteColor } from '../types/IThought';
 
 const ANONYMOUS_AUTHOR = 'Anonymous';
-const MAX_AUTHOR_LENGTH = 20;
-const MAX_MESSAGE_LENGTH = 250;
 
 interface SendThoughtModalProps {
   open: boolean;
@@ -70,11 +70,7 @@ const SendThoughtModal = ({
     if (isAnonymous) values.author = ANONYMOUS_AUTHOR;
 
     try {
-      await addDoc(thoughtsCollectionRef, {
-        ...values,
-        lowerCaseAuthor: values.author.toLowerCase(),
-        createdAt: serverTimestamp(),
-      });
+      await submitThought(values);
 
       onSubmit();
 

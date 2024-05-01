@@ -1,13 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  getCountFromServer,
-  getDocs,
-  limit,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from 'firebase/firestore';
+import { useEffect, useRef, useState } from 'react';
+import { onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import {
   Button,
   Container,
@@ -26,9 +18,11 @@ import NavBar from '../components/NavBar';
 import Thoughts from '../components/Thoughts';
 import IThought from '../types/IThought';
 import ScrollUpButton from '../components/ScrollUpButton';
-
-const THOUGHTS_PER_ROW = 4;
-const THOUGHTS_PER_PAGE = THOUGHTS_PER_ROW * 3;
+import {
+  fetchInitialThoughts,
+  getMoreThoughts,
+  getThoughtsCount,
+} from '../services/thought';
 
 interface HomeProps {
   title: string;
@@ -51,72 +45,28 @@ const Home = ({ title }: HomeProps) => {
 
   useHotkeys([['t', focusSearchBar]]);
 
-  // callbacks
-  const fetchInitialThoughts = useCallback(async () => {
-    setLoading(true);
-    try {
-      const q = query(
-        thoughtsCollectionRef,
-        orderBy('createdAt', 'desc'),
-        limit(THOUGHTS_PER_PAGE)
-      );
-      const querySnapshot = await getDocs(q);
-
-      setThoughts(
-        querySnapshot.docs.map((doc) => ({
-          ...(doc.data() as IThought),
-          id: doc.id,
-        }))
-      );
-
-      const snapshot = await getCountFromServer(thoughtsCollectionRef);
-      setTotalThoughts(snapshot.data().count);
-
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      throw error;
-    }
-  }, []);
-
-  const fetchNextPageThoughts = useCallback(async () => {
-    if (!thoughts.length) return;
-
-    setLoading(true);
-    try {
-      const q = query(
-        thoughtsCollectionRef,
-        orderBy('createdAt', 'desc'),
-        where('createdAt', '<', thoughts[thoughts.length - 1].createdAt),
-        limit(THOUGHTS_PER_PAGE)
-      );
-      const querySnapshot = await getDocs(q);
-
-      setThoughts([
-        ...thoughts,
-        ...querySnapshot.docs.map((doc) => ({
-          ...(doc.data() as IThought),
-          id: doc.id,
-        })),
-      ]);
-
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      throw error;
-    }
-  }, [thoughts]);
-
   //useEffect
   useEffect(() => {
     document.title = title;
   }, [title]);
 
   useEffect(() => {
-    fetchInitialThoughts().catch((error) => {
-      console.error(error);
-    });
-  }, [fetchInitialThoughts]);
+    setLoading(true);
+
+    fetchInitialThoughts()
+      .then(async (thoughts) => {
+        setThoughts(thoughts);
+
+        const count = await getThoughtsCount();
+        setTotalThoughts(count);
+
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error(error);
+      });
+  }, []);
 
   useEffect(() => {
     function handleScroll() {
@@ -127,9 +77,18 @@ const Home = ({ title }: HomeProps) => {
         window.innerHeight + window.scrollY >=
           document.documentElement.scrollHeight - 100
       ) {
-        fetchNextPageThoughts().catch((error) => {
-          console.error(error);
-        });
+        setLoading(true);
+
+        getMoreThoughts(thoughts[thoughts.length - 1].createdAt)
+          .then((newThoughts) => {
+            setThoughts([...thoughts, ...newThoughts]);
+
+            setLoading(false);
+          })
+          .catch((error) => {
+            setLoading(false);
+            console.error(error);
+          });
       }
     }
 
@@ -138,9 +97,8 @@ const Home = ({ title }: HomeProps) => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [fetchNextPageThoughts, thoughts, totalThoughts]);
+  }, [thoughts, totalThoughts]);
 
-  // effects
   useEffect(() => {
     const value = searchBarValue.toLowerCase();
 
