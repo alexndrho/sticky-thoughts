@@ -175,7 +175,13 @@ const Home = ({ title }: HomeProps) => {
         open={messageOpen}
         onClose={close}
         onSubmit={() => {
-          void fetchInitialThoughts();
+          fetchInitialThoughts()
+            .then((thoughts) => {
+              setThoughts(thoughts);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
         }}
       />
 
