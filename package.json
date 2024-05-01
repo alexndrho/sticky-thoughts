@@ -13,6 +13,7 @@
     "@mantine/core": "^7.8.1",
     "@mantine/form": "^7.8.1",
     "@mantine/hooks": "^7.8.1",
+    "@mantine/notifications": "^7.8.1",
     "@tabler/icons-react": "^2.24.0",
     "bad-words": "^3.0.4",
     "firebase": "^10.0.0",

@@ -11,6 +11,7 @@ import {
   Textarea,
   useMantineTheme,
 } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import { useForm } from '@mantine/form';
 import { addDoc, serverTimestamp } from 'firebase/firestore';
 
@@ -76,6 +77,12 @@ const SendThoughtModal = ({
       });
 
       onSubmit();
+
+      notifications.show({
+        title: 'Thought submitted!',
+        message: 'Your thought has been successfully submitted.',
+        color: values.color,
+      });
       onClose();
       form.reset();
       setIsAnonymous(false);
@@ -83,6 +90,13 @@ const SendThoughtModal = ({
       setLoading(false);
     } catch (error) {
       console.error(error);
+
+      notifications.show({
+        title: 'Failed to submit thought',
+        message: 'An error occurred while submitting your thought.',
+        color: 'red',
+      });
+
       setLoading(false);
     }
   };
