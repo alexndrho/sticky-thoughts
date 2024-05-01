@@ -1,0 +1,23 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+  	function isTextValid(text) {
+    	return text.replace("^\\s*$", '').size() > 0;
+    }
+    
+    match /{document=**} {
+      allow read, write: if false;
+    }
+ 
+    match /thoughts/{thoughtId} {
+      allow read: if true;
+      allow write: if request.resource.data.keys().hasAll(['author', 'lowerCaseAuthor', 'message', 'color', 'createdAt']) &&
+        isTextValid(request.resource.data.author) &&
+        request.resource.data.lowerCaseAuthor is string &&
+        isTextValid(request.resource.data.message) &&
+        request.resource.data.color is string &&
+        request.resource.data.createdAt is timestamp;
+    }
+  }
+}
