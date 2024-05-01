@@ -8,6 +8,7 @@ import {
   query,
   serverTimestamp,
   startAfter,
+  where,
 } from 'firebase/firestore';
 import { thoughtsCollectionRef } from '../api/firebase';
 import IThought, { IThoughtSubmit } from '../types/IThought';
@@ -75,6 +76,25 @@ const getThoughtsCount = async (): Promise<number> => {
   return snapshot.data().count;
 };
 
+const searchThoughts = async (searchTerm: string): Promise<IThought[]> => {
+  const searchString = searchTerm.toLowerCase();
+
+  const firstLetter = searchString[0];
+  let q = query(thoughtsCollectionRef, where('author', '>=', searchString));
+
+  if (firstLetter < 'z') {
+    const nextLetter = ((parseInt(firstLetter, 36) + 1) % 36).toString(36);
+    q = query(q, where('author', '<', nextLetter));
+  }
+
+  const results = await getDocs(q);
+
+  return results.docs.map((doc) => ({
+    ...(doc.data() as Omit<IThought, 'id'>),
+    id: doc.id,
+  }));
+};
+
 export {
   MAX_AUTHOR_LENGTH,
   MAX_MESSAGE_LENGTH,
@@ -82,4 +102,5 @@ export {
   getMoreThoughts,
   getThoughtsCount,
   submitThought,
+  searchThoughts,
 };

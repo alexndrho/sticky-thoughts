@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import {
   Button,
   Container,
@@ -12,7 +11,6 @@ import {
 import { useDebouncedState, useDisclosure, useHotkeys } from '@mantine/hooks';
 import { IconMessage, IconSearch } from '@tabler/icons-react';
 
-import { thoughtsCollectionRef } from '../api/firebase';
 import SendThoughtModal from '../components/SendThoughtModal';
 import NavBar from '../components/NavBar';
 import Thoughts from '../components/Thoughts';
@@ -22,6 +20,7 @@ import {
   fetchInitialThoughts,
   getMoreThoughts,
   getThoughtsCount,
+  searchThoughts,
 } from '../services/thought';
 
 interface HomeProps {
@@ -100,39 +99,50 @@ const Home = ({ title }: HomeProps) => {
   }, [thoughts, totalThoughts]);
 
   useEffect(() => {
-    const value = searchBarValue.toLowerCase();
+    const value = searchBarValue;
 
     if (value.length === 0) {
       setSearchResults([]);
       return;
     }
 
+    setSearchResults([]);
     setLoading(true);
 
-    const q = query(
-      thoughtsCollectionRef,
-      orderBy('createdAt', 'desc'),
-      where('lowerCaseAuthor', '==', value)
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      if (snapshot.empty) {
-        setSearchResults([]);
-
+    searchThoughts(value)
+      .then((results) => {
+        setSearchResults(results);
         setLoading(false);
-      } else {
-        setSearchResults(
-          snapshot.docs.map((doc) => ({
-            ...(doc.data() as IThought),
-            id: doc.id,
-          }))
-        );
-
+      })
+      .catch((error) => {
         setLoading(false);
-      }
-    });
+        console.error(error);
+      });
 
-    return () => unsubscribe();
+    // const q = query(
+    //   thoughtsCollectionRef,
+    //   orderBy('createdAt', 'desc'),
+    //   where('lowerCaseAuthor', '==', value)
+    // );
+
+    // const unsubscribe = onSnapshot(q, (snapshot) => {
+    //   if (snapshot.empty) {
+    //     setSearchResults([]);
+
+    //     setLoading(false);
+    //   } else {
+    //     setSearchResults(
+    //       snapshot.docs.map((doc) => ({
+    //         ...(doc.data() as IThought),
+    //         id: doc.id,
+    //       }))
+    //     );
+
+    //     setLoading(false);
+    //   }
+    // });
+
+    // return () => unsubscribe();
   }, [searchBarValue]);
 
   return (
