@@ -134,6 +134,7 @@ const SendThoughtModal = ({
           mb="sm"
           size="sm"
           ta="right"
+          c={form.values.message.length >= MAX_MESSAGE_LENGTH ? 'red' : ''}
         >{`${form.values.message.length}/${MAX_MESSAGE_LENGTH}`}</Text>
 
         <Switch
