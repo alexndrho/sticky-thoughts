@@ -5,6 +5,18 @@ service cloud.firestore {
   	function isTextValid(text) {
     	return text.replace("^\\s*$", '').size() > 0;
     }
+
+    function isValidAuthor(author) {
+      return isTextValid(author) && author.size() <= 20;
+    }
+
+    function isValidMessage(message) {
+      return isTextValid(message) && message.size() <= 250;
+    }
+
+    function isValidColor(color) {
+      return color in ['yellow', 'blue', 'red', 'violet', 'green', 'pink'];
+    }
     
     match /{document=**} {
       allow read, write: if false;
@@ -13,10 +25,10 @@ service cloud.firestore {
     match /thoughts/{thoughtId} {
       allow read: if true;
       allow write: if request.resource.data.keys().hasAll(['author', 'lowerCaseAuthor', 'message', 'color', 'createdAt']) &&
-        isTextValid(request.resource.data.author) &&
+        isValidAuthor(request.resource.data.author) &&
         request.resource.data.lowerCaseAuthor is string &&
-        isTextValid(request.resource.data.message) &&
-        request.resource.data.color is string &&
+        isValidMessage(request.resource.data.message) &&
+        isValidColor(request.resource.data.color) &&
         request.resource.data.createdAt is timestamp;
     }
   }
