@@ -66,7 +66,7 @@ const Home = ({ title }: HomeProps) => {
       if (
         totalThoughts > thoughts.length &&
         window.innerHeight + window.scrollY >=
-          document.documentElement.scrollHeight - 100
+          document.documentElement.scrollHeight - 500
       ) {
         setLoading(true);
 
