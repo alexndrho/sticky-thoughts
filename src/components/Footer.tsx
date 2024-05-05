@@ -11,9 +11,10 @@ import {
 import { Link } from 'react-router-dom';
 import { IconCopyright } from '@tabler/icons-react';
 
-const FooterBar = () => {
+const Footer = () => {
   return (
     <Box
+      component="footer"
       style={{
         borderTop: `${rem(1)} solid var(--mantine-color-default-border)`,
       }}
@@ -60,4 +61,4 @@ const FooterBar = () => {
   );
 };
 
-export default FooterBar;
+export default Footer;

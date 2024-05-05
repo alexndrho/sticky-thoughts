@@ -1,7 +1,6 @@
-import { Button, Container, Flex, Text, Title } from '@mantine/core';
+import { Box, Button, Flex, Text, Title } from '@mantine/core';
 import { useEffect } from 'react';
-import NavBar from '../components/NavBar';
-import Footer from '../components/FooterBar';
+import AppContainer from '../components/AppContainer';
 import { IconMail } from '@tabler/icons-react';
 
 interface ContactProps {
@@ -14,10 +13,8 @@ const Contact = ({ title }: ContactProps) => {
   }, [title]);
 
   return (
-    <>
-      <NavBar />
-
-      <Container role="main" size="lg" py="7.5rem">
+    <AppContainer>
+      <Box py="7.5rem">
         <Flex direction="column" justify="center" align="center">
           <Title ta="center" c="blue">
             Get in Touch
@@ -40,10 +37,8 @@ const Contact = ({ title }: ContactProps) => {
             Send a Mail
           </Button>
         </Flex>
-      </Container>
-
-      <Footer />
-    </>
+      </Box>
+    </AppContainer>
   );
 };
 

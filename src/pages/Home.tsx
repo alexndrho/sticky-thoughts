@@ -1,18 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import {
-  Button,
-  Container,
-  Flex,
-  Group,
-  Input,
-  Kbd,
-  Loader,
-} from '@mantine/core';
+import { Box, Button, Flex, Group, Input, Kbd, Loader } from '@mantine/core';
 import { useDebouncedState, useDisclosure, useHotkeys } from '@mantine/hooks';
 import { IconMessage, IconSearch } from '@tabler/icons-react';
 
+import AppContainer from '../components/AppContainer';
 import SendThoughtModal from '../components/SendThoughtModal';
-import NavBar from '../components/NavBar';
 import Thoughts from '../components/Thoughts';
 import IThought from '../types/IThought';
 import ScrollUpButton from '../components/ScrollUpButton';
@@ -118,39 +110,12 @@ const Home = ({ title }: HomeProps) => {
         setLoading(false);
         console.error(error);
       });
-
-    // const q = query(
-    //   thoughtsCollectionRef,
-    //   orderBy('createdAt', 'desc'),
-    //   where('lowerCaseAuthor', '==', value)
-    // );
-
-    // const unsubscribe = onSnapshot(q, (snapshot) => {
-    //   if (snapshot.empty) {
-    //     setSearchResults([]);
-
-    //     setLoading(false);
-    //   } else {
-    //     setSearchResults(
-    //       snapshot.docs.map((doc) => ({
-    //         ...(doc.data() as IThought),
-    //         id: doc.id,
-    //       }))
-    //     );
-
-    //     setLoading(false);
-    //   }
-    // });
-
-    // return () => unsubscribe();
   }, [searchBarValue]);
 
   return (
-    <>
-      <NavBar />
-
-      <Container role="main" size="lg" py="lg">
-        <Flex mb="lg" gap="md">
+    <AppContainer>
+      <Box mih="100dvh">
+        <Flex my="lg" gap="md">
           <Input
             ref={searchRef}
             leftSection={<IconSearch size="1rem" />}
@@ -179,7 +144,7 @@ const Home = ({ title }: HomeProps) => {
         <Group my="xl" h="2.25rem" justify="center">
           {loading && <Loader />}
         </Group>
-      </Container>
+      </Box>
 
       <SendThoughtModal
         open={messageOpen}
@@ -196,7 +161,7 @@ const Home = ({ title }: HomeProps) => {
       />
 
       <ScrollUpButton />
-    </>
+    </AppContainer>
   );
 };
 

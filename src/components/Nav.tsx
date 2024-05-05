@@ -20,7 +20,7 @@ import {
   IconInfoCircle,
 } from '@tabler/icons-react';
 
-const NavBar = () => {
+const Nav = () => {
   const location = useLocation();
   const { setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme('light', {
@@ -29,6 +29,7 @@ const NavBar = () => {
 
   return (
     <Box
+      component="header"
       style={{
         borderBottom: `${rem(1)} solid var(--mantine-color-default-border)`,
       }}
@@ -49,7 +50,7 @@ const NavBar = () => {
           </Text>
 
           <Group>
-            <Group display={{ base: 'none', xs: 'flex' }}>
+            <Group component="nav" display={{ base: 'none', xs: 'flex' }}>
               <Button
                 component={Link}
                 to="/"
@@ -139,4 +140,4 @@ const NavBar = () => {
   );
 };
 
-export default NavBar;
+export default Nav;

@@ -1,16 +1,7 @@
-import {
-  Anchor,
-  Box,
-  Container,
-  Flex,
-  Image,
-  Text,
-  Title,
-} from '@mantine/core';
-import NavBar from '../components/NavBar';
-import Footer from '../components/FooterBar';
-import noteImg from '../assets/note.svg';
+import { Anchor, Box, Flex, Image, Text, Title } from '@mantine/core';
+import AppContainer from '../components/AppContainer';
 import { useEffect } from 'react';
+import noteImg from '../assets/note.svg';
 
 interface AboutProps {
   title: string;
@@ -22,10 +13,8 @@ const About = ({ title }: AboutProps) => {
   }, [title]);
 
   return (
-    <>
-      <NavBar />
-
-      <Container role="main" size="lg" py="7.5rem">
+    <AppContainer>
+      <Box py="7.5rem">
         <Flex align="center" gap="md">
           <Box>
             <Title>
@@ -70,10 +59,8 @@ const About = ({ title }: AboutProps) => {
             <Image src={noteImg} w={250} />
           </Box>
         </Flex>
-      </Container>
-
-      <Footer />
-    </>
+      </Box>
+    </AppContainer>
   );
 };
 
