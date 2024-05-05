@@ -28,14 +28,14 @@ const FooterBar = () => {
               </Text>
             </Title>
 
-            <Group gap="xs">
+            <Group gap={5}>
               <IconCopyright size="1.25em" />
 
               <Text span fz="sm">
                 2023{' '}
                 <Anchor component={Link} to="/">
                   StickyThoughts
-                </Anchor>{' '}
+                </Anchor>
                 . All rights reserved.
               </Text>
             </Group>
