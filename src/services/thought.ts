@@ -35,7 +35,7 @@ const fetchInitialThoughts = async (): Promise<IThought[]> => {
   return thoughts;
 };
 
-const getMoreThoughts = async (lastPost: Timestamp): Promise<IThought[]> => {
+const fetchMoreThoughts = async (lastPost: Timestamp): Promise<IThought[]> => {
   const q = query(
     thoughtsCollectionRef,
     orderBy('createdAt', 'desc'),
@@ -99,7 +99,7 @@ export {
   MAX_AUTHOR_LENGTH,
   MAX_MESSAGE_LENGTH,
   fetchInitialThoughts,
-  getMoreThoughts,
+  fetchMoreThoughts,
   getThoughtsCount,
   submitThought,
   searchThoughts,

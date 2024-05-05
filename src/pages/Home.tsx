@@ -10,7 +10,7 @@ import IThought from '../types/IThought';
 import ScrollUpButton from '../components/ScrollUpButton';
 import {
   fetchInitialThoughts,
-  getMoreThoughts,
+  fetchMoreThoughts,
   getThoughtsCount,
   searchThoughts,
 } from '../services/thought';
@@ -70,7 +70,7 @@ const Home = ({ title }: HomeProps) => {
       ) {
         setLoading(true);
 
-        getMoreThoughts(thoughts[thoughts.length - 1].createdAt)
+        fetchMoreThoughts(thoughts[thoughts.length - 1].createdAt)
           .then((newThoughts) => {
             setThoughts([...thoughts, ...newThoughts]);
 
