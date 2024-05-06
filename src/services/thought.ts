@@ -80,7 +80,11 @@ const searchThoughts = async (searchTerm: string): Promise<IThought[]> => {
   const searchString = searchTerm.toLowerCase();
 
   const firstLetter = searchString[0];
-  let q = query(thoughtsCollectionRef, where('author', '>=', searchString));
+  let q = query(
+    thoughtsCollectionRef,
+    where('author', '>=', searchString),
+    limit(THOUGHTS_PER_PAGE)
+  );
 
   if (firstLetter < 'z') {
     const nextLetter = ((parseInt(firstLetter, 36) + 1) % 36).toString(36);
