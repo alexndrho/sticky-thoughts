@@ -61,9 +61,10 @@ const Home = ({ title }: HomeProps) => {
 
   useEffect(() => {
     function handleScroll() {
-      if (!thoughts.length) return;
+      if (!thoughts.length || loading) return;
 
       if (
+        searchBarValue.length === 0 &&
         totalThoughts > thoughts.length &&
         window.innerHeight + window.scrollY >=
           document.documentElement.scrollHeight - 500
@@ -88,7 +89,7 @@ const Home = ({ title }: HomeProps) => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [thoughts, totalThoughts]);
+  }, [loading, thoughts, totalThoughts, searchBarValue.length]);
 
   useEffect(() => {
     const value = searchBarValue;
