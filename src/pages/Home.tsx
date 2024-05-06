@@ -1,19 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import { Box, Button, Flex, Group, Input, Kbd, Loader } from '@mantine/core';
 import { useDebouncedState, useDisclosure, useHotkeys } from '@mantine/hooks';
-import { IconMessage, IconSearch } from '@tabler/icons-react';
-
 import AppContainer from '../components/AppContainer';
 import SendThoughtModal from '../components/SendThoughtModal';
 import Thoughts from '../components/Thoughts';
 import IThought from '../types/IThought';
-import ScrollUpButton from '../components/ScrollUpButton';
 import {
   fetchInitialThoughts,
   fetchMoreThoughts,
   getThoughtsCount,
   searchThoughts,
 } from '../services/thought';
+import { IconMessage, IconSearch } from '@tabler/icons-react';
 
 interface HomeProps {
   title: string;
@@ -160,8 +158,6 @@ const Home = ({ title }: HomeProps) => {
             });
         }}
       />
-
-      <ScrollUpButton />
     </AppContainer>
   );
 };
