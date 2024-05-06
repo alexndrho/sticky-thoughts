@@ -82,13 +82,13 @@ const searchThoughts = async (searchTerm: string): Promise<IThought[]> => {
   const firstLetter = searchString[0];
   let q = query(
     thoughtsCollectionRef,
-    where('author', '>=', searchString),
+    where('lowerCaseAuthor', '>=', searchString),
     limit(THOUGHTS_PER_PAGE)
   );
 
   if (firstLetter < 'z') {
     const nextLetter = ((parseInt(firstLetter, 36) + 1) % 36).toString(36);
-    q = query(q, where('author', '<', nextLetter));
+    q = query(q, where('lowerCaseAuthor', '<', nextLetter));
   }
 
   const results = await getDocs(q);
