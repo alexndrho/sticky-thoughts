@@ -21,7 +21,11 @@ const Footer = () => {
       }}
     >
       <Container h="auto" size="xl" py="xl">
-        <Flex direction={{ base: 'column', lg: 'row' }} justify="space-between">
+        <Flex
+          direction={{ base: 'column', lg: 'row' }}
+          justify="space-between"
+          gap="md"
+        >
           <Box>
             <Title order={2} size="h3">
               Sticky
