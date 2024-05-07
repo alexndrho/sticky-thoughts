@@ -17,4 +17,22 @@
       <changefreq>yearly</changefreq>
       <priority>0.7</priority>
   </url>
+	<url>
+    <loc>https://stickythoughts.alexndrho.dev/terms-and-conditions</loc>
+    <lastmod>2024-05-07</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+	<url>
+    <loc>https://stickythoughts.alexndrho.dev/privacy-policy</loc>
+    <lastmod>2024-05-07</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+	</url>
+	<url>
+    <loc>https://stickythoughts.alexndrho.dev/disclaimer</loc>
+    <lastmod>2024-05-07</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+	</url>
 </urlset>

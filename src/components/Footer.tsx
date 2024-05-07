@@ -2,6 +2,7 @@ import {
   Anchor,
   Box,
   Container,
+  Divider,
   Flex,
   Group,
   Text,
@@ -39,6 +40,24 @@ const Footer = () => {
                 </Anchor>
                 . All rights reserved.
               </Text>
+            </Group>
+
+            <Group gap={5}>
+              <Anchor component={Link} to="/terms-and-conditions" fz="sm">
+                Terms and Conditions
+              </Anchor>
+
+              <Divider orientation="vertical" />
+
+              <Anchor component={Link} to="/privacy-policy" fz="sm">
+                Privacy Policy
+              </Anchor>
+
+              <Divider orientation="vertical" />
+
+              <Anchor component={Link} to="/disclaimer" fz="sm">
+                Disclaimer
+              </Anchor>
             </Group>
           </Box>
 
