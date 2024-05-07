@@ -5,6 +5,7 @@ import Contact from './pages/Contact';
 import TermsConditions from './pages/TermsConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Disclaimer from './pages/Disclaimer';
+import NotFound from './pages/NotFound';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
     element: (
       <Disclaimer title="Disclaimer - StickyThoughts | Online Freedom Wall" />
     ),
+  },
+  {
+    path: '*',
+    element: <NotFound title="404 - StickyThoughts | Online Freedom Wall" />,
   },
 ]);
 
