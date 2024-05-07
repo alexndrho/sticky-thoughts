@@ -1,6 +1,7 @@
 import { Anchor, Box, Flex, Image, Text, Title } from '@mantine/core';
-import AppContainer from '../components/AppContainer';
 import { useEffect } from 'react';
+import { nprogress } from '@mantine/nprogress';
+import AppContainer from '../components/AppContainer';
 import noteImg from '../assets/note.svg';
 
 interface AboutProps {
@@ -11,6 +12,10 @@ const About = ({ title }: AboutProps) => {
   useEffect(() => {
     document.title = title;
   }, [title]);
+
+  useEffect(() => {
+    nprogress.complete();
+  }, []);
 
   return (
     <AppContainer>

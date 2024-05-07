@@ -1,5 +1,6 @@
 import { Button, Flex, Text, Title } from '@mantine/core';
 import { useEffect } from 'react';
+import { nprogress } from '@mantine/nprogress';
 import AppContainer from '../components/AppContainer';
 import { IconMail } from '@tabler/icons-react';
 
@@ -11,6 +12,10 @@ const Contact = ({ title }: ContactProps) => {
   useEffect(() => {
     document.title = title;
   }, [title]);
+
+  useEffect(() => {
+    nprogress.complete();
+  }, []);
 
   return (
     <AppContainer>

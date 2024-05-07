@@ -1,5 +1,6 @@
 import { Anchor, Text, Title } from '@mantine/core';
 import { useEffect } from 'react';
+import { nprogress } from '@mantine/nprogress';
 import AppContainer from '../components/AppContainer';
 
 interface DisclaimerProps {
@@ -10,6 +11,10 @@ function Disclaimer({ title }: DisclaimerProps) {
   useEffect(() => {
     document.title = title;
   }, [title]);
+
+  useEffect(() => {
+    nprogress.complete();
+  }, []);
 
   return (
     <AppContainer>

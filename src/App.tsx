@@ -1,46 +1,71 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import Home from './pages/Home';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import TermsConditions from './pages/TermsConditions';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import Disclaimer from './pages/Disclaimer';
-import NotFound from './pages/NotFound';
+import { Suspense, lazy } from 'react';
+import AppContainer from './components/AppContainer';
+
+const Home = lazy(() => import('./pages/Home'));
+const About = lazy(() => import('./pages/About'));
+const Contact = lazy(() => import('./pages/Contact'));
+const TermsConditions = lazy(() => import('./pages/TermsConditions'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const Disclaimer = lazy(() => import('./pages/Disclaimer'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Home title="StickyThoughts | Online Freedom Wall" />,
+    element: (
+      <Suspense fallback={<AppContainer startLoading />}>
+        <Home title="StickyThoughts | Online Freedom Wall" />
+      </Suspense>
+    ),
   },
   {
     path: '/about',
-    element: <About title="About - StickyThoughts | Online Freedom Wall" />,
+    element: (
+      <Suspense fallback={<AppContainer startLoading />}>
+        <About title="About - StickyThoughts | Online Freedom Wall" />
+      </Suspense>
+    ),
   },
   {
     path: '/contact',
-    element: <Contact title="Contact - StickyThoughts | Online Freedom Wall" />,
+    element: (
+      <Suspense fallback={<AppContainer startLoading />}>
+        <Contact title="Contact - StickyThoughts | Online Freedom Wall" />
+      </Suspense>
+    ),
   },
   {
     path: '/terms-and-conditions',
     element: (
-      <TermsConditions title="Terms and Conditions - StickyThoughts | Online Freedom Wall" />
+      <Suspense fallback={<AppContainer startLoading />}>
+        <TermsConditions title="Terms and Conditions - StickyThoughts | Online Freedom Wall" />
+      </Suspense>
     ),
   },
   {
     path: '/privacy-policy',
     element: (
-      <PrivacyPolicy title="Privacy Policy - StickyThoughts | Online Freedom Wall" />
+      <Suspense fallback={<AppContainer startLoading />}>
+        <PrivacyPolicy title="Privacy Policy - StickyThoughts | Online Freedom Wall" />
+      </Suspense>
     ),
   },
   {
     path: '/disclaimer',
     element: (
-      <Disclaimer title="Disclaimer - StickyThoughts | Online Freedom Wall" />
+      <Suspense fallback={<AppContainer startLoading />}>
+        <Disclaimer title="Disclaimer - StickyThoughts | Online Freedom Wall" />
+      </Suspense>
     ),
   },
   {
     path: '*',
-    element: <NotFound title="404 - StickyThoughts | Online Freedom Wall" />,
+    element: (
+      <Suspense fallback={<AppContainer startLoading />}>
+        <NotFound title="404 - StickyThoughts | Online Freedom Wall" />
+      </Suspense>
+    ),
   },
 ]);
 

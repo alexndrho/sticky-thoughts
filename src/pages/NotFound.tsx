@@ -1,5 +1,6 @@
 import { Button, Flex, Text, Title } from '@mantine/core';
 import { useEffect } from 'react';
+import { nprogress } from '@mantine/nprogress';
 import { Link } from 'react-router-dom';
 import AppContainer from '../components/AppContainer';
 
@@ -11,6 +12,10 @@ function NotFound({ title }: NotFoundProps) {
   useEffect(() => {
     document.title = title;
   }, [title]);
+
+  useEffect(() => {
+    nprogress.complete();
+  }, []);
 
   return (
     <AppContainer>

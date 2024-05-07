@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { nprogress } from '@mantine/nprogress';
 import { Box, Button, Flex, Group, Input, Kbd, Loader } from '@mantine/core';
 import { useDebouncedState, useDisclosure, useHotkeys } from '@mantine/hooks';
 import AppContainer from '../components/AppContainer';
@@ -40,6 +41,10 @@ const Home = ({ title }: HomeProps) => {
   }, [title]);
 
   useEffect(() => {
+    nprogress.start();
+  }, []);
+
+  useEffect(() => {
     setLoading(true);
 
     fetchInitialThoughts()
@@ -49,9 +54,11 @@ const Home = ({ title }: HomeProps) => {
         const count = await getThoughtsCount();
         setTotalThoughts(count);
 
+        nprogress.complete();
         setLoading(false);
       })
       .catch((error) => {
+        nprogress.complete();
         setLoading(false);
         console.error(error);
       });
