@@ -7,8 +7,7 @@ import SendThoughtModal from '../components/SendThoughtModal';
 import Thoughts from '../components/Thoughts';
 import IThought from '../types/IThought';
 import {
-  fetchInitialThoughts,
-  fetchMoreThoughts,
+  fetchThoughts,
   getThoughtsCount,
   searchThoughts,
 } from '../services/thought';
@@ -47,7 +46,7 @@ const Home = ({ title }: HomeProps) => {
   useEffect(() => {
     setLoading(true);
 
-    fetchInitialThoughts()
+    fetchThoughts()
       .then(async (thoughts) => {
         setThoughts(thoughts);
 
@@ -76,7 +75,7 @@ const Home = ({ title }: HomeProps) => {
       ) {
         setLoading(true);
 
-        fetchMoreThoughts(thoughts[thoughts.length - 1].createdAt)
+        fetchThoughts(thoughts[thoughts.length - 1].createdAt)
           .then((newThoughts) => {
             setThoughts([...thoughts, ...newThoughts]);
 
@@ -156,7 +155,7 @@ const Home = ({ title }: HomeProps) => {
         open={messageOpen}
         onClose={close}
         onSubmit={() => {
-          fetchInitialThoughts()
+          fetchThoughts()
             .then((thoughts) => {
               setThoughts(thoughts);
             })

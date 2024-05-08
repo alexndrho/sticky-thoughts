@@ -19,38 +19,23 @@ const THOUGHTS_PER_PAGE = THOUGHTS_PER_ROW * 3;
 const MAX_AUTHOR_LENGTH = 20;
 const MAX_MESSAGE_LENGTH = 250;
 
-const fetchInitialThoughts = async (): Promise<IThought[]> => {
-  const q = query(
+const fetchThoughts = async (lastPost?: Timestamp): Promise<IThought[]> => {
+  let q = query(
     thoughtsCollectionRef,
     orderBy('createdAt', 'desc'),
     limit(THOUGHTS_PER_PAGE)
   );
-  const querySnapshot = await getDocs(q);
 
-  const thoughts: IThought[] = querySnapshot.docs.map((doc) => ({
-    ...(doc.data() as Omit<IThought, 'id'>),
-    id: doc.id,
-  }));
-
-  return thoughts;
-};
-
-const fetchMoreThoughts = async (lastPost: Timestamp): Promise<IThought[]> => {
-  const q = query(
-    thoughtsCollectionRef,
-    orderBy('createdAt', 'desc'),
-    startAfter(lastPost),
-    limit(THOUGHTS_PER_PAGE)
-  );
+  if (lastPost) {
+    q = query(q, startAfter(lastPost));
+  }
 
   const querySnapshot = await getDocs(q);
 
-  const thoughts: IThought[] = querySnapshot.docs.map((doc) => ({
+  return querySnapshot.docs.map((doc) => ({
     ...(doc.data() as Omit<IThought, 'id'>),
     id: doc.id,
   }));
-
-  return thoughts;
 };
 
 const submitThought = async (
@@ -102,8 +87,7 @@ const searchThoughts = async (searchTerm: string): Promise<IThought[]> => {
 export {
   MAX_AUTHOR_LENGTH,
   MAX_MESSAGE_LENGTH,
-  fetchInitialThoughts,
-  fetchMoreThoughts,
+  fetchThoughts,
   getThoughtsCount,
   submitThought,
   searchThoughts,
