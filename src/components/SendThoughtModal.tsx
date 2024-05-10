@@ -12,29 +12,25 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
+import { useMutation } from '@tanstack/react-query';
 import { useForm } from '@mantine/form';
+import queryClient from '../queryClient';
 import {
   MAX_AUTHOR_LENGTH,
   MAX_MESSAGE_LENGTH,
   submitThought,
 } from '../services/thought';
-import IThought, { NoteColor } from '../types/IThought';
+import { NoteColor } from '../types/IThought';
 
 const ANONYMOUS_AUTHOR = 'Anonymous';
 
 interface SendThoughtModalProps {
   open: boolean;
-  onSubmit: () => void;
   onClose: () => void;
 }
 
-const SendThoughtModal = ({
-  open,
-  onSubmit,
-  onClose,
-}: SendThoughtModalProps) => {
+const SendThoughtModal = ({ open, onClose }: SendThoughtModalProps) => {
   const theme = useMantineTheme();
-  const [loading, setLoading] = useState(false);
   const [isAnonymous, setIsAnonymous] = useState(false);
 
   const isTextValid = (text: string) => text.trim().length > 0;
@@ -55,36 +51,13 @@ const SendThoughtModal = ({
     },
   });
 
-  const handleClose = () => {
-    onClose();
-
-    form.reset();
-    setIsAnonymous(false);
-  };
-
-  const handleFormSubmit = async (
-    values: Pick<IThought, 'author' | 'message' | 'color'>
-  ) => {
-    setLoading(true);
-
-    if (isAnonymous) values.author = ANONYMOUS_AUTHOR;
-
-    try {
-      await submitThought(values);
-
-      onSubmit();
-
-      notifications.show({
-        title: 'Thought submitted!',
-        message: 'Your thought has been successfully submitted.',
-        color: values.color,
-      });
-      onClose();
-      form.reset();
-      setIsAnonymous(false);
-
-      setLoading(false);
-    } catch (error) {
+  const mutation = useMutation({
+    mutationFn: (values: typeof form.values) =>
+      submitThought({
+        ...values,
+        author: isAnonymous ? ANONYMOUS_AUTHOR : values.author,
+      }),
+    onError: (error) => {
       console.error(error);
 
       notifications.show({
@@ -92,9 +65,28 @@ const SendThoughtModal = ({
         message: 'An error occurred while submitting your thought.',
         color: 'red',
       });
+    },
+    onSuccess: () => {
+      queryClient
+        .invalidateQueries({ queryKey: ['thoughts'] })
+        .catch(console.error);
 
-      setLoading(false);
-    }
+      notifications.show({
+        title: 'Thought submitted!',
+        message: 'Your thought has been successfully submitted.',
+        color: form.values.color,
+      });
+      onClose();
+      form.reset();
+      setIsAnonymous(false);
+    },
+  });
+
+  const handleClose = () => {
+    onClose();
+
+    form.reset();
+    setIsAnonymous(false);
   };
 
   const handleAnonymousChange = (
@@ -106,17 +98,13 @@ const SendThoughtModal = ({
 
   return (
     <Modal opened={open} onClose={handleClose} title="Share a thought" centered>
-      <form
-        onSubmit={form.onSubmit((values) => {
-          void handleFormSubmit(values);
-        })}
-      >
+      <form onSubmit={form.onSubmit((values) => mutation.mutate(values))}>
         <TextInput
           mb="md"
           label="Author:"
           withAsterisk
           maxLength={MAX_AUTHOR_LENGTH}
-          disabled={isAnonymous || loading}
+          disabled={isAnonymous || mutation.isPending}
           {...form.getInputProps('author')}
           value={isAnonymous ? ANONYMOUS_AUTHOR : form.values.author}
         />
@@ -126,7 +114,7 @@ const SendThoughtModal = ({
           withAsterisk
           rows={5}
           maxLength={MAX_MESSAGE_LENGTH}
-          disabled={loading}
+          disabled={mutation.isPending}
           {...form.getInputProps('message')}
         />
 
@@ -141,7 +129,7 @@ const SendThoughtModal = ({
           mb="sm"
           label="Anonymous"
           checked={isAnonymous}
-          disabled={loading}
+          disabled={mutation.isPending}
           onChange={(e) => handleAnonymousChange(e)}
         />
 
@@ -153,7 +141,7 @@ const SendThoughtModal = ({
               key={color}
               component="button"
               color={theme.colors[color][5]}
-              disabled={loading}
+              disabled={mutation.isPending}
               onClick={() => form.setFieldValue('color', color)}
               styles={(theme) => ({
                 root: {
@@ -168,7 +156,7 @@ const SendThoughtModal = ({
         </Group>
 
         <Group justify="right" mt="md">
-          <Button type="submit" loading={loading}>
+          <Button type="submit" loading={mutation.isPending}>
             Submit
           </Button>
         </Group>

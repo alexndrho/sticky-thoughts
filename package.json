@@ -16,6 +16,7 @@
     "@mantine/notifications": "^7.8.1",
     "@mantine/nprogress": "7.8",
     "@tabler/icons-react": "^2.24.0",
+    "@tanstack/react-query": "^5.35.1",
     "bad-words": "^3.0.4",
     "firebase": "^10.0.0",
     "react": "^18.2.0",
@@ -23,6 +24,7 @@
     "react-router-dom": "^6.19.0"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^5.32.1",
     "@types/bad-words": "^3.0.1",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",

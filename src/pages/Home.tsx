@@ -6,27 +6,45 @@ import AppContainer from '../components/AppContainer';
 import SendThoughtModal from '../components/SendThoughtModal';
 import Thoughts from '../components/Thoughts';
 import IThought from '../types/IThought';
-import {
-  fetchThoughts,
-  getThoughtsCount,
-  searchThoughts,
-} from '../services/thought';
+import { fetchThoughts, searchThoughts } from '../services/thought';
 import { IconMessage, IconSearch } from '@tabler/icons-react';
+import {
+  QueryFunctionContext,
+  QueryKey,
+  useInfiniteQuery,
+} from '@tanstack/react-query';
+import { Timestamp } from 'firebase/firestore';
 
 interface HomeProps {
   title: string;
 }
 
 const Home = ({ title }: HomeProps) => {
-  const [loading, setLoading] = useState(false);
   const [messageOpen, { open, close }] = useDisclosure(false);
 
   const searchRef = useRef<HTMLInputElement>(null);
   const [searchBarValue, setSearchBarValue] = useDebouncedState('', 250);
 
-  const [thoughts, setThoughts] = useState<IThought[]>([]);
-  const [totalThoughts, setTotalThoughts] = useState(0);
   const [searchResults, setSearchResults] = useState<IThought[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
+    queryKey: ['thoughts'],
+    initialPageParam: undefined,
+    queryFn: async ({
+      pageParam,
+    }: QueryFunctionContext<QueryKey, Timestamp | undefined>) => {
+      const thoughts = await fetchThoughts(pageParam);
+      nprogress.complete();
+
+      return thoughts;
+    },
+    getNextPageParam: (lastPage) => {
+      if (lastPage.length === 0) return undefined;
+
+      return lastPage[lastPage.length - 1].createdAt;
+    },
+  });
 
   const focusSearchBar = () => {
     searchRef.current?.focus();
@@ -40,51 +58,18 @@ const Home = ({ title }: HomeProps) => {
   }, [title]);
 
   useEffect(() => {
-    nprogress.start();
-  }, []);
-
-  useEffect(() => {
-    setLoading(true);
-
-    fetchThoughts()
-      .then(async (thoughts) => {
-        setThoughts(thoughts);
-
-        const count = await getThoughtsCount();
-        setTotalThoughts(count);
-
-        nprogress.complete();
-        setLoading(false);
-      })
-      .catch((error) => {
-        nprogress.complete();
-        setLoading(false);
-        console.error(error);
-      });
-  }, []);
-
-  useEffect(() => {
     function handleScroll() {
-      if (!thoughts.length || loading) return;
+      if (isFetching) return;
 
       if (
         searchBarValue.length === 0 &&
-        totalThoughts > thoughts.length &&
+        hasNextPage &&
         window.innerHeight + window.scrollY >=
           document.documentElement.scrollHeight - 500
       ) {
-        setLoading(true);
-
-        fetchThoughts(thoughts[thoughts.length - 1].createdAt)
-          .then((newThoughts) => {
-            setThoughts([...thoughts, ...newThoughts]);
-
-            setLoading(false);
-          })
-          .catch((error) => {
-            setLoading(false);
-            console.error(error);
-          });
+        fetchNextPage().catch((error) => {
+          console.error(error);
+        });
       }
     }
 
@@ -93,7 +78,7 @@ const Home = ({ title }: HomeProps) => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [loading, thoughts, totalThoughts, searchBarValue.length]);
+  }, [isFetching, fetchNextPage, hasNextPage, searchBarValue.length]);
 
   useEffect(() => {
     const value = searchBarValue;
@@ -104,12 +89,12 @@ const Home = ({ title }: HomeProps) => {
     }
 
     setSearchResults([]);
-    setLoading(true);
 
+    setLoading(true);
     searchThoughts(value)
       .then((results) => {
-        setSearchResults(results);
         setLoading(false);
+        setSearchResults(results);
       })
       .catch((error) => {
         setLoading(false);
@@ -143,27 +128,19 @@ const Home = ({ title }: HomeProps) => {
         {searchRef.current?.value ? (
           <Thoughts thoughts={searchResults} />
         ) : (
-          <Thoughts thoughts={thoughts} />
+          data && (
+            <Thoughts
+              thoughts={data.pages.reduce((acc, page) => acc.concat(page), [])}
+            />
+          )
         )}
 
         <Group my="xl" h="2.25rem" justify="center">
-          {loading && <Loader />}
+          {(isFetching || loading) && <Loader />}
         </Group>
       </Box>
 
-      <SendThoughtModal
-        open={messageOpen}
-        onClose={close}
-        onSubmit={() => {
-          fetchThoughts()
-            .then((thoughts) => {
-              setThoughts(thoughts);
-            })
-            .catch((error) => {
-              console.error(error);
-            });
-        }}
-      />
+      <SendThoughtModal open={messageOpen} onClose={close} />
     </AppContainer>
   );
 };
