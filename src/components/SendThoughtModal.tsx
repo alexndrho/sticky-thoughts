@@ -33,7 +33,7 @@ const SendThoughtModal = ({ open, onClose }: SendThoughtModalProps) => {
   const theme = useMantineTheme();
   const [isAnonymous, setIsAnonymous] = useState(false);
 
-  const isTextValid = (text: string) => text.trim().length > 0;
+  const isTextValid = (text: string) => text.trim().length > 1;
 
   const form = useForm({
     initialValues: {
@@ -44,8 +44,8 @@ const SendThoughtModal = ({ open, onClose }: SendThoughtModalProps) => {
 
     validate: {
       author: (value) =>
-        isTextValid(value) || isAnonymous ? null : 'Invalid author',
-      message: (value) => (isTextValid(value) ? null : 'Invalid message'),
+        isTextValid(value) || isAnonymous ? null : 'Author is too short',
+      message: (value) => (isTextValid(value) ? null : 'Message is too short'),
       color: (value) =>
         Object.values(NoteColor).includes(value) ? null : 'Invalid color',
     },
