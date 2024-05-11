@@ -21,6 +21,7 @@ import {
   submitThought,
 } from '../utils/thought';
 import { NoteColor } from '../types/IThought';
+import { containsUrl } from '../utils/helper';
 
 const ANONYMOUS_AUTHOR = 'Anonymous';
 
@@ -49,8 +50,15 @@ const SendThoughtModal = ({ open, onClose }: SendThoughtModalProps) => {
     validate: {
       author: (value) =>
         isTextValid(value, 2) || isAnonymous ? null : 'Author is too short',
-      message: (value) =>
-        isTextValid(value, 5) ? null : 'Message is too short',
+      message: (value) => {
+        if (!isTextValid(value, 5)) {
+          return 'Message is too short';
+        } else if (containsUrl(value)) {
+          return 'Message cannot contain URLs';
+        }
+
+        return null;
+      },
       color: (value) =>
         Object.values(NoteColor).includes(value) ? null : 'Invalid color',
     },
