@@ -21,7 +21,7 @@ import {
   submitThought,
 } from '../utils/thought';
 import { NoteColor } from '../types/IThought';
-import { containsUrl } from '../utils/helper';
+import { containsUrl, isTextValid } from '../utils/helper';
 
 const ANONYMOUS_AUTHOR = 'Anonymous';
 
@@ -33,12 +33,6 @@ interface SendThoughtModalProps {
 const SendThoughtModal = ({ open, onClose }: SendThoughtModalProps) => {
   const theme = useMantineTheme();
   const [isAnonymous, setIsAnonymous] = useState(false);
-
-  const isTextValid = (text: string, minLength = 0) => {
-    minLength--;
-    minLength = minLength < 0 ? 0 : minLength;
-    return text.trim().length > minLength;
-  };
 
   const form = useForm({
     initialValues: {
