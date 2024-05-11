@@ -10,7 +10,7 @@ import {
   startAfter,
   where,
 } from 'firebase/firestore';
-import { thoughtsCollectionRef } from '../api/firebase';
+import { thoughtsCollectionRef } from './firebase';
 import IThought, { IThoughtSubmit } from '../types/IThought';
 
 const THOUGHTS_PER_ROW = 4;

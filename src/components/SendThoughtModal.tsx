@@ -19,7 +19,7 @@ import {
   MAX_AUTHOR_LENGTH,
   MAX_MESSAGE_LENGTH,
   submitThought,
-} from '../services/thought';
+} from '../utils/thought';
 import { NoteColor } from '../types/IThought';
 
 const ANONYMOUS_AUTHOR = 'Anonymous';

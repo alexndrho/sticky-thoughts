@@ -6,7 +6,7 @@ import AppContainer from '../components/AppContainer';
 import SendThoughtModal from '../components/SendThoughtModal';
 import Thoughts from '../components/Thoughts';
 import IThought from '../types/IThought';
-import { fetchThoughts, searchThoughts } from '../services/thought';
+import { fetchThoughts, searchThoughts } from '../utils/thought';
 import { IconMessage, IconSearch } from '@tabler/icons-react';
 import {
   QueryFunctionContext,
