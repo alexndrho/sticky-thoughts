@@ -1,17 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { nprogress } from '@mantine/nprogress';
 import { Box, Button, Flex, Group, Input, Kbd, Loader } from '@mantine/core';
 import { useDebouncedState, useDisclosure, useHotkeys } from '@mantine/hooks';
 import AppContainer from '../components/AppContainer';
 import SendThoughtModal from '../components/SendThoughtModal';
 import Thoughts from '../components/Thoughts';
-import IThought from '../types/IThought';
 import { fetchThoughts, searchThoughts } from '../utils/thought';
 import { IconMessage, IconSearch } from '@tabler/icons-react';
 import {
   QueryFunctionContext,
   QueryKey,
   useInfiniteQuery,
+  useQuery,
 } from '@tanstack/react-query';
 import { Timestamp } from 'firebase/firestore';
 
@@ -24,9 +24,6 @@ const Home = ({ title }: HomeProps) => {
 
   const searchRef = useRef<HTMLInputElement>(null);
   const [searchBarValue, setSearchBarValue] = useDebouncedState('', 250);
-
-  const [searchResults, setSearchResults] = useState<IThought[]>([]);
-  const [loading, setLoading] = useState(false);
 
   const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
     queryKey: ['thoughts'],
@@ -44,6 +41,16 @@ const Home = ({ title }: HomeProps) => {
 
       return lastPage[lastPage.length - 1].createdAt;
     },
+  });
+
+  const { data: searchData, isFetching: isSearchFetching } = useQuery({
+    queryKey: ['thoughts', 'search', searchBarValue],
+    queryFn: async () => {
+      if (!searchBarValue) return [];
+
+      return searchThoughts(searchBarValue);
+    },
+    enabled: Boolean(searchBarValue),
   });
 
   const focusSearchBar = () => {
@@ -80,28 +87,6 @@ const Home = ({ title }: HomeProps) => {
     };
   }, [isFetching, fetchNextPage, hasNextPage, searchBarValue.length]);
 
-  useEffect(() => {
-    const value = searchBarValue;
-
-    if (value.length === 0) {
-      setSearchResults([]);
-      return;
-    }
-
-    setSearchResults([]);
-
-    setLoading(true);
-    searchThoughts(value)
-      .then((results) => {
-        setLoading(false);
-        setSearchResults(results);
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.error(error);
-      });
-  }, [searchBarValue]);
-
   return (
     <AppContainer>
       <Box mih="100dvh">
@@ -125,18 +110,19 @@ const Home = ({ title }: HomeProps) => {
           </Button>
         </Flex>
 
-        {searchRef.current?.value ? (
-          <Thoughts thoughts={searchResults} />
-        ) : (
-          data && (
-            <Thoughts
-              thoughts={data.pages.reduce((acc, page) => acc.concat(page), [])}
-            />
-          )
-        )}
+        {searchRef.current?.value
+          ? searchData && <Thoughts thoughts={searchData} />
+          : data && (
+              <Thoughts
+                thoughts={data.pages.reduce(
+                  (acc, page) => acc.concat(page),
+                  []
+                )}
+              />
+            )}
 
         <Group my="xl" h="2.25rem" justify="center">
-          {(isFetching || loading) && <Loader />}
+          {(isFetching || isSearchFetching) && <Loader />}
         </Group>
       </Box>
 
