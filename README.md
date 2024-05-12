@@ -6,7 +6,8 @@ Sticky Thoughts is a wall to share your thoughts, opinions, and experiences anon
 
 1. Clone this repo
 2. Run `npm install`
-3. Create a `.env.local` file in the root directory and add the following:
+3. Create a Firebase project. You can follow the instructions [here](https://firebase.google.com/docs/web/setup#create-project).
+4. Create a `.env.local` file in the root directory and add the following:
 
 ```
 VITE_FIREBASE_API_KEY=<YOUR_API_KEY>
@@ -18,9 +19,11 @@ VITE_FIREBASE_APP_ID=<YOUR_APP_ID>
 VITE_FIREBASE_MEASUREMENT_ID=<YOUR_MEASUREMENT_ID>
 ```
 
-4. Run `npm run dev`
-5. Navigate to `localhost:5173`
-6. 🎉
+Replace the placeholders with the values from your Firebase project.
+
+5. Run `npm run dev`
+6. Navigate to `localhost:5173`
+7. 🎉
 
 ## Tech Stack
 
