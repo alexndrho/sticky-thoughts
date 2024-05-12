@@ -42,8 +42,15 @@ const SendThoughtModal = ({ open, onClose }: SendThoughtModalProps) => {
     },
 
     validate: {
-      author: (value) =>
-        isTextValid(value, 2) || isAnonymous ? null : 'Author is too short',
+      author: (value) => {
+        if (!isTextValid(value, 2)) {
+          return 'Author is too short';
+        } else if (containsUrl(value)) {
+          return 'Author cannot contain URLs';
+        }
+
+        return null;
+      },
       message: (value) => {
         if (!isTextValid(value, 5)) {
           return 'Message is too short';
