@@ -2,16 +2,18 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-  	function isTextValid(text) {
-    	return text.replace("^\\s*$", '').size() > 0;
+      function isTextValid(text, minLength, maxLength) {
+      let trimmedTextSize = text.replace("^\\s*$", '').trim().size();
+      let adjustedMinLength = (minLength - 1) < 0 ? 0 : (minLength - 1);
+      return trimmedTextSize > adjustedMinLength && trimmedTextSize <= maxLength;
     }
 
     function isValidAuthor(author) {
-      return isTextValid(author) && author.size() <= 20;
+      return isTextValid(author, 2, 20);
     }
 
     function isValidMessage(message) {
-      return isTextValid(message) && message.size() <= 250;
+      return isTextValid(message, 5, 250);
     }
 
     function isValidColor(color) {
