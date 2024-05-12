@@ -81,7 +81,7 @@ const SendThoughtModal = ({ open, onClose }: SendThoughtModalProps) => {
       notifications.show({
         title: 'Thought submitted!',
         message: 'Your thought has been successfully submitted.',
-        color: form.values.color,
+        color: `${form.values.color}.6`,
       });
       onClose();
       form.reset();
