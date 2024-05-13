@@ -10,7 +10,7 @@ import {
   startAfter,
   where,
 } from 'firebase/firestore';
-import { thoughtsCollectionRef } from './firebase';
+import { thoughtsCollectionRef } from '../config/firebase';
 import { filterText, getColorFallback } from './helper';
 import IThought, { IThoughtSubmit } from '../types/IThought';
 
