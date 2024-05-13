@@ -43,7 +43,7 @@ const SendThoughtModal = ({ open, onClose }: SendThoughtModalProps) => {
 
     validate: {
       author: (value) => {
-        if (!isTextValid(value, 2)) {
+        if (!(isAnonymous || isTextValid(value, 2))) {
           return 'Author is too short';
         } else if (containsUrl(value)) {
           return 'Author cannot contain URLs';
