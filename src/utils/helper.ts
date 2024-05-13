@@ -3,6 +3,9 @@ import { NoteColor } from '../types/IThought';
 
 const filter = new Filter();
 
+const urlRegex =
+  /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[.!/\\\w]*))?)/gi;
+
 const isTextValid = (text: string, minLength = 0) => {
   minLength--;
   minLength = minLength < 0 ? 0 : minLength;
@@ -10,8 +13,6 @@ const isTextValid = (text: string, minLength = 0) => {
 };
 
 const containsUrl = (message: string) => {
-  const urlRegex =
-    /[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/gi;
   return urlRegex.test(message);
 };
 
