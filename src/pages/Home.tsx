@@ -1,4 +1,10 @@
 import { useEffect, useRef } from 'react';
+import {
+  QueryFunctionContext,
+  QueryKey,
+  useInfiniteQuery,
+  useQuery,
+} from '@tanstack/react-query';
 import { nprogress } from '@mantine/nprogress';
 import { Box, Button, Flex, Group, Input, Kbd, Loader } from '@mantine/core';
 import { useDebouncedState, useDisclosure, useHotkeys } from '@mantine/hooks';
@@ -7,12 +13,7 @@ import SendThoughtModal from '../components/SendThoughtModal';
 import Thoughts from '../components/Thoughts';
 import { fetchThoughts, searchThoughts } from '../utils/thought';
 import { IconMessage, IconSearch } from '@tabler/icons-react';
-import {
-  QueryFunctionContext,
-  QueryKey,
-  useInfiniteQuery,
-  useQuery,
-} from '@tanstack/react-query';
+
 import { Timestamp } from 'firebase/firestore';
 
 interface HomeProps {
@@ -28,6 +29,7 @@ const Home = ({ title }: HomeProps) => {
   const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
     queryKey: ['thoughts'],
     initialPageParam: undefined,
+    staleTime: 1000 * 60 * 5,
     queryFn: async ({
       pageParam,
     }: QueryFunctionContext<QueryKey, Timestamp | undefined>) => {
@@ -45,6 +47,7 @@ const Home = ({ title }: HomeProps) => {
 
   const { data: searchData, isFetching: isSearchFetching } = useQuery({
     queryKey: ['thoughts', 'search', searchBarValue],
+    staleTime: 1000 * 60 * 5,
     queryFn: async () => {
       if (!searchBarValue) return [];
 
