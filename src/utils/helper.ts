@@ -1,7 +1,12 @@
-import Filter from 'bad-words';
+import { Profanity, ProfanityOptions } from '@2toad/profanity';
+import badwords from '../config/badwords.json';
 import { NoteColor } from '../types/IThought';
 
-const filter = new Filter();
+const options = new ProfanityOptions();
+options.grawlix = '*****';
+
+const profanity = new Profanity(options);
+profanity.addWords([...badwords.filipino]);
 
 const urlRegex =
   /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[.!/\\\w]*))?)/gi;
@@ -18,7 +23,7 @@ const containsUrl = (message: string) => {
 
 const filterText = (text: string) => {
   try {
-    return filter.clean(text);
+    return profanity.censor(text);
   } catch (error) {
     return text;
   }
