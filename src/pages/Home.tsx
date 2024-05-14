@@ -36,25 +36,32 @@ const Home = ({ title }: HomeProps) => {
   const searchRef = useRef<HTMLInputElement>(null);
   const [searchBarValue, setSearchBarValue] = useDebouncedState('', 250);
 
-  const { data, refetch, fetchNextPage, hasNextPage, isFetching } =
-    useInfiniteQuery({
-      queryKey: ['thoughts'],
-      initialPageParam: undefined,
-      staleTime: 1000 * 60 * 5,
-      queryFn: async ({
-        pageParam,
-      }: QueryFunctionContext<QueryKey, Timestamp | undefined>) => {
-        const thoughts = await fetchThoughts(pageParam);
-        nprogress.complete();
+  const {
+    data,
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isRefetching,
+    isRefetchError,
+  } = useInfiniteQuery({
+    queryKey: ['thoughts'],
+    initialPageParam: undefined,
+    staleTime: 1000 * 60 * 5,
+    queryFn: async ({
+      pageParam,
+    }: QueryFunctionContext<QueryKey, Timestamp | undefined>) => {
+      const thoughts = await fetchThoughts(pageParam);
+      nprogress.complete();
 
-        return thoughts;
-      },
-      getNextPageParam: (lastPage) => {
-        if (lastPage.length === 0) return undefined;
+      return thoughts;
+    },
+    getNextPageParam: (lastPage) => {
+      if (lastPage.length === 0) return undefined;
 
-        return lastPage[lastPage.length - 1].createdAt;
-      },
-    });
+      return lastPage[lastPage.length - 1].createdAt;
+    },
+  });
 
   const { data: searchData, isFetching: isSearchFetching } = useQuery({
     queryKey: ['thoughts', 'search', searchBarValue],
@@ -101,42 +108,44 @@ const Home = ({ title }: HomeProps) => {
     };
   }, [isFetching, fetchNextPage, hasNextPage, searchBarValue.length]);
 
+  useEffect(() => {
+    if (isRefetching) {
+      notifications.show({
+        id: 'refetch-thoughts',
+        loading: true,
+        title: 'Fetching new thoughts',
+        message: 'Please wait...',
+        autoClose: false,
+        withCloseButton: false,
+      });
+    } else if (!isRefetchError) {
+      notifications.update({
+        id: 'refetch-thoughts',
+        loading: false,
+        icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
+        title: 'Thoughts updated',
+        message: 'New thoughts have been fetched',
+        autoClose: 4000,
+        withCloseButton: true,
+      });
+    } else {
+      notifications.update({
+        id: 'refetch-thoughts',
+        loading: false,
+        color: 'red',
+        icon: <IconX style={{ width: rem(18), height: rem(18) }} />,
+        title: 'Failed to reload thoughts',
+        message: 'Please try again later',
+        autoClose: 4000,
+        withCloseButton: true,
+      });
+    }
+  }, [isRefetching, isRefetchError]);
+
   const handleRefetch = () => {
     if (isFetching) return;
 
-    notifications.show({
-      id: 'handle-refetch-thoughts',
-      title: 'Reloading thoughts',
-      message: 'Fetching latest thoughts',
-      loading: true,
-      autoClose: false,
-      withCloseButton: false,
-    });
-
-    refetch()
-      .then(() => {
-        notifications.update({
-          id: 'handle-refetch-thoughts',
-          icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-          title: 'Thoughts reloaded',
-          message: 'Latest thoughts have been loaded',
-          loading: false,
-          autoClose: 2000,
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-
-        notifications.update({
-          id: 'handle-refetch-thoughts',
-          color: 'red',
-          icon: <IconX style={{ width: rem(18), height: rem(18) }} />,
-          title: 'Failed to reload thoughts',
-          message: 'Please try again later',
-          loading: false,
-          autoClose: 2000,
-        });
-      });
+    refetch().catch(console.error);
   };
 
   return (
