@@ -6,15 +6,25 @@ import {
   useQuery,
 } from '@tanstack/react-query';
 import { nprogress } from '@mantine/nprogress';
-import { Box, Button, Flex, Group, Input, Kbd, Loader } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Flex,
+  Group,
+  Input,
+  Kbd,
+  Loader,
+  rem,
+} from '@mantine/core';
 import { useDebouncedState, useDisclosure, useHotkeys } from '@mantine/hooks';
 import AppContainer from '../components/AppContainer';
 import SendThoughtModal from '../components/SendThoughtModal';
 import Thoughts from '../components/Thoughts';
 import { fetchThoughts, searchThoughts } from '../utils/thought';
-import { IconMessage, IconSearch } from '@tabler/icons-react';
+import { IconCheck, IconMessage, IconSearch, IconX } from '@tabler/icons-react';
 
 import { Timestamp } from 'firebase/firestore';
+import { notifications } from '@mantine/notifications';
 
 interface HomeProps {
   title: string;
@@ -26,24 +36,25 @@ const Home = ({ title }: HomeProps) => {
   const searchRef = useRef<HTMLInputElement>(null);
   const [searchBarValue, setSearchBarValue] = useDebouncedState('', 250);
 
-  const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
-    queryKey: ['thoughts'],
-    initialPageParam: undefined,
-    staleTime: 1000 * 60 * 5,
-    queryFn: async ({
-      pageParam,
-    }: QueryFunctionContext<QueryKey, Timestamp | undefined>) => {
-      const thoughts = await fetchThoughts(pageParam);
-      nprogress.complete();
+  const { data, refetch, fetchNextPage, hasNextPage, isFetching } =
+    useInfiniteQuery({
+      queryKey: ['thoughts'],
+      initialPageParam: undefined,
+      staleTime: 1000 * 60 * 5,
+      queryFn: async ({
+        pageParam,
+      }: QueryFunctionContext<QueryKey, Timestamp | undefined>) => {
+        const thoughts = await fetchThoughts(pageParam);
+        nprogress.complete();
 
-      return thoughts;
-    },
-    getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0) return undefined;
+        return thoughts;
+      },
+      getNextPageParam: (lastPage) => {
+        if (lastPage.length === 0) return undefined;
 
-      return lastPage[lastPage.length - 1].createdAt;
-    },
-  });
+        return lastPage[lastPage.length - 1].createdAt;
+      },
+    });
 
   const { data: searchData, isFetching: isSearchFetching } = useQuery({
     queryKey: ['thoughts', 'search', searchBarValue],
@@ -90,8 +101,46 @@ const Home = ({ title }: HomeProps) => {
     };
   }, [isFetching, fetchNextPage, hasNextPage, searchBarValue.length]);
 
+  const handleRefetch = () => {
+    if (isFetching) return;
+
+    notifications.show({
+      id: 'handle-refetch-thoughts',
+      title: 'Reloading thoughts',
+      message: 'Fetching latest thoughts',
+      loading: true,
+      autoClose: false,
+      withCloseButton: false,
+    });
+
+    refetch()
+      .then(() => {
+        notifications.update({
+          id: 'handle-refetch-thoughts',
+          icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
+          title: 'Thoughts reloaded',
+          message: 'Latest thoughts have been loaded',
+          loading: false,
+          autoClose: 2000,
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+
+        notifications.update({
+          id: 'handle-refetch-thoughts',
+          color: 'red',
+          icon: <IconX style={{ width: rem(18), height: rem(18) }} />,
+          title: 'Failed to reload thoughts',
+          message: 'Please try again later',
+          loading: false,
+          autoClose: 2000,
+        });
+      });
+  };
+
   return (
-    <AppContainer>
+    <AppContainer onRefetch={handleRefetch}>
       <Box mih="100dvh">
         <Flex my="lg" gap="md">
           <Input

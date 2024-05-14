@@ -20,7 +20,11 @@ import {
   IconInfoCircle,
 } from '@tabler/icons-react';
 
-const Nav = () => {
+interface NavProps {
+  onRefetch?: () => void;
+}
+
+const Nav = ({ onRefetch }: NavProps) => {
   const location = useLocation();
   const { setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme('light', {
@@ -39,9 +43,14 @@ const Nav = () => {
           <Text
             component={Link}
             to="/"
-            reloadDocument={location.pathname === '/'}
             fz="xl"
             fw={700}
+            onClick={(e) => {
+              if (onRefetch && location.pathname === '/') {
+                e.preventDefault();
+                onRefetch();
+              }
+            }}
           >
             Sticky
             <Text span c="blue.6" inherit>

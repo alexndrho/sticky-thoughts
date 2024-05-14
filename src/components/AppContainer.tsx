@@ -6,18 +6,23 @@ import Footer from './Footer';
 import ScrollUpButton from '../components/ScrollUpButton';
 
 interface AppContainerProps {
+  onRefetch?: () => void;
   startLoading?: boolean;
   children?: React.ReactNode;
 }
 
-function AppContainer({ startLoading, children }: AppContainerProps) {
+function AppContainer({
+  onRefetch,
+  startLoading,
+  children,
+}: AppContainerProps) {
   useEffect(() => {
     if (startLoading) nprogress.start();
   }, [startLoading]);
 
   return (
     <>
-      <Nav />
+      <Nav onRefetch={onRefetch} />
 
       <Container component="main" mih={startLoading ? '100dvh' : ''} size="lg">
         {children}
