@@ -104,7 +104,7 @@ const SendThoughtModal = ({ open, onClose }: SendThoughtModalProps) => {
   };
 
   const handleAnonymousChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setIsAnonymous(event.currentTarget.checked);
     form.clearFieldError('author');

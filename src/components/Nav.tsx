@@ -132,7 +132,7 @@ const Nav = ({ onRefetch }: NavProps) => {
               size="lg"
               onClick={() =>
                 setColorScheme(
-                  computedColorScheme === 'light' ? 'dark' : 'light'
+                  computedColorScheme === 'light' ? 'dark' : 'light',
                 )
               }
             >

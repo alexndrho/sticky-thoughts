@@ -177,7 +177,7 @@ const Home = ({ title }: HomeProps) => {
               <Thoughts
                 thoughts={data.pages.reduce(
                   (acc, page) => acc.concat(page),
-                  []
+                  [],
                 )}
               />
             )}

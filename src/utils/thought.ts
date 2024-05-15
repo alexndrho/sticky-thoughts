@@ -24,7 +24,7 @@ const fetchThoughts = async (lastPost?: Timestamp): Promise<IThought[]> => {
   let q = query(
     thoughtsCollectionRef,
     orderBy('createdAt', 'desc'),
-    limit(THOUGHTS_PER_PAGE)
+    limit(THOUGHTS_PER_PAGE),
   );
 
   if (lastPost) {
@@ -43,7 +43,7 @@ const fetchThoughts = async (lastPost?: Timestamp): Promise<IThought[]> => {
 };
 
 const submitThought = async (
-  thought: Omit<IThought, 'id' | 'lowerCaseAuthor' | 'createdAt'>
+  thought: Omit<IThought, 'id' | 'lowerCaseAuthor' | 'createdAt'>,
 ) => {
   if (thought.author.length > MAX_AUTHOR_LENGTH) {
     throw new Error('Author is too long');
@@ -72,7 +72,7 @@ const searchThoughts = async (searchTerm: string): Promise<IThought[]> => {
   let q = query(
     thoughtsCollectionRef,
     where('lowerCaseAuthor', '>=', searchString),
-    limit(THOUGHTS_PER_PAGE)
+    limit(THOUGHTS_PER_PAGE),
   );
 
   if (firstLetter < 'z') {
