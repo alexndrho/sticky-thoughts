@@ -14,6 +14,7 @@ import {
   Input,
   Kbd,
   Loader,
+  Tooltip,
   rem,
 } from '@mantine/core';
 import { useDebouncedState, useDisclosure, useHotkeys } from '@mantine/hooks';
@@ -31,7 +32,7 @@ interface HomeProps {
 }
 
 const Home = ({ title }: HomeProps) => {
-  const [messageOpen, { open, close }] = useDisclosure(false);
+  const [messageOpen, { open, close, toggle }] = useDisclosure(false);
 
   const searchRef = useRef<HTMLInputElement>(null);
   const [searchBarValue, setSearchBarValue] = useDebouncedState('', 250);
@@ -78,7 +79,10 @@ const Home = ({ title }: HomeProps) => {
     searchRef.current?.focus();
   };
 
-  useHotkeys([['t', focusSearchBar]]);
+  useHotkeys([
+    ['t', focusSearchBar],
+    ['p', toggle],
+  ]);
 
   //useEffect
   useEffect(() => {
@@ -166,9 +170,11 @@ const Home = ({ title }: HomeProps) => {
             })}
           />
 
-          <Button rightSection={<IconMessage size="1em" />} onClick={open}>
-            Post
-          </Button>
+          <Tooltip label={`Press "p" to post`} position="bottom">
+            <Button rightSection={<IconMessage size="1em" />} onClick={open}>
+              Post
+            </Button>
+          </Tooltip>
         </Flex>
 
         {searchRef.current?.value
