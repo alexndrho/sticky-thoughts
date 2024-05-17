@@ -14,7 +14,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ColorSchemeScript defaultColorScheme="auto" />
     <MantineProvider defaultColorScheme="auto">
-      <NavigationProgress />
+      <NavigationProgress aria-label="Progress bar" />
       <Notifications />
 
       <QueryClientProvider client={queryClient}>
