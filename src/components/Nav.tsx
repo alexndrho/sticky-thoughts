@@ -39,7 +39,7 @@ const Nav = ({ onRefetch }: NavProps) => {
         borderBottom: `${rem(1)} solid var(--mantine-color-default-border)`,
       }}
     >
-      <Container role="navigation" h="4rem" size="xl">
+      <Container h="4rem" size="xl">
         <Group h="100%" justify="space-between">
           <Text
             component={Link}
