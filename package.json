@@ -11,7 +11,13 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --write --ignore-unknown",
+      "npm run lint"
+    ],
+    "*.{json,html}": [
+      "prettier --write --ignore-unknown"
+    ]
   },
   "dependencies": {
     "@2toad/profanity": "^2.2.0",
