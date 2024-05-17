@@ -15,6 +15,7 @@ import {
   Kbd,
   Loader,
   Tooltip,
+  VisuallyHidden,
   rem,
 } from '@mantine/core';
 import { useDebouncedState, useDisclosure, useHotkeys } from '@mantine/hooks';
@@ -176,6 +177,8 @@ const Home = ({ title }: HomeProps) => {
             </Button>
           </Tooltip>
         </Flex>
+
+        <VisuallyHidden component="h1">Posts</VisuallyHidden>
 
         {searchRef.current?.value
           ? searchData && <Thoughts thoughts={searchData} />
