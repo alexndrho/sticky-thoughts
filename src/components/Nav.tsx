@@ -6,6 +6,7 @@ import {
   Group,
   Menu,
   Text,
+  Tooltip,
   rem,
   useComputedColorScheme,
   useMantineColorScheme,
@@ -126,22 +127,27 @@ const Nav = ({ onRefetch }: NavProps) => {
               </Menu>
             </Box>
 
-            <ActionIcon
-              aria-label="Toggle color scheme"
-              variant="default"
-              size="lg"
-              onClick={() =>
-                setColorScheme(
-                  computedColorScheme === 'light' ? 'dark' : 'light',
-                )
-              }
+            <Tooltip
+              label={`${computedColorScheme === 'light' ? 'Dark' : 'Light'} mode`}
+              position="bottom"
             >
-              {computedColorScheme === 'light' ? (
-                <IconSun size="1em" />
-              ) : (
-                <IconMoon size="1em" />
-              )}
-            </ActionIcon>
+              <ActionIcon
+                aria-label="Toggle color scheme"
+                variant="default"
+                size="lg"
+                onClick={() =>
+                  setColorScheme(
+                    computedColorScheme === 'light' ? 'dark' : 'light',
+                  )
+                }
+              >
+                {computedColorScheme === 'light' ? (
+                  <IconSun size="1em" />
+                ) : (
+                  <IconMoon size="1em" />
+                )}
+              </ActionIcon>
+            </Tooltip>
           </Group>
         </Group>
       </Container>
