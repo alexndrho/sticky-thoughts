@@ -16,6 +16,7 @@ const Thoughts = ({ thoughts }: ThoughtsProps) => {
           message={thought.message}
           author={thought.author}
           color={thought.color}
+          createdAt={thought.createdAt}
         />
       ))}
     </Box>
