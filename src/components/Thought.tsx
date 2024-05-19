@@ -1,6 +1,10 @@
 import { Box, Text, Tooltip } from '@mantine/core';
 import { Timestamp } from 'firebase/firestore';
-import { getFormattedDate } from '../utils/helper';
+import {
+  filterText,
+  getColorFallback,
+  getFormattedDate,
+} from '../utils/helper';
 import { NoteColor } from '../types/IThought';
 import classes from '../styles/Thought.module.css';
 
@@ -19,9 +23,13 @@ const Thought = ({
 }: NoteProps) => {
   return (
     <Tooltip label={getFormattedDate(createdAt?.toDate())}>
-      <Box role="article" bg={`${color}.6`} className={classes.thought}>
-        <Text lineClamp={9}>{message}</Text>
-        <Text ta="right" lineClamp={1}>{`-${author}`}</Text>
+      <Box
+        role="article"
+        bg={`${getColorFallback(color)}.6`}
+        className={classes.thought}
+      >
+        <Text lineClamp={9}>{filterText(message)}</Text>
+        <Text ta="right" lineClamp={1}>{`-${filterText(author)}`}</Text>
       </Box>
     </Tooltip>
   );

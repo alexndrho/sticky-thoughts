@@ -11,7 +11,6 @@ import {
   where,
 } from 'firebase/firestore';
 import { thoughtsCollectionRef } from '../config/firebase';
-import { filterText, getColorFallback } from './helper';
 import IThought, { IThoughtSubmit } from '../types/IThought';
 
 const THOUGHTS_PER_ROW = 4;
@@ -35,9 +34,9 @@ const fetchThoughts = async (lastPost?: Timestamp): Promise<IThought[]> => {
 
   return querySnapshot.docs.map((doc) => ({
     ...(doc.data() as Omit<IThought, 'id'>),
-    author: filterText((doc.data() as Omit<IThought, 'id'>).author),
-    message: filterText((doc.data() as Omit<IThought, 'id'>).message),
-    color: getColorFallback((doc.data() as Omit<IThought, 'id'>).color),
+    author: (doc.data() as Omit<IThought, 'id'>).author,
+    message: (doc.data() as Omit<IThought, 'id'>).message,
+    color: (doc.data() as Omit<IThought, 'id'>).color,
     id: doc.id,
   }));
 };
