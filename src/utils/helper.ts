@@ -54,7 +54,7 @@ const filterText = (text: string) => {
 const getFormattedDate = (date: Date) => {
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const oneWeekAgo = new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000);
 
   if (date > today) {
     return formatTime.format(date);
