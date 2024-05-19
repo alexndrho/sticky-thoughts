@@ -22,7 +22,7 @@ const Thought = ({
   createdAt,
 }: NoteProps) => {
   return (
-    <Tooltip label={getFormattedDate(createdAt?.toDate())}>
+    <Tooltip label={getFormattedDate(createdAt?.toDate())} withArrow>
       <Box
         role="article"
         bg={`${getColorFallback(color)}.6`}
