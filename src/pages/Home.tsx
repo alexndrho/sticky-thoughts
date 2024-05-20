@@ -14,6 +14,7 @@ import {
   Input,
   Kbd,
   Loader,
+  Text,
   Tooltip,
   VisuallyHidden,
   rem,
@@ -22,7 +23,11 @@ import { useDebouncedState, useDisclosure, useHotkeys } from '@mantine/hooks';
 import AppContainer from '../components/AppContainer';
 import SendThoughtModal from '../components/SendThoughtModal';
 import Thoughts from '../components/Thoughts';
-import { fetchThoughts, searchThoughts } from '../utils/thought';
+import {
+  fetchThoughts,
+  getThoughtsCount,
+  searchThoughts,
+} from '../utils/thought';
 import { IconCheck, IconMessage, IconSearch, IconX } from '@tabler/icons-react';
 
 import { Timestamp } from 'firebase/firestore';
@@ -84,6 +89,14 @@ const Home = ({ title }: HomeProps) => {
     ['t', focusSearchBar],
     ['p', toggle],
   ]);
+
+  const { data: thoughtsCountData, refetch: thoughtsCountRefetch } = useQuery({
+    queryKey: ['thoughts', 'count'],
+    staleTime: 1000 * 60 * 5,
+    queryFn: async () => {
+      return await getThoughtsCount();
+    },
+  });
 
   //useEffect
   useEffect(() => {
@@ -151,11 +164,26 @@ const Home = ({ title }: HomeProps) => {
     if (isFetching) return;
 
     refetch().catch(console.error);
+    thoughtsCountRefetch().catch(console.error);
   };
 
   return (
     <AppContainer onRefetch={handleRefetch}>
       <Box mih="100dvh">
+        {data && thoughtsCountData && (
+          <Group mt="lg" justify="center" gap={5}>
+            <IconMessage />
+
+            <Text fz="md" fw="bold">
+              {thoughtsCountData}{' '}
+              <Text span c="blue.6" inherit>
+                thoughts
+              </Text>{' '}
+              submitted
+            </Text>
+          </Group>
+        )}
+
         <Flex my="lg" gap="md">
           <Input
             ref={searchRef}
