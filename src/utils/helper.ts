@@ -70,10 +70,36 @@ const getColorFallback = (color: NoteColor) => {
   return Object.values(NoteColor).includes(color) ? color : NoteColor.Yellow;
 };
 
+async function fetchWithRetry(
+  url: string,
+  options: RequestInit = {},
+  retries = 3,
+  delay = 1000,
+): Promise<Response> {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(url, options);
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      return res;
+    } catch (error: unknown) {
+      console.error(`Attempt ${attempt} failed. ${(error as Error).message}`);
+      if (attempt < retries) {
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      } else {
+        throw error;
+      }
+    }
+  }
+  throw new Error('This should never be reached');
+}
+
 export {
   isTextValid,
   containsUrl,
   filterText,
   getFormattedDate,
   getColorFallback,
+  fetchWithRetry,
 };
