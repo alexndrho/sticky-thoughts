@@ -29,7 +29,6 @@ import {
   searchThoughts,
 } from '../utils/thought';
 import { IconCheck, IconMessage, IconSearch, IconX } from '@tabler/icons-react';
-
 import { Timestamp } from 'firebase/firestore';
 import { notifications } from '@mantine/notifications';
 
@@ -54,7 +53,6 @@ const Home = ({ title }: HomeProps) => {
   } = useInfiniteQuery({
     queryKey: ['thoughts'],
     initialPageParam: undefined,
-    staleTime: 1000 * 60 * 5,
     queryFn: async ({
       pageParam,
     }: QueryFunctionContext<QueryKey, Timestamp | undefined>) => {
@@ -72,7 +70,6 @@ const Home = ({ title }: HomeProps) => {
 
   const { data: searchData, isFetching: isSearchFetching } = useQuery({
     queryKey: ['thoughts', 'search', searchBarValue],
-    staleTime: 1000 * 60 * 5,
     queryFn: async () => {
       if (!searchBarValue) return [];
 
@@ -92,7 +89,6 @@ const Home = ({ title }: HomeProps) => {
 
   const { data: thoughtsCountData, refetch: thoughtsCountRefetch } = useQuery({
     queryKey: ['thoughts', 'count'],
-    staleTime: 1000 * 60 * 5,
     queryFn: async () => {
       return await getThoughtsCount();
     },
