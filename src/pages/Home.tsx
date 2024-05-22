@@ -9,11 +9,13 @@ import { nprogress } from '@mantine/nprogress';
 import {
   Box,
   Button,
+  Center,
   Flex,
   Group,
   Input,
   Kbd,
   Loader,
+  Skeleton,
   Text,
   Tooltip,
   VisuallyHidden,
@@ -87,7 +89,11 @@ const Home = ({ title }: HomeProps) => {
     ['p', toggle],
   ]);
 
-  const { data: thoughtsCountData, refetch: thoughtsCountRefetch } = useQuery({
+  const {
+    data: thoughtsCountData,
+    refetch: thoughtsCountRefetch,
+    isFetched: thoughtsCountIsFetched,
+  } = useQuery({
     queryKey: ['thoughts', 'count'],
     queryFn: async () => {
       return await getThoughtsCount();
@@ -166,19 +172,21 @@ const Home = ({ title }: HomeProps) => {
   return (
     <AppContainer onRefetch={handleRefetch}>
       <Box mih="100dvh">
-        {data && thoughtsCountData && (
-          <Group mt="lg" justify="center" gap={5}>
-            <IconMessage />
+        <Center mt="lg">
+          <Skeleton w="auto" h="auto" visible={!thoughtsCountIsFetched}>
+            <Group gap={5}>
+              <IconMessage />
 
-            <Text fz="md" fw="bold">
-              {thoughtsCountData}{' '}
-              <Text span c="blue.6" inherit>
-                thoughts
-              </Text>{' '}
-              submitted
-            </Text>
-          </Group>
-        )}
+              <Text fz="md" fw="bold">
+                {thoughtsCountData}{' '}
+                <Text span c="blue.6" inherit>
+                  thoughts
+                </Text>{' '}
+                submitted
+              </Text>
+            </Group>
+          </Skeleton>
+        </Center>
 
         <Flex my="lg" gap="md">
           <Input
