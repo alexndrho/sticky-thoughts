@@ -38,6 +38,7 @@ import {
 import { IconCheck, IconMessage, IconSearch, IconX } from '@tabler/icons-react';
 import { Timestamp } from 'firebase/firestore';
 import { notifications } from '@mantine/notifications';
+import queryClient from '../queryClient';
 
 interface HomeProps {
   title: string;
@@ -51,7 +52,6 @@ const Home = ({ title }: HomeProps) => {
 
   const {
     data,
-    refetch,
     fetchNextPage,
     hasNextPage,
     isFetching,
@@ -96,8 +96,8 @@ const Home = ({ title }: HomeProps) => {
 
   const {
     data: thoughtsCountData,
-    refetch: thoughtsCountRefetch,
     isFetched: thoughtsCountIsFetched,
+    isFetching: thoughtsCountIsFetching,
   } = useQuery({
     queryKey: ['thoughts', 'count'],
     queryFn: async () => {
@@ -168,10 +168,9 @@ const Home = ({ title }: HomeProps) => {
   }, [isRefetching, isRefetchError]);
 
   const handleRefetch = useThrottledCallback(() => {
-    if (isFetching) return;
+    if (isFetching || thoughtsCountIsFetching) return;
 
-    refetch().catch(console.error);
-    thoughtsCountRefetch().catch(console.error);
+    queryClient.invalidateQueries().catch(console.error);
   }, 10000);
 
   return (
