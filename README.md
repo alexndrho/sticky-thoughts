@@ -35,4 +35,4 @@ Replace the placeholders with the values from your Firebase project.
 
 ## License
 
-[MIT](LICENSE)
+[GPL-3.0](LICENSE)

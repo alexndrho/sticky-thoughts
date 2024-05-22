@@ -45,4 +45,4 @@ When submitting a pull request, please:
 
 ## License
 
-By contributing to this project, you agree that your contributions will be licensed under the [Apache-2.0 license](LICENSE) license.
+By contributing to this project, you agree that your contributions will be licensed under the [GPL-3.0](LICENSE)
