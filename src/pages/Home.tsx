@@ -21,7 +21,12 @@ import {
   VisuallyHidden,
   rem,
 } from '@mantine/core';
-import { useDebouncedState, useDisclosure, useHotkeys } from '@mantine/hooks';
+import {
+  useDebouncedState,
+  useDisclosure,
+  useHotkeys,
+  useThrottledCallback,
+} from '@mantine/hooks';
 import AppContainer from '../components/AppContainer';
 import SendThoughtModal from '../components/SendThoughtModal';
 import Thoughts from '../components/Thoughts';
@@ -162,12 +167,12 @@ const Home = ({ title }: HomeProps) => {
     }
   }, [isRefetching, isRefetchError]);
 
-  const handleRefetch = () => {
+  const handleRefetch = useThrottledCallback(() => {
     if (isFetching) return;
 
     refetch().catch(console.error);
     thoughtsCountRefetch().catch(console.error);
-  };
+  }, 10000);
 
   return (
     <AppContainer onRefetch={handleRefetch}>
