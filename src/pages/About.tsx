@@ -60,7 +60,7 @@ const About = ({ title }: AboutProps) => {
         </Box>
 
         <Box display={{ base: 'none', xs: 'block' }}>
-          <Image src={noteImg} w={250} />
+          <Image src={noteImg} w={250} loading="eager" />
         </Box>
       </Flex>
     </AppContainer>
