@@ -4,7 +4,7 @@
   padding: 0.75em;
   color: var(--mantine-color-dark-9);
   border-radius: var(--mantine-radius-xs);
-  box-shadow: var(--mantine-shadow-md);
+  box-shadow: var(--mantine-shadow-sm);
   overflow-wrap: break-word;
   display: flex;
   flex-direction: column;
