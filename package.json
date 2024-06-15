@@ -28,7 +28,7 @@
     "@mantine/nprogress": "7.8",
     "@tabler/icons-react": "^2.24.0",
     "@tanstack/react-query": "^5.35.1",
-    "firebase": "^10.0.0",
+    "firebase": "^10.12.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.19.0"
