@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   Button,
   CheckIcon,
@@ -9,11 +9,14 @@ import {
   Text,
   TextInput,
   Textarea,
+  Tooltip,
+  UnstyledButton,
   useMantineTheme,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from '@mantine/form';
+import { useThrottledCallback } from '@mantine/hooks';
 import queryClient from '../queryClient';
 import {
   MAX_AUTHOR_LENGTH,
@@ -22,6 +25,8 @@ import {
 } from '../utils/thought';
 import { NoteColor } from '../types/IThought';
 import { containsUrl, isTextValid } from '../utils/helper';
+import classes from '../styles/SendThoughtModal.module.css';
+import { IconDiceFilled } from '@tabler/icons-react';
 
 const ANONYMOUS_AUTHOR = 'Anonymous';
 
@@ -33,6 +38,7 @@ interface SendThoughtModalProps {
 const SendThoughtModal = ({ open, onClose }: SendThoughtModalProps) => {
   const theme = useMantineTheme();
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const randomButtonRef = useRef<HTMLButtonElement>(null);
 
   const form = useForm({
     initialValues: {
@@ -64,6 +70,21 @@ const SendThoughtModal = ({ open, onClose }: SendThoughtModalProps) => {
         Object.values(NoteColor).includes(value) ? null : 'Invalid color',
     },
   });
+
+  const handleRandomColor = useThrottledCallback(() => {
+    randomButtonRef.current?.classList.add(classes['random-button--clicked']);
+
+    setTimeout(() => {
+      randomButtonRef.current?.classList.remove(
+        classes['random-button--clicked'],
+      );
+    }, 500);
+
+    const colors = Object.values(NoteColor);
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+    form.setFieldValue('color', randomColor);
+  }, 500);
 
   const mutation = useMutation({
     mutationFn: (values: typeof form.values) =>
@@ -148,6 +169,19 @@ const SendThoughtModal = ({ open, onClose }: SendThoughtModalProps) => {
         />
 
         <Group justify="center">
+          <Tooltip label="Randomize color" position="left">
+            {/* Use a span to prevent tooltip jittering. */}
+            <span>
+              <UnstyledButton
+                ref={randomButtonRef}
+                className={classes['random-button']}
+                onClick={handleRandomColor}
+              >
+                <IconDiceFilled className={classes['dice-icon']} />
+              </UnstyledButton>
+            </span>
+          </Tooltip>
+
           {Object.values(NoteColor).map((color) => (
             <ColorSwatch
               aria-label={`thought-theme-${color}`}
