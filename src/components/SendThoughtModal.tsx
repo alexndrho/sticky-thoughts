@@ -80,7 +80,11 @@ const SendThoughtModal = ({ open, onClose }: SendThoughtModalProps) => {
       );
     }, 500);
 
-    const colors = Object.values(NoteColor);
+    // Get all colors except the current one.
+    const colors = Object.values(NoteColor).filter(
+      (color) => color !== form.values.color,
+    );
+
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
     form.setFieldValue('color', randomColor);
