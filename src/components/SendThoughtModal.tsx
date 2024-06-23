@@ -121,13 +121,6 @@ const SendThoughtModal = ({ open, onClose }: SendThoughtModalProps) => {
     },
   });
 
-  const handleClose = () => {
-    onClose();
-
-    form.reset();
-    setIsAnonymous(false);
-  };
-
   const handleAnonymousChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -136,7 +129,7 @@ const SendThoughtModal = ({ open, onClose }: SendThoughtModalProps) => {
   };
 
   return (
-    <Modal opened={open} onClose={handleClose} title="Share a thought" centered>
+    <Modal opened={open} onClose={onClose} title="Share a thought" centered>
       <form onSubmit={form.onSubmit((values) => mutation.mutate(values))}>
         <TextInput
           mb="md"
