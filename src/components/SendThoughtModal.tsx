@@ -18,24 +18,24 @@ import { useMutation } from '@tanstack/react-query';
 import { useForm } from '@mantine/form';
 import { useThrottledCallback } from '@mantine/hooks';
 import queryClient from '../queryClient';
-import {
-  MAX_AUTHOR_LENGTH,
-  MAX_MESSAGE_LENGTH,
-  submitThought,
-} from '../utils/thought';
-import { NoteColor } from '../types/IThought';
+import { MAX_AUTHOR_LENGTH, MAX_MESSAGE_LENGTH } from '../utils/thought';
+import IThought, { NoteColor } from '../types/IThought';
 import { containsUrl, isTextValid } from '../utils/helper';
 import classes from '../styles/SendThoughtModal.module.css';
 import { IconDiceFilled } from '@tabler/icons-react';
+import { DocumentData, DocumentReference } from 'firebase/firestore';
 
 const ANONYMOUS_AUTHOR = 'Anonymous';
 
 interface SendThoughtModalProps {
   open: boolean;
   onClose: () => void;
+  action: (
+    thought: Omit<IThought, 'id' | 'lowerCaseAuthor' | 'createdAt'>,
+  ) => Promise<DocumentReference<DocumentData, DocumentData>>;
 }
 
-const SendThoughtModal = ({ open, onClose }: SendThoughtModalProps) => {
+const SendThoughtModal = ({ open, onClose, action }: SendThoughtModalProps) => {
   const theme = useMantineTheme();
   const [isAnonymous, setIsAnonymous] = useState(false);
   const randomButtonRef = useRef<HTMLButtonElement>(null);
@@ -92,7 +92,7 @@ const SendThoughtModal = ({ open, onClose }: SendThoughtModalProps) => {
 
   const mutation = useMutation({
     mutationFn: (values: typeof form.values) =>
-      submitThought({
+      action({
         ...values,
         author: isAnonymous ? ANONYMOUS_AUTHOR : values.author,
       }),

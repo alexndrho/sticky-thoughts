@@ -34,6 +34,7 @@ import {
   fetchThoughts,
   getThoughtsCount,
   searchThoughts,
+  submitThought,
 } from '../utils/thought';
 import { IconCheck, IconMessage, IconSearch, IconX } from '@tabler/icons-react';
 import { Timestamp } from 'firebase/firestore';
@@ -232,7 +233,11 @@ const Home = ({ title }: HomeProps) => {
         </Group>
       </Box>
 
-      <SendThoughtModal open={messageOpen} onClose={close} />
+      <SendThoughtModal
+        open={messageOpen}
+        onClose={close}
+        action={submitThought}
+      />
     </AppContainer>
   );
 };
