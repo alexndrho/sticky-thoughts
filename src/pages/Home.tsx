@@ -63,12 +63,8 @@ const Home = ({ title }: HomeProps) => {
     initialPageParam: undefined,
     queryFn: async ({
       pageParam,
-    }: QueryFunctionContext<QueryKey, Timestamp | undefined>) => {
-      const thoughts = await fetchThoughts(pageParam);
-      nprogress.complete();
-
-      return thoughts;
-    },
+    }: QueryFunctionContext<QueryKey, Timestamp | undefined>) =>
+      fetchThoughts(pageParam),
     getNextPageParam: (lastPage) => {
       if (lastPage.length === 0) return undefined;
 
@@ -110,6 +106,10 @@ const Home = ({ title }: HomeProps) => {
   useEffect(() => {
     document.title = title;
   }, [title]);
+
+  useEffect(() => {
+    nprogress.complete();
+  }, []);
 
   useEffect(() => {
     function handleScroll() {
