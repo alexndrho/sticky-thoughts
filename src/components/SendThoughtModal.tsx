@@ -202,7 +202,7 @@ const SendThoughtModal = ({ open, onClose, action }: SendThoughtModalProps) => {
 
         <Group justify="right" mt="md">
           <Button type="submit" loading={mutation.isPending}>
-            Submit
+            Stick it!
           </Button>
         </Group>
       </form>

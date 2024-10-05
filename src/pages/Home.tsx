@@ -88,7 +88,7 @@ const Home = ({ title }: HomeProps) => {
 
   useHotkeys([
     ['t', focusSearchBar],
-    ['p', toggle],
+    ['s', toggle],
   ]);
 
   const {
@@ -208,9 +208,9 @@ const Home = ({ title }: HomeProps) => {
             })}
           />
 
-          <Tooltip label={`Press "p" to post`} position="bottom">
+          <Tooltip label={`Press (s) to stick`} position="bottom">
             <Button rightSection={<IconMessage size="1em" />} onClick={open}>
-              Post
+              Stick a thought
             </Button>
           </Tooltip>
         </Flex>
