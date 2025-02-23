@@ -43,7 +43,7 @@ const SendThoughtModal = ({ open, onClose, action }: SendThoughtModalProps) => {
   const form = useForm({
     initialValues: {
       message: '',
-      author: '',
+      author: localStorage.getItem('author') || '',
       color: NoteColor.Yellow,
     },
 
@@ -69,6 +69,11 @@ const SendThoughtModal = ({ open, onClose, action }: SendThoughtModalProps) => {
       color: (value) =>
         Object.values(NoteColor).includes(value) ? null : 'Invalid color',
     },
+
+    transformValues: (values) => ({
+      ...values,
+      author: isAnonymous ? ANONYMOUS_AUTHOR : values.author,
+    }),
   });
 
   const handleRandomColor = useThrottledCallback(() => {
@@ -91,11 +96,20 @@ const SendThoughtModal = ({ open, onClose, action }: SendThoughtModalProps) => {
   }, 500);
 
   const mutation = useMutation({
-    mutationFn: (values: typeof form.values) =>
-      action({
+    mutationFn: (values: typeof form.values) => {
+      if (!isAnonymous) {
+        localStorage.setItem('author', values.author);
+        form.setInitialValues({
+          message: '',
+          author: values.author,
+          color: NoteColor.Yellow,
+        });
+      }
+
+      return action({
         ...values,
-        author: isAnonymous ? ANONYMOUS_AUTHOR : values.author,
-      }),
+      });
+    },
     onError: (error) => {
       console.error(error);
 
