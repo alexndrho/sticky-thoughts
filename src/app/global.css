@@ -1,0 +1,17 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+.lightHidden {
+  @mixin light {
+    display: none;
+  }
+}
+
+.darkHidden {
+  @mixin dark {
+    display: none;
+  }
+}

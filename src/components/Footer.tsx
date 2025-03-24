@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   Anchor,
   Box,
@@ -8,11 +9,10 @@ import {
   Text,
   Title,
   rem,
-} from '@mantine/core';
-import { Link } from 'react-router-dom';
-import { IconCopyright } from '@tabler/icons-react';
+} from "@mantine/core";
+import { IconCopyright } from "@tabler/icons-react";
 
-const Footer = () => {
+export default function Footer() {
   return (
     <Box
       component="footer"
@@ -22,7 +22,7 @@ const Footer = () => {
     >
       <Container h="auto" size="xl" py="xl">
         <Flex
-          direction={{ base: 'column', lg: 'row' }}
+          direction={{ base: "column", lg: "row" }}
           justify="space-between"
           gap="md"
         >
@@ -38,8 +38,8 @@ const Footer = () => {
               <IconCopyright size="1.25em" />
 
               <Text span fz="sm">
-                2023{' '}
-                <Anchor component={Link} to="/">
+                2023{" "}
+                <Anchor component={Link} href="/">
                   StickyThoughts
                 </Anchor>
                 . All rights reserved.
@@ -47,19 +47,19 @@ const Footer = () => {
             </Group>
 
             <Group gap={5}>
-              <Anchor component={Link} to="/terms-and-conditions" fz="sm">
+              <Anchor component={Link} href="/terms-and-conditions" fz="sm">
                 Terms and Conditions
               </Anchor>
 
               <Divider orientation="vertical" />
 
-              <Anchor component={Link} to="/privacy-policy" fz="sm">
+              <Anchor component={Link} href="/privacy-policy" fz="sm">
                 Privacy Policy
               </Anchor>
 
               <Divider orientation="vertical" />
 
-              <Anchor component={Link} to="/disclaimer" fz="sm">
+              <Anchor component={Link} href="/disclaimer" fz="sm">
                 Disclaimer
               </Anchor>
             </Group>
@@ -82,6 +82,4 @@ const Footer = () => {
       </Container>
     </Box>
   );
-};
-
-export default Footer;
+}

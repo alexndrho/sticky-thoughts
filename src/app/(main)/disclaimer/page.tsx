@@ -1,23 +1,13 @@
-import { Anchor, Text, Title } from '@mantine/core';
-import { useEffect } from 'react';
-import { nprogress } from '@mantine/nprogress';
-import AppContainer from '../components/AppContainer';
+import type { Metadata } from "next";
+import { Anchor, Text, Title } from "@mantine/core";
 
-interface DisclaimerProps {
-  title: string;
-}
+export const metadata: Metadata = {
+  title: "Disclaimer - StickyThoughts | Online Freedom Wall",
+};
 
-function Disclaimer({ title }: DisclaimerProps) {
-  useEffect(() => {
-    document.title = title;
-  }, [title]);
-
-  useEffect(() => {
-    nprogress.complete();
-  }, []);
-
+export default function Disclaimer() {
   return (
-    <AppContainer>
+    <>
       <Title my="lg" fw="bold" ta="center">
         DISCLAIMER
       </Title>
@@ -28,14 +18,14 @@ function Disclaimer({ title }: DisclaimerProps) {
         </Text>
       </Text>
       <Text my="md">
-        The information provided by{' '}
+        The information provided by{" "}
         <Text span fw="bold">
           StickyThoughts
-        </Text>{' '}
-        (“Company”, “we”, “our”, “us”) on{' '}
+        </Text>{" "}
+        (“Company”, “we”, “our”, “us”) on{" "}
         <Text span fw="bold">
           https://stickythoughts.alexndrho.dev/
-        </Text>{' '}
+        </Text>{" "}
         (the “Site”) is for general informational purposes only. All information
         on the Site is provided in good faith, however we make no representation
         or warranty of any kind, express or implied, regarding the accuracy,
@@ -62,15 +52,15 @@ function Disclaimer({ title }: DisclaimerProps) {
         reliability, availability or completeness by us.
       </Text>
       <Text my="md">
-        For example, the outlined{' '}
-        <Anchor href="https://policymaker.io/disclaimer/">Disclaimer</Anchor>{' '}
-        has been created using{' '}
+        For example, the outlined{" "}
+        <Anchor href="https://policymaker.io/disclaimer/">Disclaimer</Anchor>{" "}
+        has been created using{" "}
         <Anchor href="https://policymaker.io/">PolicyMaker.io</Anchor>, a free
         web application for generating high-quality legal documents.
-        PolicyMaker’s{' '}
+        PolicyMaker’s{" "}
         <Anchor href="https://policymaker.io/disclaimer/">
           disclaimer generator
-        </Anchor>{' '}
+        </Anchor>{" "}
         is an easy-to-use tool for creating an excellent sample Disclaimer
         template for a website, blog, eCommerce store or app.
       </Text>
@@ -107,7 +97,7 @@ function Disclaimer({ title }: DisclaimerProps) {
         information, and without warranty of any kind, express or implied,
         including, but not limited to warranties of performance,
         merchantability, and fitness for a particular purpose.
-      </Text>{' '}
+      </Text>{" "}
       <Text my="md">
         In no event will StickyThoughts, its related partnerships or
         corporations, or the partners, agents or employees thereof be liable to
@@ -145,29 +135,27 @@ function Disclaimer({ title }: DisclaimerProps) {
       </Text>
       <Text my="md">
         Should you have any feedback, comments, requests for technical support
-        or other inquiries, please contact us by email:{' '}
+        or other inquiries, please contact us by email:{" "}
         <Text span fw="bold">
           ho.alexander.g@gmail.com
         </Text>
         .
       </Text>
       <Text mt="xl" mb="md" fz="xs">
-        This{' '}
+        This{" "}
         <Anchor href="https://policymaker.io/disclaimer/" inherit>
           Disclaimer
-        </Anchor>{' '}
-        was created for{' '}
+        </Anchor>{" "}
+        was created for{" "}
         <Text span fw="bold" inherit>
           https://stickythoughts.alexndrho.dev/
-        </Text>{' '}
-        by{' '}
+        </Text>{" "}
+        by{" "}
         <Anchor href="https://policymaker.io" inherit>
           PolicyMaker.io
-        </Anchor>{' '}
+        </Anchor>{" "}
         on 2024-05-07.
       </Text>
-    </AppContainer>
+    </>
   );
 }
-
-export default Disclaimer;

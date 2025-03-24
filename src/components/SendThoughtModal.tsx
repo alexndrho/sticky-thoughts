@@ -1,4 +1,7 @@
-import { useRef, useState } from 'react';
+"use client";
+
+import { useRef, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import {
   Button,
   CheckIcon,
@@ -12,62 +15,69 @@ import {
   Tooltip,
   UnstyledButton,
   useMantineTheme,
-} from '@mantine/core';
-import { notifications } from '@mantine/notifications';
-import { useMutation } from '@tanstack/react-query';
-import { useForm } from '@mantine/form';
-import { useThrottledCallback } from '@mantine/hooks';
-import queryClient from '../queryClient';
-import { MAX_AUTHOR_LENGTH, MAX_MESSAGE_LENGTH } from '../utils/thought';
-import IThought, { NoteColor } from '../types/IThought';
-import { containsUrl, isTextValid } from '../utils/helper';
-import classes from '../styles/SendThoughtModal.module.css';
-import { IconDiceFilled } from '@tabler/icons-react';
-import { DocumentData, DocumentReference } from 'firebase/firestore';
+} from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
+import { useThrottledCallback } from "@mantine/hooks";
+import { IconDiceFilled } from "@tabler/icons-react";
 
-const ANONYMOUS_AUTHOR = 'Anonymous';
+import { getQueryClient } from "@/app/providers";
+import {
+  MAX_AUTHOR_LENGTH,
+  MAX_MESSAGE_LENGTH,
+  submitThought,
+} from "@/services/thought";
+import { containsUrl, isTextValid } from "@/utils/text";
+import { NoteColor } from "@/types/thought";
+import classes from "@/styles/send-thought-modal.module.css";
 
-interface SendThoughtModalProps {
+const ANONYMOUS_AUTHOR = "Anonymous";
+
+export interface SendThoughtModalProps {
   open: boolean;
   onClose: () => void;
-  action: (
-    thought: Omit<IThought, 'id' | 'lowerCaseAuthor' | 'createdAt'>,
-  ) => Promise<DocumentReference<DocumentData, DocumentData>>;
 }
 
-const SendThoughtModal = ({ open, onClose, action }: SendThoughtModalProps) => {
+export default function SendThoughtModal({
+  open,
+  onClose,
+}: SendThoughtModalProps) {
   const theme = useMantineTheme();
   const [isAnonymous, setIsAnonymous] = useState(false);
-  const randomButtonRef = useRef<HTMLButtonElement>(null);
+  const randomColorButtonRef = useRef<HTMLButtonElement>(null);
+  const randomColorTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const form = useForm({
     initialValues: {
-      message: '',
-      author: localStorage.getItem('author') || '',
+      message: "",
+      author:
+        typeof window !== "undefined"
+          ? localStorage.getItem("author") || ""
+          : "",
       color: NoteColor.Yellow,
     },
 
     validate: {
       author: (value) => {
         if (!(isAnonymous || isTextValid(value, 2))) {
-          return 'Author is too short';
+          return "Author is too short";
         } else if (containsUrl(value)) {
-          return 'Author cannot contain URLs';
+          return "Author cannot contain URLs";
         }
 
         return null;
       },
       message: (value) => {
         if (!isTextValid(value, 5)) {
-          return 'Message is too short';
+          return "Message is too short";
         } else if (containsUrl(value)) {
-          return 'Message cannot contain URLs';
+          return "Message cannot contain URLs";
         }
 
         return null;
       },
       color: (value) =>
-        Object.values(NoteColor).includes(value) ? null : 'Invalid color',
+        Object.values(NoteColor).includes(value) ? null : "Invalid color",
     },
 
     transformValues: (values) => ({
@@ -77,13 +87,26 @@ const SendThoughtModal = ({ open, onClose, action }: SendThoughtModalProps) => {
   });
 
   const handleRandomColor = useThrottledCallback(() => {
-    randomButtonRef.current?.classList.add(classes['random-button--clicked']);
-
-    setTimeout(() => {
-      randomButtonRef.current?.classList.remove(
-        classes['random-button--clicked'],
+    if (randomColorTimeoutRef.current) {
+      randomColorButtonRef.current?.classList.remove(
+        classes["random-button--clicked"],
       );
+      clearTimeout(randomColorTimeoutRef.current);
+    }
+
+    randomColorButtonRef.current?.classList.add(
+      classes["random-button--clicked"],
+    );
+
+    const randomColorTimeout = setTimeout(() => {
+      randomColorButtonRef.current?.classList.remove(
+        classes["random-button--clicked"],
+      );
+
+      randomColorTimeoutRef.current = null;
     }, 500);
+
+    randomColorTimeoutRef.current = randomColorTimeout;
 
     // Get all colors except the current one.
     const colors = Object.values(NoteColor).filter(
@@ -92,21 +115,21 @@ const SendThoughtModal = ({ open, onClose, action }: SendThoughtModalProps) => {
 
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
-    form.setFieldValue('color', randomColor);
-  }, 500);
+    form.setFieldValue("color", randomColor);
+  }, 750);
 
   const mutation = useMutation({
     mutationFn: (values: typeof form.values) => {
       if (!isAnonymous) {
-        localStorage.setItem('author', values.author);
+        localStorage.setItem("author", values.author);
         form.setInitialValues({
-          message: '',
+          message: "",
           author: values.author,
           color: NoteColor.Yellow,
         });
       }
 
-      return action({
+      return submitThought({
         ...values,
       });
     },
@@ -114,19 +137,19 @@ const SendThoughtModal = ({ open, onClose, action }: SendThoughtModalProps) => {
       console.error(error);
 
       notifications.show({
-        title: 'Failed to submit thought',
-        message: 'An error occurred while submitting your thought.',
-        color: 'red',
+        title: "Failed to submit thought",
+        message: "An error occurred while submitting your thought.",
+        color: "red",
       });
     },
     onSuccess: () => {
-      queryClient
-        .invalidateQueries({ queryKey: ['thoughts'] })
+      getQueryClient()
+        .invalidateQueries({ queryKey: ["thoughts"] })
         .catch(console.error);
 
       notifications.show({
-        title: 'Thought submitted!',
-        message: 'Your thought has been successfully submitted.',
+        title: "Thought submitted!",
+        message: "Your thought has been successfully submitted.",
         color: `${form.values.color}.6`,
       });
       onClose();
@@ -139,7 +162,7 @@ const SendThoughtModal = ({ open, onClose, action }: SendThoughtModalProps) => {
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setIsAnonymous(event.currentTarget.checked);
-    form.clearFieldError('author');
+    form.clearFieldError("author");
   };
 
   return (
@@ -151,24 +174,24 @@ const SendThoughtModal = ({ open, onClose, action }: SendThoughtModalProps) => {
           withAsterisk
           maxLength={MAX_AUTHOR_LENGTH}
           disabled={isAnonymous || mutation.isPending}
-          {...form.getInputProps('author')}
+          {...form.getInputProps("author")}
           value={isAnonymous ? ANONYMOUS_AUTHOR : form.values.author}
         />
 
         <Textarea
-          label={'Message:'}
+          label={"Message:"}
           withAsterisk
           rows={5}
           maxLength={MAX_MESSAGE_LENGTH}
           disabled={mutation.isPending}
-          {...form.getInputProps('message')}
+          {...form.getInputProps("message")}
         />
 
         <Text
           mb="sm"
           size="sm"
           ta="right"
-          c={form.values.message.length >= MAX_MESSAGE_LENGTH ? 'red' : ''}
+          c={form.values.message.length >= MAX_MESSAGE_LENGTH ? "red" : ""}
         >{`${form.values.message.length}/${MAX_MESSAGE_LENGTH}`}</Text>
 
         <Switch
@@ -184,11 +207,11 @@ const SendThoughtModal = ({ open, onClose, action }: SendThoughtModalProps) => {
             {/* Use a span to prevent tooltip jittering. */}
             <span>
               <UnstyledButton
-                ref={randomButtonRef}
-                className={classes['random-button']}
+                ref={randomColorButtonRef}
+                className={classes["random-button"]}
                 onClick={handleRandomColor}
               >
-                <IconDiceFilled className={classes['dice-icon']} />
+                <IconDiceFilled className={classes["dice-icon"]} />
               </UnstyledButton>
             </span>
           </Tooltip>
@@ -201,10 +224,10 @@ const SendThoughtModal = ({ open, onClose, action }: SendThoughtModalProps) => {
               component="button"
               color={theme.colors[color][5]}
               disabled={mutation.isPending}
-              onClick={() => form.setFieldValue('color', color)}
+              onClick={() => form.setFieldValue("color", color)}
               styles={(theme) => ({
                 root: {
-                  cursor: 'pointer',
+                  cursor: "pointer",
                   color: theme.colors.gray[0],
                 },
               })}
@@ -222,6 +245,4 @@ const SendThoughtModal = ({ open, onClose, action }: SendThoughtModalProps) => {
       </form>
     </Modal>
   );
-};
-
-export default SendThoughtModal;
+}

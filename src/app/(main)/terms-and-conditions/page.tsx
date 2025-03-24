@@ -1,47 +1,37 @@
-import { Anchor, Text, Title } from '@mantine/core';
-import { useEffect } from 'react';
-import { nprogress } from '@mantine/nprogress';
-import AppContainer from '../components/AppContainer';
+import type { Metadata } from "next";
+import { Anchor, Text, Title } from "@mantine/core";
 
-interface TermsConditionsProps {
-  title: string;
-}
+export const metadata: Metadata = {
+  title: "Terms and Conditions - StickyThoughts | Online Freedom Wall",
+};
 
-function TermsConditions({ title }: TermsConditionsProps) {
-  useEffect(() => {
-    document.title = title;
-  }, [title]);
-
-  useEffect(() => {
-    nprogress.complete();
-  }, []);
-
+export default function TermsAndConditions() {
   return (
-    <AppContainer>
+    <>
       <Title my="lg" fw="bold" ta="center">
         TERMS AND CONDITIONS
       </Title>
       <Text my="md">Last updated: 2024-05-07</Text>
       <Text my="md">
-        1.{' '}
+        1.{" "}
         <Text span fw="bold">
           Introduction
         </Text>
       </Text>
       <Text my="md">
-        Welcome to{' '}
+        Welcome to{" "}
         <Text span fw="bold">
           StickyThoughts
-        </Text>{' '}
+        </Text>{" "}
         (“Company”, “we”, “our”, “us”)!
       </Text>
       <Text my="md">
         These Terms of Service (“Terms”, “Terms of Service”) govern your use of
-        our website located at{' '}
+        our website located at{" "}
         <Text span fw="bold">
           https://stickythoughts.alexndrho.dev/
-        </Text>{' '}
-        (together or individually “Service”) operated by{' '}
+        </Text>{" "}
+        (together or individually “Service”) operated by{" "}
         <Text span fw="bold">
           StickyThoughts
         </Text>
@@ -59,15 +49,15 @@ function TermsConditions({ title }: TermsConditionsProps) {
       </Text>
       <Text my="md">
         If you do not agree with (or cannot comply with) Agreements, then you
-        may not use the Service, but please let us know by emailing at{' '}
+        may not use the Service, but please let us know by emailing at{" "}
         <Text span fw="bold">
           ho.alexander.g@gmail.com
-        </Text>{' '}
+        </Text>{" "}
         so we can try to find a solution. These Terms apply to all visitors,
         users and others who wish to access or use Service.
       </Text>
       <Text my="md">
-        2.{' '}
+        2.{" "}
         <Text span fw="bold">
           Communications
         </Text>
@@ -80,7 +70,7 @@ function TermsConditions({ title }: TermsConditionsProps) {
         ho.alexander.g@gmail.com.
       </Text>
       <Text my="md">
-        3.{' '}
+        3.{" "}
         <Text span fw="bold">
           Contests, Sweepstakes and Promotions
         </Text>
@@ -94,7 +84,7 @@ function TermsConditions({ title }: TermsConditionsProps) {
         Service, Promotion rules will apply.
       </Text>
       <Text my="md">
-        4.{' '}
+        4.{" "}
         <Text span fw="bold">
           Content
         </Text>
@@ -107,7 +97,7 @@ function TermsConditions({ title }: TermsConditionsProps) {
         express advance written permission from us.
       </Text>
       <Text my="md">
-        5.{' '}
+        5.{" "}
         <Text span fw="bold">
           Prohibited Uses
         </Text>
@@ -140,16 +130,17 @@ function TermsConditions({ title }: TermsConditionsProps) {
         any unlawful, illegal, fraudulent, or harmful purpose or activity.
       </Text>
       <Text my="md">
-        0.6. To engage in any other conduct that restricts or inhibits anyone’s
-        use or enjoyment of Service, or which, as determined by us, may harm or
-        offend Company or users of Service or expose them to liability.
+        0.6. To engage in any other conduct that restricts or inhibits
+        anyone&apos;s use or enjoyment of Service, or which, as determined by
+        us, may harm or offend Company or users of Service or expose them to
+        liability.
       </Text>
       <Text my="md">Additionally, you agree not to:</Text>
       <Text my="md">
         0.1. Use Service in any manner that could disable, overburden, damage,
-        or impair Service or interfere with any other party’s use of Service,
-        including their ability to engage in real time activities through
-        Service.
+        or impair Service or interfere with any other party&apos;s use of
+        Service, including their ability to engage in real time activities
+        through Service.
       </Text>
       <Text my="md">
         0.2. Use any robot, spider, or other automatic device, process, or means
@@ -185,7 +176,7 @@ function TermsConditions({ title }: TermsConditionsProps) {
         0.9. Otherwise attempt to interfere with the proper working of Service.
       </Text>
       <Text my="md">
-        6.{' '}
+        6.{" "}
         <Text span fw="bold">
           Analytics
         </Text>
@@ -195,7 +186,7 @@ function TermsConditions({ title }: TermsConditionsProps) {
         of our Service.
       </Text>
       <Text my="md">
-        7.{' '}
+        7.{" "}
         <Text span fw="bold">
           No Use By Minors
         </Text>
@@ -210,7 +201,7 @@ function TermsConditions({ title }: TermsConditionsProps) {
         and usage of Service.
       </Text>
       <Text my="md">
-        8.{' '}
+        8.{" "}
         <Text span fw="bold">
           Intellectual Property
         </Text>
@@ -224,7 +215,7 @@ function TermsConditions({ title }: TermsConditionsProps) {
         written consent of StickyThoughts.
       </Text>
       <Text my="md">
-        9.{' '}
+        9.{" "}
         <Text span fw="bold">
           Copyright Policy
         </Text>
@@ -245,12 +236,13 @@ function TermsConditions({ title }: TermsConditionsProps) {
         for Copyright Infringement Claims”
       </Text>
       <Text my="md">
-        You may be held accountable for damages (including costs and attorneys’
-        fees) for misrepresentation or bad-faith claims on the infringement of
-        any Content found on and/or through Service on your copyright.
+        You may be held accountable for damages (including costs and
+        attorneys&apos; fees) for misrepresentation or bad-faith claims on the
+        infringement of any Content found on and/or through Service on your
+        copyright.
       </Text>
       <Text my="md">
-        10.{' '}
+        10.{" "}
         <Text span fw="bold">
           DMCA Notice and Procedure for Copyright Infringement Claims
         </Text>
@@ -262,7 +254,7 @@ function TermsConditions({ title }: TermsConditionsProps) {
       </Text>
       <Text my="md">
         0.1. an electronic or physical signature of the person authorized to act
-        on behalf of the owner of the copyright’s interest;
+        on behalf of the owner of the copyright&apos;s interest;
       </Text>
       <Text my="md">
         0.2. a description of the copyrighted work that you claim has been
@@ -284,14 +276,14 @@ function TermsConditions({ title }: TermsConditionsProps) {
       <Text my="md">
         0.6. a statement by you, made under penalty of perjury, that the above
         information in your notice is accurate and that you are the copyright
-        owner or authorized to act on the copyright owner’s behalf.
+        owner or authorized to act on the copyright owner&apos;s behalf.
       </Text>
       <Text my="md">
         You can contact our Copyright Agent via email at
         ho.alexander.g@gmail.com.
       </Text>
       <Text my="md">
-        11.{' '}
+        11.{" "}
         <Text span fw="bold">
           Error Reporting and Feedback
         </Text>
@@ -315,7 +307,7 @@ function TermsConditions({ title }: TermsConditionsProps) {
         manner and for any purpose.
       </Text>
       <Text my="md">
-        12.{' '}
+        12.{" "}
         <Text span fw="bold">
           Links To Other Web Sites
         </Text>
@@ -331,17 +323,17 @@ function TermsConditions({ title }: TermsConditionsProps) {
         entities/individuals or their websites.
       </Text>
       <Text my="md">
-        For example, the outlined{' '}
+        For example, the outlined{" "}
         <Anchor href="https://policymaker.io/terms-and-conditions/">
           Terms of Use
-        </Anchor>{' '}
-        have been created using{' '}
+        </Anchor>{" "}
+        have been created using{" "}
         <Anchor href="https://policymaker.io/">PolicyMaker.io</Anchor>, a free
         web application for generating high-quality legal documents.
-        PolicyMaker’s{' '}
+        PolicyMaker&apos;s{" "}
         <Anchor href="https://policymaker.io/terms-and-conditions/">
           Terms and Conditions generator
-        </Anchor>{' '}
+        </Anchor>{" "}
         is an easy-to-use free tool for creating an excellent standard Terms of
         Service template for a website, blog, e-commerce store or app.
       </Text>
@@ -357,7 +349,7 @@ function TermsConditions({ title }: TermsConditionsProps) {
         OF ANY THIRD PARTY WEB SITES OR SERVICES THAT YOU VISIT.
       </Text>
       <Text my="md">
-        13.{' '}
+        13.{" "}
         <Text span fw="bold">
           Disclaimer Of Warranty
         </Text>
@@ -394,7 +386,7 @@ function TermsConditions({ title }: TermsConditionsProps) {
         LIMITED UNDER APPLICABLE LAW.
       </Text>
       <Text my="md">
-        14.{' '}
+        14.{" "}
         <Text span fw="bold">
           Limitation Of Liability
         </Text>
@@ -403,7 +395,7 @@ function TermsConditions({ title }: TermsConditionsProps) {
         EXCEPT AS PROHIBITED BY LAW, YOU WILL HOLD US AND OUR OFFICERS,
         DIRECTORS, EMPLOYEES, AND AGENTS HARMLESS FOR ANY INDIRECT, PUNITIVE,
         SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGE, HOWEVER IT ARISES
-        (INCLUDING ATTORNEYS’ FEES AND ALL RELATED COSTS AND EXPENSES OF
+        (INCLUDING ATTORNEYS&apos; FEES AND ALL RELATED COSTS AND EXPENSES OF
         LITIGATION AND ARBITRATION, OR AT TRIAL OR ON APPEAL, IF ANY, WHETHER OR
         NOT LITIGATION OR ARBITRATION IS INSTITUTED), WHETHER IN AN ACTION OF
         CONTRACT, NEGLIGENCE, OR OTHER TORTIOUS ACTION, OR ARISING OUT OF OR IN
@@ -419,7 +411,7 @@ function TermsConditions({ title }: TermsConditionsProps) {
         DAMAGES, SO THE PRIOR LIMITATION OR EXCLUSION MAY NOT APPLY TO YOU.
       </Text>
       <Text my="md">
-        15.{' '}
+        15.{" "}
         <Text span fw="bold">
           Termination
         </Text>
@@ -441,7 +433,7 @@ function TermsConditions({ title }: TermsConditionsProps) {
         liability.
       </Text>
       <Text my="md">
-        16.{' '}
+        16.{" "}
         <Text span fw="bold">
           Governing Law
         </Text>
@@ -460,7 +452,7 @@ function TermsConditions({ title }: TermsConditionsProps) {
         prior agreements we might have had between us regarding Service.
       </Text>
       <Text my="md">
-        17.{' '}
+        17.{" "}
         <Text span fw="bold">
           Changes To Service
         </Text>
@@ -474,7 +466,7 @@ function TermsConditions({ title }: TermsConditionsProps) {
         to users, including registered users.
       </Text>
       <Text my="md">
-        18.{' '}
+        18.{" "}
         <Text span fw="bold">
           Amendments To Terms
         </Text>
@@ -495,7 +487,7 @@ function TermsConditions({ title }: TermsConditionsProps) {
         agree to the new terms, you are no longer authorized to use Service.
       </Text>
       <Text my="md">
-        19.{' '}
+        19.{" "}
         <Text span fw="bold">
           Waiver And Severability
         </Text>
@@ -515,7 +507,7 @@ function TermsConditions({ title }: TermsConditionsProps) {
         force and effect.
       </Text>
       <Text my="md">
-        20.{' '}
+        20.{" "}
         <Text span fw="bold">
           Acknowledgement
         </Text>
@@ -525,36 +517,34 @@ function TermsConditions({ title }: TermsConditionsProps) {
         YOU HAVE READ THESE TERMS OF SERVICE AND AGREE TO BE BOUND BY THEM.
       </Text>
       <Text my="md">
-        21.{' '}
+        21.{" "}
         <Text span fw="bold">
           Contact Us
         </Text>
       </Text>
       <Text my="md">
         Please send your feedback, comments, requests for technical support by
-        email:{' '}
+        email:{" "}
         <Text span fw="bold">
           ho.alexander.g@gmail.com
         </Text>
         .
       </Text>
       <Text mt="xl" mb="md" fz="xs">
-        These{' '}
+        These{" "}
         <Anchor href="https://policymaker.io/terms-and-conditions/" inherit>
           Terms of Service
-        </Anchor>{' '}
-        were created for{' '}
+        </Anchor>{" "}
+        were created for{" "}
         <Text span fw="bold" inherit>
           https://stickythoughts.alexndrho.dev/
-        </Text>{' '}
-        by{' '}
+        </Text>{" "}
+        by{" "}
         <Anchor href="https://policymaker.io" inherit>
           PolicyMaker.io
-        </Anchor>{' '}
+        </Anchor>{" "}
         on 2024-05-07.
       </Text>
-    </AppContainer>
+    </>
   );
 }
-
-export default TermsConditions;

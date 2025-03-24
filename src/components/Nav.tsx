@@ -1,3 +1,7 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 import {
   ActionIcon,
   Box,
@@ -8,10 +12,8 @@ import {
   Text,
   Tooltip,
   rem,
-  useComputedColorScheme,
   useMantineColorScheme,
-} from '@mantine/core';
-import { Link, useLocation } from 'react-router-dom';
+} from "@mantine/core";
 import {
   IconSun,
   IconMoon,
@@ -19,18 +21,20 @@ import {
   IconHome,
   IconAddressBook,
   IconInfoCircle,
-} from '@tabler/icons-react';
+} from "@tabler/icons-react";
+import { useThrottledCallback } from "@mantine/hooks";
 
-interface NavProps {
-  onRefetch?: () => void;
-}
+import { getQueryClient } from "@/app/providers";
 
-const Nav = ({ onRefetch }: NavProps) => {
-  const location = useLocation();
+export default function Nav() {
+  const pathname = usePathname();
   const { setColorScheme } = useMantineColorScheme();
-  const computedColorScheme = useComputedColorScheme('light', {
-    getInitialValueInEffect: true,
-  });
+
+  const handleRefetch = useThrottledCallback(() => {
+    getQueryClient().invalidateQueries({
+      queryKey: ["thoughts"],
+    });
+  }, 10000);
 
   return (
     <Box
@@ -43,13 +47,13 @@ const Nav = ({ onRefetch }: NavProps) => {
         <Group h="100%" justify="space-between">
           <Text
             component={Link}
-            to="/"
+            href="/"
             fz="xl"
             fw={700}
             onClick={(e) => {
-              if (onRefetch && location.pathname === '/') {
+              if (pathname === "/") {
                 e.preventDefault();
-                onRefetch();
+                handleRefetch();
               }
             }}
           >
@@ -60,10 +64,10 @@ const Nav = ({ onRefetch }: NavProps) => {
           </Text>
 
           <Group>
-            <Group component="nav" display={{ base: 'none', xs: 'flex' }}>
+            <Group component="nav" display={{ base: "none", xs: "flex" }}>
               <Button
                 component={Link}
-                to="/"
+                href="/"
                 variant="subtle"
                 size="compact-sm"
               >
@@ -72,7 +76,7 @@ const Nav = ({ onRefetch }: NavProps) => {
 
               <Button
                 component={Link}
-                to="/about"
+                href="/about"
                 variant="subtle"
                 size="compact-sm"
               >
@@ -81,7 +85,7 @@ const Nav = ({ onRefetch }: NavProps) => {
 
               <Button
                 component={Link}
-                to="/contact"
+                href="/contact"
                 variant="subtle"
                 size="compact-sm"
               >
@@ -89,7 +93,7 @@ const Nav = ({ onRefetch }: NavProps) => {
               </Button>
             </Group>
 
-            <Box display={{ base: 'block', xs: 'none' }}>
+            <Box display={{ base: "block", xs: "none" }}>
               <Menu shadow="md" width={110}>
                 <Menu.Target>
                   <ActionIcon
@@ -104,21 +108,21 @@ const Nav = ({ onRefetch }: NavProps) => {
                 <Menu.Dropdown>
                   <Menu.Item
                     component={Link}
-                    to="/"
+                    href="/"
                     leftSection={<IconHome size="1em" />}
                   >
                     Home
                   </Menu.Item>
                   <Menu.Item
                     component={Link}
-                    to="/about"
+                    href="/about"
                     leftSection={<IconInfoCircle size="1em" />}
                   >
                     About
                   </Menu.Item>
                   <Menu.Item
                     component={Link}
-                    to="/contact"
+                    href="/contact"
                     leftSection={<IconAddressBook size="1em" />}
                   >
                     Contact
@@ -127,25 +131,29 @@ const Nav = ({ onRefetch }: NavProps) => {
               </Menu>
             </Box>
 
+            <Tooltip label="Dark mode" position="bottom" className="darkHidden">
+              <ActionIcon
+                aria-label="Toggle color scheme"
+                variant="default"
+                size="lg"
+                onClick={() => setColorScheme("dark")}
+              >
+                <IconMoon size="1em" />
+              </ActionIcon>
+            </Tooltip>
+
             <Tooltip
-              label={`${computedColorScheme === 'light' ? 'Dark' : 'Light'} mode`}
+              label="Light mode"
               position="bottom"
+              className="lightHidden"
             >
               <ActionIcon
                 aria-label="Toggle color scheme"
                 variant="default"
                 size="lg"
-                onClick={() =>
-                  setColorScheme(
-                    computedColorScheme === 'light' ? 'dark' : 'light',
-                  )
-                }
+                onClick={() => setColorScheme("light")}
               >
-                {computedColorScheme === 'light' ? (
-                  <IconSun size="1em" />
-                ) : (
-                  <IconMoon size="1em" />
-                )}
+                <IconSun size="1em" />
               </ActionIcon>
             </Tooltip>
           </Group>
@@ -153,6 +161,4 @@ const Nav = ({ onRefetch }: NavProps) => {
       </Container>
     </Box>
   );
-};
-
-export default Nav;
+}

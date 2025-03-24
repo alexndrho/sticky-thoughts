@@ -9,9 +9,9 @@ import {
   serverTimestamp,
   startAfter,
   where,
-} from 'firebase/firestore';
-import { thoughtsCollectionRef } from '../config/firebase';
-import IThought, { IThoughtSubmit } from '../types/IThought';
+} from "firebase/firestore";
+import { thoughtsCollectionRef } from "@/lib/firebase";
+import IThought, { IThoughtSubmit } from "@/types/thought";
 
 const THOUGHTS_PER_ROW = 4;
 const THOUGHTS_PER_PAGE = THOUGHTS_PER_ROW * 3;
@@ -22,7 +22,7 @@ const MAX_MESSAGE_LENGTH = 250;
 const fetchThoughts = async (lastPost?: Timestamp): Promise<IThought[]> => {
   let q = query(
     thoughtsCollectionRef,
-    orderBy('createdAt', 'desc'),
+    orderBy("createdAt", "desc"),
     limit(THOUGHTS_PER_PAGE),
   );
 
@@ -33,21 +33,21 @@ const fetchThoughts = async (lastPost?: Timestamp): Promise<IThought[]> => {
   const querySnapshot = await getDocs(q);
 
   return querySnapshot.docs.map((doc) => ({
-    ...(doc.data() as Omit<IThought, 'id'>),
-    author: (doc.data() as Omit<IThought, 'id'>).author,
-    message: (doc.data() as Omit<IThought, 'id'>).message,
-    color: (doc.data() as Omit<IThought, 'id'>).color,
+    ...(doc.data() as Omit<IThought, "id">),
+    author: (doc.data() as Omit<IThought, "id">).author,
+    message: (doc.data() as Omit<IThought, "id">).message,
+    color: (doc.data() as Omit<IThought, "id">).color,
     id: doc.id,
   }));
 };
 
 const submitThought = async (
-  thought: Omit<IThought, 'id' | 'lowerCaseAuthor' | 'createdAt'>,
+  thought: Omit<IThought, "id" | "lowerCaseAuthor" | "createdAt">,
 ) => {
   if (thought.author.length > MAX_AUTHOR_LENGTH) {
-    throw new Error('Author is too long');
+    throw new Error("Author is too long");
   } else if (thought.message.length > MAX_MESSAGE_LENGTH) {
-    throw new Error('Message is too long');
+    throw new Error("Message is too long");
   }
 
   const doc = await addDoc(thoughtsCollectionRef, {
@@ -70,19 +70,19 @@ const searchThoughts = async (searchTerm: string): Promise<IThought[]> => {
   const firstLetter = searchString[0];
   let q = query(
     thoughtsCollectionRef,
-    where('lowerCaseAuthor', '>=', searchString),
+    where("lowerCaseAuthor", ">=", searchString),
     limit(THOUGHTS_PER_PAGE),
   );
 
-  if (firstLetter < 'z') {
+  if (firstLetter < "z") {
     const nextLetter = ((parseInt(firstLetter, 36) + 1) % 36).toString(36);
-    q = query(q, where('lowerCaseAuthor', '<', nextLetter));
+    q = query(q, where("lowerCaseAuthor", "<", nextLetter));
   }
 
   const results = await getDocs(q);
 
   return results.docs.map((doc) => ({
-    ...(doc.data() as Omit<IThought, 'id'>),
+    ...(doc.data() as Omit<IThought, "id">),
     id: doc.id,
   }));
 };

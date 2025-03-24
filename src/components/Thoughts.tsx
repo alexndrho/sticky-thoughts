@@ -1,13 +1,13 @@
-import { Box } from '@mantine/core';
-import Thought from './Thought';
-import IThought from '../types/IThought';
-import classes from '../styles/Thoughts.module.css';
+import { Box } from "@mantine/core";
+import Thought from "./Thought";
+import IThought from "@/types/thought";
+import classes from "@/styles/thoughts.module.css";
 
-interface ThoughtsProps {
+export interface ThoughtsProps {
   thoughts: IThought[];
 }
 
-const Thoughts = ({ thoughts }: ThoughtsProps) => {
+export default function Thoughts({ thoughts }: ThoughtsProps) {
   return (
     <Box className={classes.thoughts}>
       {thoughts.map((thought) => (
@@ -21,6 +21,4 @@ const Thoughts = ({ thoughts }: ThoughtsProps) => {
       ))}
     </Box>
   );
-};
-
-export default Thoughts;
+}

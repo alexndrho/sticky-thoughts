@@ -1,11 +1,13 @@
-import { useEffect, useRef } from 'react';
+"use client";
+
+import { useEffect, useRef } from "react";
+import { Timestamp } from "firebase/firestore";
 import {
   QueryFunctionContext,
   QueryKey,
   useInfiniteQuery,
   useQuery,
-} from '@tanstack/react-query';
-import { nprogress } from '@mantine/nprogress';
+} from "@tanstack/react-query";
 import {
   Box,
   Button,
@@ -15,41 +17,29 @@ import {
   Input,
   Kbd,
   Loader,
+  rem,
   Skeleton,
   Text,
   Tooltip,
   VisuallyHidden,
-  rem,
-} from '@mantine/core';
-import {
-  useDebouncedState,
-  useDisclosure,
-  useHotkeys,
-  useThrottledCallback,
-} from '@mantine/hooks';
-import AppContainer from '../components/AppContainer';
-import SendThoughtModal from '../components/SendThoughtModal';
-import Thoughts from '../components/Thoughts';
+} from "@mantine/core";
+import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
+import { IconCheck, IconMessage, IconSearch, IconX } from "@tabler/icons-react";
+
+import Thoughts from "@/components/Thoughts";
+import SendThoughtModal from "@/components/SendThoughtModal";
 import {
   fetchThoughts,
   getThoughtsCount,
   searchThoughts,
-  submitThought,
-} from '../utils/thought';
-import { IconCheck, IconMessage, IconSearch, IconX } from '@tabler/icons-react';
-import { Timestamp } from 'firebase/firestore';
-import { notifications } from '@mantine/notifications';
-import queryClient from '../queryClient';
+} from "@/services/thought";
 
-interface HomeProps {
-  title: string;
-}
-
-const Home = ({ title }: HomeProps) => {
+export default function Home() {
   const [messageOpen, { open, close, toggle }] = useDisclosure(false);
 
   const searchRef = useRef<HTMLInputElement>(null);
-  const [searchBarValue, setSearchBarValue] = useDebouncedState('', 250);
+  const [searchBarValue, setSearchBarValue] = useDebouncedState("", 250);
 
   const {
     data,
@@ -59,7 +49,7 @@ const Home = ({ title }: HomeProps) => {
     isRefetching,
     isRefetchError,
   } = useInfiniteQuery({
-    queryKey: ['thoughts'],
+    queryKey: ["thoughts"],
     initialPageParam: undefined,
     queryFn: async ({
       pageParam,
@@ -73,7 +63,7 @@ const Home = ({ title }: HomeProps) => {
   });
 
   const { data: searchData, isFetching: isSearchFetching } = useQuery({
-    queryKey: ['thoughts', 'search', searchBarValue],
+    queryKey: ["thoughts", "search", searchBarValue],
     queryFn: async () => {
       if (!searchBarValue) return [];
 
@@ -87,30 +77,19 @@ const Home = ({ title }: HomeProps) => {
   };
 
   useHotkeys([
-    ['t', focusSearchBar],
-    ['s', toggle],
+    ["t", focusSearchBar],
+    ["s", toggle],
   ]);
 
-  const {
-    data: thoughtsCountData,
-    isFetched: thoughtsCountIsFetched,
-    isFetching: thoughtsCountIsFetching,
-  } = useQuery({
-    queryKey: ['thoughts', 'count'],
-    queryFn: async () => {
-      return await getThoughtsCount();
-    },
-  });
+  const { data: thoughtsCountData, isFetched: thoughtsCountIsFetched } =
+    useQuery({
+      queryKey: ["thoughts", "count"],
+      queryFn: async () => {
+        return await getThoughtsCount();
+      },
+    });
 
   //useEffect
-  useEffect(() => {
-    document.title = title;
-  }, [title]);
-
-  useEffect(() => {
-    nprogress.complete();
-  }, []);
-
   useEffect(() => {
     function handleScroll() {
       if (isFetching) return;
@@ -127,55 +106,49 @@ const Home = ({ title }: HomeProps) => {
       }
     }
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [isFetching, fetchNextPage, hasNextPage, searchBarValue.length]);
 
   useEffect(() => {
     if (isRefetching) {
       notifications.show({
-        id: 'refetch-thoughts',
+        id: "refetch-thoughts",
         loading: true,
-        title: 'Fetching new thoughts',
-        message: 'Please wait...',
+        title: "Fetching new thoughts",
+        message: "Please wait...",
         autoClose: false,
         withCloseButton: false,
       });
     } else if (!isRefetchError) {
       notifications.update({
-        id: 'refetch-thoughts',
+        id: "refetch-thoughts",
         loading: false,
         icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
-        title: 'Thoughts updated',
-        message: 'New thoughts have been fetched',
+        title: "Thoughts updated",
+        message: "New thoughts have been fetched",
         autoClose: 4000,
         withCloseButton: true,
       });
     } else {
       notifications.update({
-        id: 'refetch-thoughts',
+        id: "refetch-thoughts",
         loading: false,
-        color: 'red',
+        color: "red",
         icon: <IconX style={{ width: rem(18), height: rem(18) }} />,
-        title: 'Failed to reload thoughts',
-        message: 'Please try again later',
+        title: "Failed to reload thoughts",
+        message: "Please try again later",
         autoClose: 4000,
         withCloseButton: true,
       });
     }
   }, [isRefetching, isRefetchError]);
 
-  const handleRefetch = useThrottledCallback(() => {
-    if (isFetching || thoughtsCountIsFetching) return;
-
-    queryClient.invalidateQueries().catch(console.error);
-  }, 10000);
-
   return (
-    <AppContainer onRefetch={handleRefetch}>
+    <>
       <Box mih="100dvh">
         <Center mt="lg">
           <Skeleton w="auto" h="auto" visible={!thoughtsCountIsFetched}>
@@ -183,10 +156,10 @@ const Home = ({ title }: HomeProps) => {
               <IconMessage />
 
               <Text fz="md" fw="bold">
-                {thoughtsCountData}{' '}
+                {thoughtsCountData}{" "}
                 <Text span c="blue.6" inherit>
                   thoughts
-                </Text>{' '}
+                </Text>{" "}
                 submitted
               </Text>
             </Group>
@@ -204,7 +177,7 @@ const Home = ({ title }: HomeProps) => {
               wrapper: {
                 flex: 1,
               },
-              rightSection: { pointerEvents: 'none' },
+              rightSection: { pointerEvents: "none" },
             })}
           />
 
@@ -233,13 +206,7 @@ const Home = ({ title }: HomeProps) => {
         </Group>
       </Box>
 
-      <SendThoughtModal
-        open={messageOpen}
-        onClose={close}
-        action={submitThought}
-      />
-    </AppContainer>
+      <SendThoughtModal open={messageOpen} onClose={close} />
+    </>
   );
-};
-
-export default Home;
+}

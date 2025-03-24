@@ -1,8 +1,10 @@
-import { Affix, Button, Transition } from '@mantine/core';
-import { useWindowScroll } from '@mantine/hooks';
-import { IconArrowBigUpFilled } from '@tabler/icons-react';
+"use client";
 
-const ScrollUpButton = () => {
+import { Affix, Button, Transition } from "@mantine/core";
+import { useWindowScroll } from "@mantine/hooks";
+import { IconArrowBigUpFilled } from "@tabler/icons-react";
+
+export default function ScrollUpButton() {
   const [scroll, scrollTo] = useWindowScroll();
 
   return (
@@ -22,6 +24,4 @@ const ScrollUpButton = () => {
       </Transition>
     </Affix>
   );
-};
-
-export default ScrollUpButton;
+}

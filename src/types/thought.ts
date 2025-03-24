@@ -1,12 +1,12 @@
-import { FieldValue, Timestamp } from 'firebase/firestore';
+import { FieldValue, Timestamp } from "firebase/firestore";
 
 enum NoteColor {
-  Yellow = 'yellow',
-  Blue = 'blue',
-  Red = 'red',
-  Violet = 'violet',
-  Green = 'green',
-  Pink = 'pink',
+  Yellow = "yellow",
+  Blue = "blue",
+  Red = "red",
+  Violet = "violet",
+  Green = "green",
+  Pink = "pink",
 }
 
 interface IThought {
@@ -18,7 +18,7 @@ interface IThought {
   createdAt: Timestamp;
 }
 
-interface IThoughtSubmit extends Omit<IThought, 'id' | 'createdAt'> {
+interface IThoughtSubmit extends Omit<IThought, "id" | "createdAt"> {
   createdAt: FieldValue;
 }
 

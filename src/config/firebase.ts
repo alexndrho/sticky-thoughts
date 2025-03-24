@@ -1,21 +1,10 @@
-import { initializeApp } from 'firebase/app';
-import { collection, getFirestore } from 'firebase/firestore';
+import { FirebaseOptions } from "firebase/app";
 
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+export const firebaseConfig: FirebaseOptions = {
+  apiKey: process.env.NEXT_PUBLIC_VITE_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_VITE_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_VITE_FIREBASE_APP_ID,
 };
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// References
-const thoughtsCollectionRef = collection(db, 'thoughts');
-
-export { db, thoughtsCollectionRef };

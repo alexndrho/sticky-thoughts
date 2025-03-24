@@ -1,0 +1,51 @@
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+
+import {
+  ColorSchemeScript,
+  mantineHtmlProps,
+  MantineProvider,
+} from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
+import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
+
+import Providers from "./providers";
+import "./global.css";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "StickyThoughts | Online Freedom Wall",
+  description:
+    "StickyThoughts is an online freedom wall where you can express yourself freely and share your thoughts and experiences with others.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en" {...mantineHtmlProps}>
+      <head>
+        <ColorSchemeScript defaultColorScheme="auto" />
+      </head>
+
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <MantineProvider defaultColorScheme="auto">
+          <Notifications />
+          <Providers>{children}</Providers>
+        </MantineProvider>
+      </body>
+    </html>
+  );
+}
