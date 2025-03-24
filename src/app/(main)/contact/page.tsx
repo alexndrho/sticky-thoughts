@@ -1,5 +1,10 @@
+import type { Metadata } from "next";
 import { Button, Flex, Text, Title } from "@mantine/core";
 import { IconMail } from "@tabler/icons-react";
+
+export const metadata: Metadata = {
+  title: "Contact - StickyThoughts | Online Freedom Wall",
+};
 
 export default function Contact() {
   return (

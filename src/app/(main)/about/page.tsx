@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import {
   Anchor,
   Box,
@@ -9,6 +10,10 @@ import {
 import Image from "next/image";
 
 import noteImg from "@/assets/note.svg";
+
+export const metadata: Metadata = {
+  title: "About - StickyThoughts | Online Freedom Wall",
+};
 
 export default function About() {
   return (

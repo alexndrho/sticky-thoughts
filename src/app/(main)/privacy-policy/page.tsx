@@ -1,4 +1,9 @@
+import type { Metadata } from "next";
 import { Anchor, Text, Title } from "@mantine/core";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy - StickyThoughts | Online Freedom Wall",
+};
 
 export default function PrivacyPolicy() {
   return (

@@ -1,4 +1,9 @@
+import type { Metadata } from "next";
 import { Anchor, Text, Title } from "@mantine/core";
+
+export const metadata: Metadata = {
+  title: "Disclaimer - StickyThoughts | Online Freedom Wall",
+};
 
 export default function Disclaimer() {
   return (
