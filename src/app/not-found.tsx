@@ -1,7 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Button, Flex, Text, Title } from "@mantine/core";
 
 import Layout from "@/app/(main)/layout";
+
+export const metadata: Metadata = {
+  title: "Page Not Found - StickyThoughts | Online Freedom Wall",
+};
 
 export default function NotFound() {
   return (
@@ -17,7 +22,7 @@ export default function NotFound() {
           <Text span display="block" fz="5rem" ta="center" inherit>
             404
           </Text>
-          Page Not found
+          Page Not Found
         </Title>
 
         <Text mt="md" fz="xl" ta="center">
