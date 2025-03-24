@@ -50,7 +50,10 @@ export default function SendThoughtModal({
   const form = useForm({
     initialValues: {
       message: "",
-      author: localStorage.getItem("author") || "",
+      author:
+        typeof window !== "undefined"
+          ? localStorage.getItem("author") || ""
+          : "",
       color: NoteColor.Yellow,
     },
 
