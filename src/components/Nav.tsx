@@ -22,17 +22,19 @@ import {
   IconAddressBook,
   IconInfoCircle,
 } from "@tabler/icons-react";
+import { useThrottledCallback } from "@mantine/hooks";
 
-export interface NavProps {
-  onRefetch?: () => void;
-}
+import { getQueryClient } from "@/app/providers";
 
-export default function Nav({ onRefetch }: NavProps) {
+export default function Nav() {
   const pathname = usePathname();
   const { setColorScheme } = useMantineColorScheme();
-  // const computedColorScheme = useComputedColorScheme("light", {
-  //   getInitialValueInEffect: true,
-  // });
+
+  const handleRefetch = useThrottledCallback(() => {
+    getQueryClient().invalidateQueries({
+      queryKey: ["thoughts"],
+    });
+  }, 10000);
 
   return (
     <Box
@@ -49,9 +51,9 @@ export default function Nav({ onRefetch }: NavProps) {
             fz="xl"
             fw={700}
             onClick={(e) => {
-              if (onRefetch && pathname === "/") {
+              if (pathname === "/") {
                 e.preventDefault();
-                onRefetch();
+                handleRefetch();
               }
             }}
           >
