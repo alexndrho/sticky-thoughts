@@ -12,6 +12,5 @@ export const convertThoughtDates = (thought: ThoughtFromServer): Thought => {
   return {
     ...thought,
     createdAt: new Date(thought.createdAt),
-    updatedAt: new Date(thought.updatedAt),
   } satisfies Thought;
 };
