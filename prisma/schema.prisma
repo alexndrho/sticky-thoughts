@@ -13,5 +13,4 @@ model Thought {
   message   String
   color     String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }

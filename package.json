@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "prisma migrate deploy && prisma generate --no-engine"
   },
   "dependencies": {
     "@2toad/profanity": "^3.1.1",
