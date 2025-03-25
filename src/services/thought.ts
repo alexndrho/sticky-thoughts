@@ -1,97 +1,86 @@
-import {
-  Timestamp,
-  addDoc,
-  getCountFromServer,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  serverTimestamp,
-  startAfter,
-  where,
-} from "firebase/firestore";
-import { thoughtsCollectionRef } from "@/lib/firebase";
-import IThought, { IThoughtSubmit } from "@/types/thought";
+import type { Prisma, Thought } from "@prisma/client";
 
-const THOUGHTS_PER_ROW = 4;
-const THOUGHTS_PER_PAGE = THOUGHTS_PER_ROW * 3;
+import { convertThoughtDates, ThoughtFromServer } from "@/utils/thought";
 
-const MAX_AUTHOR_LENGTH = 20;
-const MAX_MESSAGE_LENGTH = 250;
+const getThoughts = async ({
+  lastId,
+  searchTerm,
+}: {
+  lastId?: string;
+  searchTerm?: string;
+}): Promise<Thought[]> => {
+  const params = new URLSearchParams();
 
-const fetchThoughts = async (lastPost?: Timestamp): Promise<IThought[]> => {
-  let q = query(
-    thoughtsCollectionRef,
-    orderBy("createdAt", "desc"),
-    limit(THOUGHTS_PER_PAGE),
-  );
-
-  if (lastPost) {
-    q = query(q, startAfter(lastPost));
+  if (lastId) {
+    params.append("lastId", lastId);
   }
 
-  const querySnapshot = await getDocs(q);
+  if (searchTerm) {
+    params.append("searchTerm", searchTerm);
+  }
 
-  return querySnapshot.docs.map((doc) => ({
-    ...(doc.data() as Omit<IThought, "id">),
-    author: (doc.data() as Omit<IThought, "id">).author,
-    message: (doc.data() as Omit<IThought, "id">).message,
-    color: (doc.data() as Omit<IThought, "id">).color,
-    id: doc.id,
-  }));
+  const response = await fetch(
+    `/api/thoughts${params.toString() ? `?${params.toString()}` : ""}`,
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.errors[0].message);
+  }
+
+  return data.map(convertThoughtDates);
 };
 
 const submitThought = async (
-  thought: Omit<IThought, "id" | "lowerCaseAuthor" | "createdAt">,
-) => {
-  if (thought.author.length > MAX_AUTHOR_LENGTH) {
-    throw new Error("Author is too long");
-  } else if (thought.message.length > MAX_MESSAGE_LENGTH) {
-    throw new Error("Message is too long");
+  data: Prisma.ThoughtCreateInput,
+): Promise<{ message: string }> => {
+  const response = await fetch("/api/thoughts", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      ...data,
+    }),
+  });
+
+  const dataResponse = await response.json();
+
+  if (!response.ok) {
+    console.log(dataResponse);
+
+    throw new Error(dataResponse.errors[0].message);
   }
 
-  const doc = await addDoc(thoughtsCollectionRef, {
-    ...thought,
-    lowerCaseAuthor: thought.author.toLowerCase(),
-    createdAt: serverTimestamp(),
-  } satisfies IThoughtSubmit);
-
-  return doc;
+  return dataResponse;
 };
 
 const getThoughtsCount = async (): Promise<number> => {
-  const snapshot = await getCountFromServer(thoughtsCollectionRef);
-  return snapshot.data().count;
-};
+  const response = await fetch("/api/thoughts/count");
+  const data = await response.json();
 
-const searchThoughts = async (searchTerm: string): Promise<IThought[]> => {
-  const searchString = searchTerm.toLowerCase();
-
-  const firstLetter = searchString[0];
-  let q = query(
-    thoughtsCollectionRef,
-    where("lowerCaseAuthor", ">=", searchString),
-    limit(THOUGHTS_PER_PAGE),
-  );
-
-  if (firstLetter < "z") {
-    const nextLetter = ((parseInt(firstLetter, 36) + 1) % 36).toString(36);
-    q = query(q, where("lowerCaseAuthor", "<", nextLetter));
+  if (!response.ok) {
+    throw new Error(data.errors[0].message);
   }
 
-  const results = await getDocs(q);
-
-  return results.docs.map((doc) => ({
-    ...(doc.data() as Omit<IThought, "id">),
-    id: doc.id,
-  }));
+  return data.count;
 };
 
-export {
-  MAX_AUTHOR_LENGTH,
-  MAX_MESSAGE_LENGTH,
-  fetchThoughts,
-  getThoughtsCount,
-  submitThought,
-  searchThoughts,
-};
+// const searchThoughts = async (searchTerm: string): Promise<Thought[]> => {
+//   const response = await fetch(
+//     `/api/thoughts?searchTerm=${encodeURIComponent(searchTerm)}`,
+//   );
+
+//   const data = await response.json();
+
+//   if (!response.ok) {
+//     throw new Error(data.errors[0].message);
+//   }
+
+//   return data.map(convertThoughtDates);
+// };
+
+export { getThoughts, getThoughtsCount, submitThought };
+
+export type { ThoughtFromServer };

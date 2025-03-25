@@ -1,0 +1,51 @@
+import { z } from "zod";
+import { Prisma } from "@prisma/client";
+
+import {
+  THOUGHT_MAX_AUTHOR_LENGTH,
+  THOUGHT_MAX_MESSAGE_LENGTH,
+  THOUGHT_MIN_AUTHOR_LENGTH,
+  THOUGHT_MIN_MESSAGE_LENGTH,
+} from "@/config/thought";
+import { containsUrl } from "@/utils/text";
+
+export const thoughtColorZod = z.enum([
+  "yellow",
+  "blue",
+  "red",
+  "violet",
+  "green",
+  "pink",
+]);
+
+export const thoughtInput = z.object({
+  author: z
+    .string()
+    .trim()
+    .min(
+      THOUGHT_MIN_AUTHOR_LENGTH,
+      `Author name must be at least ${THOUGHT_MIN_AUTHOR_LENGTH} characters long`,
+    )
+    .max(
+      THOUGHT_MAX_AUTHOR_LENGTH,
+      `Author name must be at most ${THOUGHT_MAX_AUTHOR_LENGTH} characters long`,
+    )
+    .refine((val) => !containsUrl(val), {
+      message: "Message cannot contain URLs",
+    }),
+  message: z
+    .string()
+    .trim()
+    .min(
+      THOUGHT_MIN_MESSAGE_LENGTH,
+      `Message must be at least ${THOUGHT_MIN_MESSAGE_LENGTH} characters long`,
+    )
+    .max(
+      THOUGHT_MAX_MESSAGE_LENGTH,
+      `Message must be at most ${THOUGHT_MAX_MESSAGE_LENGTH} characters long`,
+    )
+    .refine((val) => !containsUrl(val), {
+      message: "Message cannot contain URLs",
+    }),
+  color: thoughtColorZod,
+}) satisfies z.Schema<Prisma.ThoughtCreateInput>;
