@@ -32,12 +32,12 @@ export default function Home() {
   const [searchBarValue, setSearchBarValue] = useDebouncedState("", 250);
 
   const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-    isRefetching,
-    isRefetchError,
+    data: thoughtsData,
+    fetchNextPage: fetchThoughtsNextPage,
+    hasNextPage: hasThoughtsNextPage,
+    isFetching: isThoughtsFetching,
+    isRefetching: isThoughtsRefetching,
+    isRefetchError: isThoughtsError,
   } = useInfiniteQuery({
     queryKey: ["thoughts"],
     initialPageParam: undefined,
@@ -50,14 +50,27 @@ export default function Home() {
     },
   });
 
-  const { data: searchData, isFetching: isSearchFetching } = useQuery({
+  const {
+    data: searchData,
+    fetchNextPage: fetchSearchNextPage,
+    hasNextPage: hasSearchNextPage,
+    isFetching: isSearchFetching,
+    isRefetching: isSearchRefetching,
+    isRefetchError: isSearchRefetchError,
+  } = useInfiniteQuery({
     queryKey: ["thoughts", "search", searchBarValue],
-    queryFn: async () => {
+    initialPageParam: undefined,
+    queryFn: async ({ pageParam }: { pageParam: string | undefined }) => {
       if (!searchBarValue) return [];
 
-      return getThoughts({ searchTerm: searchBarValue });
+      return getThoughts({ lastId: pageParam, searchTerm: searchBarValue });
     },
     enabled: Boolean(searchBarValue),
+    getNextPageParam: (thoughts) => {
+      if (thoughts.length === 0) return undefined;
+
+      return thoughts[thoughts.length - 1].id;
+    },
   });
 
   const focusSearchBar = () => {
@@ -80,18 +93,18 @@ export default function Home() {
   //useEffect
   useEffect(() => {
     function handleScroll() {
-      if (isFetching) return;
+      if (isThoughtsFetching || isSearchFetching) return;
 
-      if (
-        searchBarValue.length === 0 &&
-        hasNextPage &&
+      const isNearBottom =
         window.innerHeight + window.scrollY >=
-          document.documentElement.scrollHeight - 500
-      ) {
-        fetchNextPage().catch((error) => {
-          console.error(error);
-        });
-      }
+        document.documentElement.scrollHeight - 500;
+
+      if (!isNearBottom) return;
+
+      if (searchBarValue.length > 0 && hasSearchNextPage) fetchSearchNextPage();
+
+      if (searchBarValue.length === 0 && hasThoughtsNextPage)
+        fetchThoughtsNextPage();
     }
 
     window.addEventListener("scroll", handleScroll);
@@ -99,10 +112,18 @@ export default function Home() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [isFetching, fetchNextPage, hasNextPage, searchBarValue.length]);
+  }, [
+    isThoughtsFetching,
+    isSearchFetching,
+    fetchThoughtsNextPage,
+    fetchSearchNextPage,
+    hasThoughtsNextPage,
+    hasSearchNextPage,
+    searchBarValue.length,
+  ]);
 
   useEffect(() => {
-    if (isRefetching) {
+    if (isThoughtsRefetching || isSearchRefetching) {
       notifications.show({
         id: "refetch-thoughts",
         loading: true,
@@ -111,7 +132,7 @@ export default function Home() {
         autoClose: false,
         withCloseButton: false,
       });
-    } else if (!isRefetchError) {
+    } else if (!isThoughtsError || !isSearchRefetchError) {
       notifications.update({
         id: "refetch-thoughts",
         loading: false,
@@ -133,7 +154,12 @@ export default function Home() {
         withCloseButton: true,
       });
     }
-  }, [isRefetching, isRefetchError]);
+  }, [
+    isThoughtsRefetching,
+    isSearchRefetching,
+    isThoughtsError,
+    isSearchRefetchError,
+  ]);
 
   return (
     <>
@@ -179,10 +205,16 @@ export default function Home() {
         <VisuallyHidden component="h1">Posts</VisuallyHidden>
 
         {searchRef.current?.value
-          ? searchData && <Thoughts thoughts={searchData} />
-          : data && (
+          ? searchData && (
               <Thoughts
-                thoughts={data.pages.reduce(
+                thoughts={searchData.pages.reduce((acc, page) =>
+                  acc.concat(page),
+                )}
+              />
+            )
+          : thoughtsData && (
+              <Thoughts
+                thoughts={thoughtsData.pages.reduce(
                   (acc, page) => acc.concat(page),
                   [],
                 )}
@@ -190,7 +222,7 @@ export default function Home() {
             )}
 
         <Group my="xl" h="2.25rem" justify="center">
-          {(isFetching || isSearchFetching) && <Loader />}
+          {(isThoughtsFetching || isSearchFetching) && <Loader />}
         </Group>
       </Box>
 
