@@ -1,5 +1,6 @@
-import { NoteColor } from "@/types/thought";
+import { thoughtColorZod } from "@/lib/validations/thought";
 
-export const getColorFallback = (color: NoteColor) => {
-  return Object.values(NoteColor).includes(color) ? color : NoteColor.Yellow;
+export const getColorFallback = (color: string) => {
+  const result = thoughtColorZod.safeParse(color);
+  return result.success ? result.data : "yellow";
 };

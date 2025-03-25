@@ -1,13 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Timestamp } from "firebase/firestore";
-import {
-  QueryFunctionContext,
-  QueryKey,
-  useInfiniteQuery,
-  useQuery,
-} from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
   Box,
   Button,
@@ -29,11 +23,7 @@ import { IconCheck, IconMessage, IconSearch, IconX } from "@tabler/icons-react";
 
 import Thoughts from "@/components/Thoughts";
 import SendThoughtModal from "@/components/SendThoughtModal";
-import {
-  fetchThoughts,
-  getThoughtsCount,
-  searchThoughts,
-} from "@/services/thought";
+import { getThoughts, getThoughtsCount } from "@/services/thought";
 
 export default function Home() {
   const [messageOpen, { open, close, toggle }] = useDisclosure(false);
@@ -51,14 +41,12 @@ export default function Home() {
   } = useInfiniteQuery({
     queryKey: ["thoughts"],
     initialPageParam: undefined,
-    queryFn: async ({
-      pageParam,
-    }: QueryFunctionContext<QueryKey, Timestamp | undefined>) =>
-      fetchThoughts(pageParam),
-    getNextPageParam: (lastPage) => {
-      if (lastPage.length === 0) return undefined;
+    queryFn: async ({ pageParam }: { pageParam: string | undefined }) =>
+      getThoughts({ lastId: pageParam }),
+    getNextPageParam: (thoughts) => {
+      if (thoughts.length === 0) return undefined;
 
-      return lastPage[lastPage.length - 1].createdAt;
+      return thoughts[thoughts.length - 1].id;
     },
   });
 
@@ -67,7 +55,7 @@ export default function Home() {
     queryFn: async () => {
       if (!searchBarValue) return [];
 
-      return searchThoughts(searchBarValue);
+      return getThoughts({ searchTerm: searchBarValue });
     },
     enabled: Boolean(searchBarValue),
   });

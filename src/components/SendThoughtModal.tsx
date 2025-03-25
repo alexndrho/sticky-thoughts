@@ -16,20 +16,20 @@ import {
   UnstyledButton,
   useMantineTheme,
 } from "@mantine/core";
-import { useForm } from "@mantine/form";
+import { useForm, zodResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useThrottledCallback } from "@mantine/hooks";
 import { IconDiceFilled } from "@tabler/icons-react";
 
 import { getQueryClient } from "@/app/providers";
+import { submitThought } from "@/services/thought";
 import {
-  MAX_AUTHOR_LENGTH,
-  MAX_MESSAGE_LENGTH,
-  submitThought,
-} from "@/services/thought";
-import { containsUrl, isTextValid } from "@/utils/text";
-import { NoteColor } from "@/types/thought";
+  THOUGHT_MAX_AUTHOR_LENGTH,
+  THOUGHT_MAX_MESSAGE_LENGTH,
+  THOUGHT_COLORS,
+} from "@/config/thought";
 import classes from "@/styles/send-thought-modal.module.css";
+import { thoughtInput } from "@/lib/validations/thought";
 
 const ANONYMOUS_AUTHOR = "Anonymous";
 
@@ -54,32 +54,9 @@ export default function SendThoughtModal({
         typeof window !== "undefined"
           ? localStorage.getItem("author") || ""
           : "",
-      color: NoteColor.Yellow,
+      color: THOUGHT_COLORS[0] as (typeof THOUGHT_COLORS)[number],
     },
-
-    validate: {
-      author: (value) => {
-        if (!(isAnonymous || isTextValid(value, 2))) {
-          return "Author is too short";
-        } else if (containsUrl(value)) {
-          return "Author cannot contain URLs";
-        }
-
-        return null;
-      },
-      message: (value) => {
-        if (!isTextValid(value, 5)) {
-          return "Message is too short";
-        } else if (containsUrl(value)) {
-          return "Message cannot contain URLs";
-        }
-
-        return null;
-      },
-      color: (value) =>
-        Object.values(NoteColor).includes(value) ? null : "Invalid color",
-    },
-
+    validate: zodResolver(thoughtInput),
     transformValues: (values) => ({
       ...values,
       author: isAnonymous ? ANONYMOUS_AUTHOR : values.author,
@@ -109,7 +86,7 @@ export default function SendThoughtModal({
     randomColorTimeoutRef.current = randomColorTimeout;
 
     // Get all colors except the current one.
-    const colors = Object.values(NoteColor).filter(
+    const colors = THOUGHT_COLORS.filter(
       (color) => color !== form.values.color,
     );
 
@@ -125,7 +102,7 @@ export default function SendThoughtModal({
         form.setInitialValues({
           message: "",
           author: values.author,
-          color: NoteColor.Yellow,
+          color: THOUGHT_COLORS[0],
         });
       }
 
@@ -172,7 +149,7 @@ export default function SendThoughtModal({
           mb="md"
           label="Author:"
           withAsterisk
-          maxLength={MAX_AUTHOR_LENGTH}
+          maxLength={THOUGHT_MAX_AUTHOR_LENGTH}
           disabled={isAnonymous || mutation.isPending}
           {...form.getInputProps("author")}
           value={isAnonymous ? ANONYMOUS_AUTHOR : form.values.author}
@@ -182,7 +159,7 @@ export default function SendThoughtModal({
           label={"Message:"}
           withAsterisk
           rows={5}
-          maxLength={MAX_MESSAGE_LENGTH}
+          maxLength={THOUGHT_MAX_MESSAGE_LENGTH}
           disabled={mutation.isPending}
           {...form.getInputProps("message")}
         />
@@ -191,8 +168,12 @@ export default function SendThoughtModal({
           mb="sm"
           size="sm"
           ta="right"
-          c={form.values.message.length >= MAX_MESSAGE_LENGTH ? "red" : ""}
-        >{`${form.values.message.length}/${MAX_MESSAGE_LENGTH}`}</Text>
+          c={
+            form.values.message.length >= THOUGHT_MAX_MESSAGE_LENGTH
+              ? "red"
+              : ""
+          }
+        >{`${form.values.message.length}/${THOUGHT_MAX_MESSAGE_LENGTH}`}</Text>
 
         <Switch
           mb="sm"
@@ -216,7 +197,7 @@ export default function SendThoughtModal({
             </span>
           </Tooltip>
 
-          {Object.values(NoteColor).map((color) => (
+          {THOUGHT_COLORS.map((color) => (
             <ColorSwatch
               aria-label={`thought-theme-${color}`}
               type="button"
