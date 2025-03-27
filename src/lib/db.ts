@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client/edge";
+import { PrismaClient } from "@prisma/client";
 import { createThoughtInput } from "./validations/thought";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
