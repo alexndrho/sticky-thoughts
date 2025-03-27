@@ -12,19 +12,6 @@ export const prisma =
           args.data = thoughtInput.parse(args.data);
           return query(args);
         },
-        update: ({ args, query }) => {
-          args.data = thoughtInput.partial().parse(args.data);
-          return query(args);
-        },
-        updateMany: ({ args, query }) => {
-          args.data = thoughtInput.partial().parse(args.data);
-          return query(args);
-        },
-        upsert: ({ args, query }) => {
-          args.create = thoughtInput.parse(args.create);
-          args.update = thoughtInput.partial().parse(args.update);
-          return query(args);
-        },
       },
     },
   });
