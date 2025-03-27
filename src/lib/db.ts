@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client/edge";
-import { thoughtInput } from "./validations/thought";
+import { createThoughtInput } from "./validations/thought";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
@@ -9,7 +9,7 @@ export const prisma =
     query: {
       thought: {
         create: ({ args, query }) => {
-          args.data = thoughtInput.parse(args.data);
+          args.data = createThoughtInput.parse(args.data);
           return query(args);
         },
       },

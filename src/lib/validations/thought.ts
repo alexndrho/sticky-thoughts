@@ -18,7 +18,7 @@ export const thoughtColorZod = z.enum([
   "pink",
 ]);
 
-export const thoughtInput = z.object({
+export const createThoughtInput = z.object({
   author: z
     .string()
     .trim()

@@ -29,7 +29,7 @@ import {
   THOUGHT_COLORS,
 } from "@/config/thought";
 import classes from "@/styles/send-thought-modal.module.css";
-import { thoughtInput } from "@/lib/validations/thought";
+import { createThoughtInput } from "@/lib/validations/thought";
 
 const ANONYMOUS_AUTHOR = "Anonymous";
 
@@ -56,7 +56,7 @@ export default function SendThoughtModal({
           : "",
       color: THOUGHT_COLORS[0] as (typeof THOUGHT_COLORS)[number],
     },
-    validate: zodResolver(thoughtInput),
+    validate: zodResolver(createThoughtInput),
     transformValues: (values) => ({
       ...values,
       author: isAnonymous ? ANONYMOUS_AUTHOR : values.author,
