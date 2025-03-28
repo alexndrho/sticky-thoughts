@@ -6,6 +6,7 @@ import {
   mantineHtmlProps,
   MantineProvider,
 } from "@mantine/core";
+import { Analytics } from "@vercel/analytics/next";
 import { Notifications } from "@mantine/notifications";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
@@ -42,8 +43,9 @@ export default function RootLayout({
 
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <MantineProvider defaultColorScheme="auto">
-          <Notifications />
           <Providers>{children}</Providers>
+          <Analytics />
+          <Notifications />
         </MantineProvider>
       </body>
     </html>
