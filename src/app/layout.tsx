@@ -12,6 +12,7 @@ import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 
 import Providers from "./providers";
+import { auth } from "@/lib/auth";
 import "./global.css";
 
 const geistSans = Geist({
@@ -30,11 +31,13 @@ export const metadata: Metadata = {
     "StickyThoughts is an online freedom wall where you can express yourself freely and share your thoughts and experiences with others.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+
   return (
     <html lang="en" {...mantineHtmlProps}>
       <head>
@@ -43,7 +46,7 @@ export default function RootLayout({
 
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <MantineProvider defaultColorScheme="auto">
-          <Providers>{children}</Providers>
+          <Providers session={session}>{children}</Providers>
           <Analytics />
           <Notifications />
         </MantineProvider>

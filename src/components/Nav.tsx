@@ -1,16 +1,20 @@
 "use client";
 
+import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   ActionIcon,
+  Avatar,
   Box,
   Button,
   Container,
+  Divider,
   Group,
   Menu,
   Text,
   Tooltip,
+  UnstyledButton,
   rem,
   useMantineColorScheme,
 } from "@mantine/core";
@@ -21,12 +25,17 @@ import {
   IconHome,
   IconAddressBook,
   IconInfoCircle,
+  IconUser,
+  IconLogin,
+  IconLogout,
 } from "@tabler/icons-react";
 import { useThrottledCallback } from "@mantine/hooks";
 
 import { getQueryClient } from "@/app/providers";
 
 export default function Nav() {
+  const { data: session } = useSession();
+
   const pathname = usePathname();
   const { setColorScheme } = useMantineColorScheme();
 
@@ -64,7 +73,7 @@ export default function Nav() {
           </Text>
 
           <Group>
-            <Group component="nav" display={{ base: "none", xs: "flex" }}>
+            <Group component="nav" display={{ base: "none", md: "flex" }}>
               <Button
                 component={Link}
                 href="/"
@@ -91,9 +100,45 @@ export default function Nav() {
               >
                 Contact
               </Button>
+
+              <Divider orientation="vertical" />
+
+              {session?.user ? (
+                <Menu>
+                  <Menu.Target>
+                    <Avatar component={UnstyledButton} />
+                  </Menu.Target>
+
+                  <Menu.Dropdown>
+                    <Menu.Item
+                      color="red"
+                      leftSection={<IconLogout size="1em" />}
+                      onClick={() => {
+                        signOut();
+                      }}
+                    >
+                      Log out
+                    </Menu.Item>
+                  </Menu.Dropdown>
+                </Menu>
+              ) : (
+                <>
+                  <Button
+                    component={Link}
+                    href="/signup"
+                    variant="outline"
+                    size="compact-sm"
+                  >
+                    Signup
+                  </Button>
+                  <Button component={Link} href="/login" size="compact-sm">
+                    Login
+                  </Button>
+                </>
+              )}
             </Group>
 
-            <Box display={{ base: "block", xs: "none" }}>
+            <Box display={{ base: "block", md: "none" }}>
               <Menu shadow="md" width={110}>
                 <Menu.Target>
                   <ActionIcon
@@ -106,6 +151,24 @@ export default function Nav() {
                 </Menu.Target>
 
                 <Menu.Dropdown>
+                  <Menu.Item
+                    component={Link}
+                    href="/login"
+                    leftSection={<IconLogin size="1em" />}
+                  >
+                    Login
+                  </Menu.Item>
+
+                  <Menu.Item
+                    component={Link}
+                    href="/signup"
+                    leftSection={<IconUser size="1em" />}
+                  >
+                    Signup
+                  </Menu.Item>
+
+                  <Menu.Divider />
+
                   <Menu.Item
                     component={Link}
                     href="/"
