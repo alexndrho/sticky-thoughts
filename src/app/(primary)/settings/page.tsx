@@ -3,7 +3,17 @@
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { useDisclosure } from "@mantine/hooks";
-import { Avatar, Box, Button, Flex, Text, Title, Tooltip } from "@mantine/core";
+import {
+  Avatar,
+  Box,
+  Button,
+  Divider,
+  Flex,
+  Skeleton,
+  Text,
+  Title,
+  Tooltip,
+} from "@mantine/core";
 
 import { getSettingsInfo } from "@/services/user";
 import UpdateUsernameModal from "@/components/user/UpdateUsernameModal";
@@ -61,27 +71,44 @@ export default function Settings() {
 
   return (
     <Box my="xl" w="100%">
-      <Title mb="xl">Settings</Title>
+      <Title order={2} mb="xs">
+        Account
+      </Title>
 
-      <Flex gap="xl">
-        <Flex flex={1} direction="column" gap="lg">
+      <Divider mb="lg" />
+
+      <Flex
+        direction={{ base: "column-reverse", sm: "row" }}
+        align={{ base: "center", sm: "start" }}
+        gap="xl"
+      >
+        <Flex
+          flex={{ base: 0, sm: 1 }}
+          direction="column"
+          w={{ base: "100%", sm: "auto" }}
+          gap="lg"
+        >
           {accountItems.map((item, index) => (
             <Flex
               key={index}
-              maw={500}
+              maw={{ base: "100%", sm: 500 }}
               justify="space-between"
               align="end"
               gap="md"
             >
-              <Box>
+              <Flex direction="column" gap={5}>
                 <Text size="lg" fw="bold" truncate>
                   {item.label}
                 </Text>
 
-                <Text truncate>{item.value || "No value set"}</Text>
-              </Box>
+                <Skeleton w="auto" miw={150} visible={query.isLoading}>
+                  <Text truncate>{item.value || "No value set"}</Text>
+                </Skeleton>
+              </Flex>
 
-              {item.action}
+              <Skeleton w="auto" visible={query.isLoading}>
+                {item.action}
+              </Skeleton>
             </Flex>
           ))}
         </Flex>

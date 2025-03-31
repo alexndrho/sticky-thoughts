@@ -9,6 +9,7 @@ import type { User } from "@prisma/client";
 import { updateUsernameInput } from "@/lib/validations/user";
 import { updateUsername } from "@/services/user";
 import { getQueryClient } from "@/app/providers";
+import ServerError from "@/utils/error/ServerError";
 
 export interface UpdateUsernameModalProps {
   opened: boolean;
@@ -49,6 +50,11 @@ export default function UpdateUsernameModal({
       onClose();
     },
     onError: (error) => {
+      if (error instanceof ServerError) {
+        form.setFieldError("username", error.issues.errors[0].message);
+        return;
+      }
+
       form.setFieldError("username", error.message);
     },
   });

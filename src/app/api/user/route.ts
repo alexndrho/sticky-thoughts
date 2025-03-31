@@ -5,6 +5,7 @@ import { ZodError } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { updateUserInput } from "@/lib/validations/user";
+import ServerError from "@/utils/error/ServerError";
 import type IError from "@/types/error";
 
 export const GET = auth(async (req) => {
@@ -63,6 +64,45 @@ export const PUT = auth(async (req) => {
   try {
     const { name, username } = updateUserInput.parse(await req.json());
 
+    if (username) {
+      const oldUser = await prisma.user.findUnique({
+        where: {
+          id: session.user.id,
+        },
+        select: {
+          usernameUpdatedAt: true,
+        },
+      });
+
+      if (!oldUser) {
+        return NextResponse.json(
+          {
+            errors: [{ code: "not-found", message: "User not found" }],
+          } satisfies IError,
+          { status: 404 },
+        );
+      } else if (oldUser?.usernameUpdatedAt) {
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+        if (oldUser.usernameUpdatedAt > oneWeekAgo) {
+          return NextResponse.json(
+            {
+              errors: [
+                {
+                  code: "user/username-too-frequent",
+                  message: "Username can only be updated once a week",
+                },
+              ],
+            } satisfies IError,
+            {
+              status: 400,
+            },
+          );
+        }
+      }
+    }
+
     await prisma.user.update({
       where: {
         id: session.user.id,
@@ -70,6 +110,7 @@ export const PUT = auth(async (req) => {
       data: {
         name,
         username,
+        usernameUpdatedAt: username ? new Date() : undefined,
       },
     });
 
@@ -110,6 +151,8 @@ export const PUT = auth(async (req) => {
           { status: 404 },
         );
       }
+    } else if (error instanceof ServerError) {
+      return NextResponse.json(error.issues satisfies IError, { status: 400 });
     }
 
     return NextResponse.json(
