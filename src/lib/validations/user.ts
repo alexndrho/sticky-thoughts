@@ -1,7 +1,17 @@
 import { z } from "zod";
-import type { Prisma } from "@prisma/client";
 
-export const createUserInput = z.object({
+export const updateNameInput = z.object({
+  name: z
+    .string({ required_error: "Name is required" })
+    .trim()
+    .max(50, "Name must be at most 50 characters long")
+    .regex(
+      /^$|^[a-zA-Z0-9_ ]+$/,
+      "Name can only contain letters, numbers, underscores, and spaces",
+    ),
+});
+
+export const updateUsernameInput = z.object({
   username: z
     .string({ required_error: "Username is required" })
     .trim()
@@ -19,18 +29,8 @@ export const createUserInput = z.object({
       /^$|^(?!_)(?!.*_$).*$/,
       "Username cannot start or end with an underscore",
     ),
-  email: z
-    .string({
-      required_error: "Email is required",
-    })
-    .email("Invalid email address"),
-  password: z
-    .string({ required_error: "Password is required" })
-    .min(8, "Password must be at least 8 characters long")
-    .max(50, "Password must be at most 50 characters long"),
-}) satisfies z.Schema<Prisma.UserCreateInput>;
-
-export const userLoginInput = z.object({
-  username: z.string({ required_error: "Username is required" }).min(3),
-  password: z.string({ required_error: "Password is required" }).min(8),
 });
+
+export const updateUserInput = updateNameInput
+  .merge(updateUsernameInput)
+  .partial();

@@ -25,9 +25,9 @@ import {
   IconHome,
   IconAddressBook,
   IconInfoCircle,
-  IconUser,
   IconLogin,
   IconLogout,
+  IconSettings,
 } from "@tabler/icons-react";
 import { useThrottledCallback } from "@mantine/hooks";
 
@@ -104,12 +104,26 @@ export default function Nav() {
               <Divider orientation="vertical" />
 
               {session?.user ? (
-                <Menu>
+                <Menu withArrow>
                   <Menu.Target>
-                    <Avatar component={UnstyledButton} />
+                    <Avatar
+                      component={UnstyledButton}
+                      size="md"
+                      src={session.user.image}
+                    />
                   </Menu.Target>
 
                   <Menu.Dropdown>
+                    <Menu.Item
+                      component={Link}
+                      href="/settings"
+                      leftSection={<IconSettings size="1em" />}
+                    >
+                      Settings
+                    </Menu.Item>
+
+                    <Menu.Divider />
+
                     <Menu.Item
                       color="red"
                       leftSection={<IconLogout size="1em" />}
@@ -123,17 +137,37 @@ export default function Nav() {
                 </Menu>
               ) : (
                 <>
-                  <Button
-                    component={Link}
-                    href="/signup"
-                    variant="outline"
-                    size="compact-sm"
+                  <Button component={Link} href="/signin" size="compact-sm">
+                    Sign in
+                  </Button>
+
+                  <Tooltip
+                    label="Dark mode"
+                    position="bottom"
+                    className="darkHidden"
                   >
-                    Signup
-                  </Button>
-                  <Button component={Link} href="/login" size="compact-sm">
-                    Login
-                  </Button>
+                    <ActionIcon
+                      aria-label="Toggle color scheme"
+                      variant="default"
+                      onClick={() => setColorScheme("dark")}
+                    >
+                      <IconMoon size="1em" />
+                    </ActionIcon>
+                  </Tooltip>
+
+                  <Tooltip
+                    label="Light mode"
+                    position="bottom"
+                    className="lightHidden"
+                  >
+                    <ActionIcon
+                      aria-label="Toggle color scheme"
+                      variant="default"
+                      onClick={() => setColorScheme("light")}
+                    >
+                      <IconSun size="1em" />
+                    </ActionIcon>
+                  </Tooltip>
                 </>
               )}
             </Group>
@@ -153,18 +187,10 @@ export default function Nav() {
                 <Menu.Dropdown>
                   <Menu.Item
                     component={Link}
-                    href="/login"
+                    href="/signin"
                     leftSection={<IconLogin size="1em" />}
                   >
-                    Login
-                  </Menu.Item>
-
-                  <Menu.Item
-                    component={Link}
-                    href="/signup"
-                    leftSection={<IconUser size="1em" />}
-                  >
-                    Signup
+                    Sign in
                   </Menu.Item>
 
                   <Menu.Divider />
@@ -193,32 +219,6 @@ export default function Nav() {
                 </Menu.Dropdown>
               </Menu>
             </Box>
-
-            <Tooltip label="Dark mode" position="bottom" className="darkHidden">
-              <ActionIcon
-                aria-label="Toggle color scheme"
-                variant="default"
-                size="lg"
-                onClick={() => setColorScheme("dark")}
-              >
-                <IconMoon size="1em" />
-              </ActionIcon>
-            </Tooltip>
-
-            <Tooltip
-              label="Light mode"
-              position="bottom"
-              className="lightHidden"
-            >
-              <ActionIcon
-                aria-label="Toggle color scheme"
-                variant="default"
-                size="lg"
-                onClick={() => setColorScheme("light")}
-              >
-                <IconSun size="1em" />
-              </ActionIcon>
-            </Tooltip>
           </Group>
         </Group>
       </Container>
