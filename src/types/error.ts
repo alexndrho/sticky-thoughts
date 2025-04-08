@@ -8,7 +8,8 @@ export type userCode = "user/username-too-frequent";
 
 export type validationCode =
   | "validation/unique-constraint"
-  | "validation/invalid-input";
+  | "validation/invalid-input"
+  | "validation/too-large";
 
 export type errorCode =
   | systemCode

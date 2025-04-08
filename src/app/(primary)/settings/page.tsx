@@ -9,18 +9,31 @@ import {
   Button,
   Divider,
   Flex,
+  Menu,
   Skeleton,
   Text,
   Title,
   Tooltip,
 } from "@mantine/core";
+import { IconEdit, IconPhoto, IconTrash } from "@tabler/icons-react";
 
-import { getSettingsInfo } from "@/services/user";
+import { getSettingsInfo, removeProfilePicture } from "@/services/user";
+import UploadProfilePictureModal from "@/components/user/UploadProfilePictureModal";
 import UpdateUsernameModal from "@/components/user/UpdateUsernameModal";
 import UpdateNameModal from "@/components/user/UpdateNameModal";
+import classes from "@/styles/settings.module.css";
+import { getQueryClient } from "@/app/providers";
 
 export default function Settings() {
-  const { data: session } = useSession();
+  const { data: session, update: updateSession } = useSession();
+
+  const [
+    uploadProfilePictureModalOpened,
+    {
+      open: openUploadProfilePictureModal,
+      close: closeUploadProfilePictureModal,
+    },
+  ] = useDisclosure(false);
 
   const [
     updateUsernameModalOpened,
@@ -36,6 +49,27 @@ export default function Settings() {
     queryKey: ["settings", session?.user?.id],
     queryFn: getSettingsInfo,
   });
+
+  const handleRemoveProfilePicture = async () => {
+    const image = await removeProfilePicture();
+
+    updateSession({
+      ...session?.user,
+      user: {
+        ...session?.user,
+        picture: image,
+      },
+    });
+
+    getQueryClient().setQueryData(["settings", session?.user?.id], (oldData) =>
+      oldData
+        ? {
+            ...oldData,
+            image,
+          }
+        : oldData,
+    );
+  };
 
   const accountItems = [
     {
@@ -58,6 +92,7 @@ export default function Settings() {
     },
     {
       label: "Email",
+      description: "This will not be shown to other users",
       value: query.data?.email,
       action: (
         <Tooltip label="Not available yet" withArrow>
@@ -71,7 +106,7 @@ export default function Settings() {
 
   return (
     <Box my="xl" w="100%">
-      <Title order={2} mb="xs">
+      <Title order={1} size="h2" mb="xs">
         Account
       </Title>
 
@@ -91,20 +126,27 @@ export default function Settings() {
           {accountItems.map((item, index) => (
             <Flex
               key={index}
-              maw={{ base: "100%", sm: 500 }}
+              maw={{ base: "none", sm: 500 }}
+              w="100%"
               justify="space-between"
               align="end"
               gap="md"
             >
-              <Flex direction="column" gap={5}>
+              <Box miw={0}>
                 <Text size="lg" fw="bold" truncate>
                   {item.label}
                 </Text>
 
+                {item.description && (
+                  <Text size="sm" c="dimmed">
+                    {item.description}
+                  </Text>
+                )}
+
                 <Skeleton w="auto" miw={150} visible={query.isLoading}>
                   <Text truncate>{item.value || "No value set"}</Text>
                 </Skeleton>
-              </Flex>
+              </Box>
 
               <Skeleton w="auto" visible={query.isLoading}>
                 {item.action}
@@ -113,8 +155,45 @@ export default function Settings() {
           ))}
         </Flex>
 
-        <Avatar src={session?.user?.image ?? undefined} w={200} h={200} />
+        <div className={classes["profile-picture-container"]}>
+          <Avatar src={query.data?.image} w={200} h={200} />
+
+          <Menu withArrow>
+            <Menu.Target>
+              <Button
+                variant="default"
+                className={classes["profile-picture-container__edit-button"]}
+                size="compact-md"
+                leftSection={<IconEdit size="1em" />}
+              >
+                Edit
+              </Button>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              <Menu.Item
+                leftSection={<IconPhoto size="1em" />}
+                onClick={openUploadProfilePictureModal}
+              >
+                Upload a photo
+              </Menu.Item>
+
+              <Menu.Item
+                color="red"
+                leftSection={<IconTrash size="1em" />}
+                onClick={handleRemoveProfilePicture}
+              >
+                Remove photo
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+        </div>
       </Flex>
+
+      <UploadProfilePictureModal
+        opened={uploadProfilePictureModalOpened}
+        onClose={closeUploadProfilePictureModal}
+      />
 
       <UpdateNameModal
         opened={updateEmailModalOpened}

@@ -13,6 +13,37 @@ export const getSettingsInfo = async (): Promise<User> => {
   return data;
 };
 
+export const uploadProfilePicture = async (
+  formData: FormData,
+): Promise<{ image: string }> => {
+  const res = await fetch("/api/user/profile-picture", {
+    method: "PUT",
+    body: formData,
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new ServerError("Profile picture upload error", data);
+  }
+
+  return data;
+};
+
+export const removeProfilePicture = async (): Promise<{ message: string }> => {
+  const res = await fetch("/api/user/profile-picture", {
+    method: "DELETE",
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new ServerError("Profile picture delete error", data);
+  }
+
+  return data;
+};
+
 export const updateName = async (
   name: string,
 ): Promise<{ message: string }> => {

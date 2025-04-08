@@ -22,7 +22,7 @@ export default function UpdateUsernameModal({
   onClose,
   defaultValue = "",
 }: UpdateUsernameModalProps) {
-  const { data: session } = useSession();
+  const { data: session, update: updateSession } = useSession();
 
   const form = useForm({
     initialValues: {
@@ -35,6 +35,14 @@ export default function UpdateUsernameModal({
     mutationFn: async (values: typeof form.values) =>
       await updateUsername(values.username),
     onSuccess: () => {
+      updateSession({
+        ...session,
+        user: {
+          ...session?.user,
+          username: form.values.username,
+        },
+      });
+
       getQueryClient().setQueryData(
         ["settings", session?.user?.id],
         (oldData: User | undefined) =>
@@ -75,7 +83,13 @@ export default function UpdateUsernameModal({
             {...form.getInputProps("username")}
           />
 
-          <Button type="submit">Update</Button>
+          <Button
+            type="submit"
+            loading={mutation.isPending}
+            disabled={!form.values.username}
+          >
+            Update
+          </Button>
         </Group>
       </form>
     </Modal>

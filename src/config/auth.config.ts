@@ -8,14 +8,21 @@ export default {
     newUser: "/create-username",
   },
   callbacks: {
-    jwt({ token, user }) {
+    jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
       }
+
+      if (trigger === "update" && session) {
+        return { ...token, ...session?.user };
+      }
+
       return token;
     },
     session({ session, token }) {
-      session.user.id = token.id;
+      if (token.id) {
+        session.user.id = token.id;
+      }
       return session;
     },
   },
