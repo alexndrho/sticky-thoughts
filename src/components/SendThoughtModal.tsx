@@ -47,6 +47,12 @@ export default function SendThoughtModal({
   const randomColorButtonRef = useRef<HTMLButtonElement>(null);
   const randomColorTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Store the author input in a state variable to prevent it from being
+  // reset when author is set to anonymous.
+  const [savedAuthorInput, setSavedAuthorInput] = useState(
+    typeof window !== "undefined" ? localStorage.getItem("author") || "" : "",
+  );
+
   const form = useForm({
     initialValues: {
       message: "",
@@ -57,10 +63,6 @@ export default function SendThoughtModal({
       color: THOUGHT_COLORS[0] as (typeof THOUGHT_COLORS)[number],
     },
     validate: zodResolver(createThoughtInput),
-    transformValues: (values) => ({
-      ...values,
-      author: isAnonymous ? ANONYMOUS_AUTHOR : values.author,
-    }),
   });
 
   const handleRandomColor = useThrottledCallback(() => {
@@ -138,6 +140,13 @@ export default function SendThoughtModal({
   const handleAnonymousChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
+    if (event.currentTarget.checked) {
+      form.setFieldValue("author", ANONYMOUS_AUTHOR);
+      setSavedAuthorInput(form.values.author);
+    } else {
+      form.setFieldValue("author", savedAuthorInput);
+    }
+
     setIsAnonymous(event.currentTarget.checked);
     form.clearFieldError("author");
   };
