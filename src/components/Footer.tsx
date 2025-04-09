@@ -67,15 +67,15 @@ export default function Footer() {
 
           <Flex direction="column">
             <Title order={2} size="h4">
-              Contact
+              Learn More
             </Title>
 
-            <Anchor href="mailto:ho.alexander.g@gmail.com">
-              ho.alexander.g@gmail.com
+            <Anchor component={Link} href="/about">
+              About
             </Anchor>
 
-            <Anchor href="https://alexndrho.dev/" target="_blank">
-              alexndrho.dev
+            <Anchor component={Link} href="/contact">
+              Contact
             </Anchor>
           </Flex>
         </Flex>

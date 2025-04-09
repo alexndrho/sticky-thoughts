@@ -28,6 +28,8 @@ model User {
   // Optional for WebAuthn support
   Authenticator     Authenticator[]
 
+  Forum Forum[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -85,4 +87,13 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
+}
+
+model Forum {
+  id       String @id @default(cuid())
+  title    String
+  body     String
+  authorId String
+
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }

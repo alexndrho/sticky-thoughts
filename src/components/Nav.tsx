@@ -85,20 +85,11 @@ export default function Nav() {
 
               <Button
                 component={Link}
-                href="/about"
+                href="/forum"
                 variant="subtle"
                 size="compact-sm"
               >
-                About
-              </Button>
-
-              <Button
-                component={Link}
-                href="/contact"
-                variant="subtle"
-                size="compact-sm"
-              >
-                Contact
+                Forum
               </Button>
 
               <Divider orientation="vertical" />
