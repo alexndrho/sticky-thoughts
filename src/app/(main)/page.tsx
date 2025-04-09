@@ -170,7 +170,7 @@ export default function Home() {
               <IconMessage />
 
               <Text fz="md" fw="bold">
-                {thoughtsCountData}{" "}
+                {thoughtsCountData?.toLocaleString()}{" "}
                 <Text span c="blue.6" inherit>
                   thoughts
                 </Text>{" "}
