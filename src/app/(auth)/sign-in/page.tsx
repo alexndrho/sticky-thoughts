@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "@mantine/form";
+import { isNotEmpty, useForm } from "@mantine/form";
 import {
   Anchor,
   Box,
@@ -27,8 +27,8 @@ export default function SignIn() {
       rememberMe: false,
     },
     validate: {
-      username: (value) => (value.length < 1 ? "Username is required" : null),
-      password: (value) => (value.length < 1 ? "Password is required" : null),
+      username: isNotEmpty("Username is required"),
+      password: isNotEmpty("Password is required"),
     },
   });
 

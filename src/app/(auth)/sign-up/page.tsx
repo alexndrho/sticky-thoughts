@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "@mantine/form";
+import { isEmail, isNotEmpty, useForm } from "@mantine/form";
 import Link from "next/link";
 import {
   Anchor,
@@ -25,9 +25,9 @@ export default function Signup() {
       password: "",
     },
     validate: {
-      email: (value) => (value.length < 1 ? "Email is required" : null),
-      username: (value) => (value.length < 1 ? "Username is required" : null),
-      password: (value) => (value.length < 1 ? "Password is required" : null),
+      email: isEmail("Invalid email"),
+      username: isNotEmpty("Username is required"),
+      password: isNotEmpty("Password is required"),
     },
   });
 
