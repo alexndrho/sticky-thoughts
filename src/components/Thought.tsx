@@ -19,7 +19,7 @@ export default function Thought({
   createdAt,
 }: NoteProps) {
   return (
-    <Tooltip label={getFormattedDate(createdAt)} withArrow>
+    <Tooltip label={getFormattedDate(createdAt)}>
       <Box
         role="article"
         bg={`${getColorFallback(color)}.6`}

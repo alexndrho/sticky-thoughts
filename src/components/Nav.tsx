@@ -90,7 +90,7 @@ export default function Nav() {
             </Group>
 
             {session ? (
-              <Menu withArrow>
+              <Menu>
                 <Menu.Target>
                   <Avatar
                     component={UnstyledButton}
@@ -118,7 +118,6 @@ export default function Nav() {
                   label="Dark mode"
                   position="bottom"
                   className="darkHidden"
-                  withArrow
                 >
                   <ActionIcon
                     aria-label="Toggle color scheme"
@@ -133,7 +132,6 @@ export default function Nav() {
                   label="Light mode"
                   position="bottom"
                   className="lightHidden"
-                  withArrow
                 >
                   <ActionIcon
                     aria-label="Toggle color scheme"

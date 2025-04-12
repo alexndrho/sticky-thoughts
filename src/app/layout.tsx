@@ -12,6 +12,7 @@ import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 
 import Providers from "./providers";
+import { theme } from "./theme";
 import "./global.css";
 
 const geistSans = Geist({
@@ -42,7 +43,7 @@ export default function RootLayout({
       </head>
 
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <MantineProvider defaultColorScheme="auto">
+        <MantineProvider defaultColorScheme="auto" theme={theme}>
           <Providers>{children}</Providers>
           <Analytics />
           <Notifications />
