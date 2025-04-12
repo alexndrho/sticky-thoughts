@@ -16,7 +16,12 @@ import {
   UnstyledButton,
   useMantineColorScheme,
 } from "@mantine/core";
-import { IconSun, IconMoon, IconLogout } from "@tabler/icons-react";
+import {
+  IconSun,
+  IconMoon,
+  IconLogout,
+  IconSettings,
+} from "@tabler/icons-react";
 import { useThrottledCallback } from "@mantine/hooks";
 
 import { authClient } from "@/lib/auth-client";
@@ -94,11 +99,21 @@ export default function Nav() {
                 <Menu.Target>
                   <Avatar
                     component={UnstyledButton}
-                    src={session.user?.image || ""}
+                    src={session.user?.image}
                   />
                 </Menu.Target>
 
                 <Menu.Dropdown>
+                  <Menu.Item
+                    component={Link}
+                    href="/settings"
+                    leftSection={<IconSettings size="1em" />}
+                  >
+                    Settings
+                  </Menu.Item>
+
+                  <Menu.Divider />
+
                   <Menu.Item
                     color="red"
                     leftSection={<IconLogout size="1em" />}

@@ -21,3 +21,8 @@ export const filterText = (text: string) => {
     return text;
   }
 };
+
+export const extractKeyFromUrl = (url: string) => {
+  const urlObj = new URL(url);
+  return decodeURIComponent(urlObj.pathname.slice(1));
+};

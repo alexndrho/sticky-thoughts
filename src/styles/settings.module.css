@@ -1,0 +1,9 @@
+.profile-picture-container {
+  position: relative;
+}
+
+.profile-picture-container__edit-button {
+  position: absolute;
+  bottom: 7.5%;
+  left: -7.5%;
+}
