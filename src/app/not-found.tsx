@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Button, Flex, Text, Title } from "@mantine/core";
 
-import Layout from "@/app/(main)/layout";
+import Layout from "@/app/(site)/layout";
 
 export const metadata: Metadata = {
   title: "Page Not Found - StickyThoughts | Online Freedom Wall",

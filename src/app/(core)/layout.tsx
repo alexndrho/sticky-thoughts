@@ -2,18 +2,15 @@ import { Box, Container, Flex } from "@mantine/core";
 
 import Nav from "@/components/Nav";
 import ScrollUpButton from "@/components/ScrollUpButton";
-import Footer from "@/components/Footer";
 
-export default function MainLayout({
+export default function CoreLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
     <Flex mih="100dvh" h="100%" direction="column">
-      <Nav
-      //  onRefetch={onRefetch}
-      />
+      <Nav />
 
       <Box flex={1}>
         <Container component="main" size="lg" h="100%">
@@ -22,7 +19,6 @@ export default function MainLayout({
       </Box>
 
       <ScrollUpButton />
-      <Footer />
     </Flex>
   );
 }
