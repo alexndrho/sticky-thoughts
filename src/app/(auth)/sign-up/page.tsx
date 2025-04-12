@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { isEmail, isNotEmpty, useForm } from "@mantine/form";
 import Link from "next/link";
@@ -17,6 +18,8 @@ import {
 import { authClient } from "@/lib/auth-client";
 
 export default function Signup() {
+  const router = useRouter();
+
   const form = useForm({
     initialValues: {
       name: "",
@@ -40,6 +43,8 @@ export default function Signup() {
 
         return;
       }
+
+      router.push("/");
     },
     onError: (error) => {
       console.error(error);
