@@ -21,6 +21,11 @@ import {
   IconMoon,
   IconLogout,
   IconSettings,
+  IconMenu,
+  IconHome,
+  IconInfoCircle,
+  IconAddressBook,
+  IconLogin,
 } from "@tabler/icons-react";
 import { useThrottledCallback } from "@mantine/hooks";
 
@@ -112,6 +117,22 @@ export default function Nav() {
                     Settings
                   </Menu.Item>
 
+                  <Menu.Item
+                    leftSection={<IconMoon size="1em" />}
+                    className="darkHidden"
+                    onClick={() => setColorScheme("dark")}
+                  >
+                    Dark mode
+                  </Menu.Item>
+
+                  <Menu.Item
+                    leftSection={<IconSun size="1em" />}
+                    className="lightHidden"
+                    onClick={() => setColorScheme("light")}
+                  >
+                    Light mode
+                  </Menu.Item>
+
                   <Menu.Divider />
 
                   <Menu.Item
@@ -125,9 +146,55 @@ export default function Nav() {
               </Menu>
             ) : (
               <>
-                <Button component={Link} href="/sign-in" size="compact-sm">
-                  Sign in
-                </Button>
+                <Box display={{ base: "none", xs: "block" }}>
+                  <Button component={Link} href="/sign-in" size="compact-sm">
+                    Sign in
+                  </Button>
+                </Box>
+
+                <Box display={{ base: "block", xs: "none" }}>
+                  <Menu>
+                    <Menu.Target>
+                      <ActionIcon aria-label="toggle menu" variant="default">
+                        <IconMenu size="1em" />
+                      </ActionIcon>
+                    </Menu.Target>
+
+                    <Menu.Dropdown>
+                      <Menu.Item
+                        component={Link}
+                        href="/sign-in"
+                        leftSection={<IconLogin size="1em" />}
+                      >
+                        Sign in
+                      </Menu.Item>
+
+                      <Menu.Divider />
+
+                      <Menu.Item
+                        component={Link}
+                        href="/"
+                        leftSection={<IconHome size="1em" />}
+                      >
+                        Home
+                      </Menu.Item>
+                      <Menu.Item
+                        component={Link}
+                        href="/about"
+                        leftSection={<IconInfoCircle size="1em" />}
+                      >
+                        About
+                      </Menu.Item>
+                      <Menu.Item
+                        component={Link}
+                        href="/contact"
+                        leftSection={<IconAddressBook size="1em" />}
+                      >
+                        Contact
+                      </Menu.Item>
+                    </Menu.Dropdown>
+                  </Menu>
+                </Box>
 
                 <Tooltip
                   label="Dark mode"
