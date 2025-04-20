@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title: "About - StickyThoughts | Online Freedom Wall",
 };
 
-export default function About() {
+export default function AboutPage() {
   return (
     <Flex py="7.5rem" align="center" gap="md">
       <Box>

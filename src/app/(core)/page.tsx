@@ -25,7 +25,7 @@ import Thoughts from "@/components/Thoughts";
 import SendThoughtModal from "@/components/SendThoughtModal";
 import { getThoughts, getThoughtsCount } from "@/services/thought";
 
-export default function Home() {
+export default function HomePage() {
   const [messageOpen, { open, close, toggle }] = useDisclosure(false);
 
   const searchRef = useRef<HTMLInputElement>(null);

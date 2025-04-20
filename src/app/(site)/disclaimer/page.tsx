@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Disclaimer - StickyThoughts | Online Freedom Wall",
 };
 
-export default function Disclaimer() {
+export default function DisclaimerPage() {
   return (
     <>
       <Title my="lg" fw="bold" ta="center">

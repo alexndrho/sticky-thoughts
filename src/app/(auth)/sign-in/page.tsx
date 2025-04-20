@@ -17,7 +17,7 @@ import {
 } from "@mantine/core";
 import { authClient } from "@/lib/auth-client";
 
-export default function SignIn() {
+export default function SignInPage() {
   const router = useRouter();
 
   const form = useForm({

@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: "Contact - StickyThoughts | Online Freedom Wall",
 };
 
-export default function Contact() {
+export default function ContactPage() {
   return (
     <Flex
       h="100%"

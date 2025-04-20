@@ -17,7 +17,7 @@ import {
 
 import { authClient } from "@/lib/auth-client";
 
-export default function Signup() {
+export default function SignUpPage() {
   const router = useRouter();
 
   const form = useForm({

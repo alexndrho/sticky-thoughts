@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Terms and Conditions - StickyThoughts | Online Freedom Wall",
 };
 
-export default function TermsAndConditions() {
+export default function TermsAndConditionsPage() {
   return (
     <>
       <Title my="lg" fw="bold" ta="center">

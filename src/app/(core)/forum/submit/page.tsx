@@ -21,7 +21,7 @@ import { submitForum } from "@/services/forum";
 import { FORM_BODY_MAX_LENGTH } from "@/lib/validations/form";
 import { useEffect } from "react";
 
-export default function ForumSubmit() {
+export default function ForumSubmitPage() {
   const router = useRouter();
   const { data: session, isPending: isSessionPending } =
     authClient.useSession();

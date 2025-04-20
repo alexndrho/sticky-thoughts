@@ -25,7 +25,7 @@ import { removeProfilePicture } from "@/services/user";
 import classes from "@/styles/settings.module.css";
 import { useEffect } from "react";
 
-export default function Settings() {
+export default function SettingsPage() {
   const router = useRouter();
 
   const {

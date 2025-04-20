@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Privacy Policy - StickyThoughts | Online Freedom Wall",
 };
 
-export default function PrivacyPolicy() {
+export default function PrivacyPolicyPage() {
   return (
     <>
       <Title my="lg" fw="bold" ta="center">
