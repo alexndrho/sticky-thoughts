@@ -27,6 +27,7 @@ model User {
   displayUsername String?
   sessions        Session[]
   accounts        Account[]
+  Forum           Forum[]
 
   @@unique([email])
   @@unique([username])
@@ -76,4 +77,15 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model Forum {
+  id       String @id @default(cuid())
+  title    String
+  body     String
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

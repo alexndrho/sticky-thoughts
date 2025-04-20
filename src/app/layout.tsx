@@ -10,6 +10,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { Notifications } from "@mantine/notifications";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
+import "@mantine/tiptap/styles.css";
 
 import Providers from "./providers";
 import { theme } from "./theme";

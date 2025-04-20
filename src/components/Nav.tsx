@@ -80,6 +80,15 @@ export default function Nav() {
 
               <Button
                 component={Link}
+                href="/forum"
+                variant="subtle"
+                size="compact-sm"
+              >
+                Forum
+              </Button>
+
+              {/* <Button
+                component={Link}
                 href="/about"
                 variant="subtle"
                 size="compact-sm"
@@ -94,7 +103,7 @@ export default function Nav() {
                 size="compact-sm"
               >
                 Contact
-              </Button>
+              </Button> */}
 
               <Divider orientation="vertical" />
             </Group>
