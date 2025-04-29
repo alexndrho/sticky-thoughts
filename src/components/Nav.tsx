@@ -11,7 +11,6 @@ import {
   Menu,
   Text,
   Tooltip,
-  rem,
   useMantineColorScheme,
 } from "@mantine/core";
 import {
@@ -25,6 +24,7 @@ import {
 import { useThrottledCallback } from "@mantine/hooks";
 
 import { getQueryClient } from "@/app/providers";
+import classes from "@/styles/nav.module.css";
 
 export default function Nav() {
   const pathname = usePathname();
@@ -37,12 +37,7 @@ export default function Nav() {
   }, 10000);
 
   return (
-    <Box
-      component="header"
-      style={{
-        borderBottom: `${rem(1)} solid var(--mantine-color-default-border)`,
-      }}
-    >
+    <Box component="header" className={classes.nav}>
       <Container h="4rem" size="xl">
         <Group h="100%" justify="space-between">
           <Text

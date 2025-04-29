@@ -4,6 +4,16 @@ body {
   height: 100%;
 }
 
+body {
+  @mixin light {
+    background-color: var(--mantine-color-gray-0);
+  }
+
+  @mixin dark {
+    background-color: var(--mantine-color-dark-8);
+  }
+}
+
 .lightHidden {
   @mixin light {
     display: none;

@@ -8,18 +8,14 @@ import {
   Group,
   Text,
   Title,
-  rem,
 } from "@mantine/core";
 import { IconCopyright } from "@tabler/icons-react";
 
+import classes from "@/styles/footer.module.css";
+
 export default function Footer() {
   return (
-    <Box
-      component="footer"
-      style={{
-        borderTop: `${rem(1)} solid var(--mantine-color-default-border)`,
-      }}
-    >
+    <Box component="footer" className={classes.footer}>
       <Container h="auto" size="xl" py="xl">
         <Flex
           direction={{ base: "column", lg: "row" }}
