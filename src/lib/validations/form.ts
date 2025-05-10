@@ -7,7 +7,7 @@ export const FORM_TITLE_MAX_LENGTH = 100;
 export const FORM_BODY_MIN_LENGTH = 1;
 export const FORM_BODY_MAX_LENGTH = 20000;
 
-export const createFormServerInput = z.object({
+export const createForumServerInput = z.object({
   title: z
     .string({
       required_error: "Title is required",
@@ -32,7 +32,7 @@ export const createFormServerInput = z.object({
       return sanitizeHtml(value, {
         allowedTags: [
           "p",
-          "h1",
+          // "h1",
           "h2",
           "strong",
           "em",
@@ -46,15 +46,14 @@ export const createFormServerInput = z.object({
           "br",
           "hr",
           "a",
-          // "img",
         ],
         allowedAttributes: {
           a: ["href", "target", "rel"],
-          // img: ["src", "alt", "title", "width", "height"],
         },
         allowedSchemes: ["http", "https", "mailto"],
         transformTags: {
           a: sanitizeHtml.simpleTransform("a", {
+            target: "_blank",
             rel: "noopener noreferrer",
           }),
         },
@@ -82,4 +81,8 @@ export const createFormServerInput = z.object({
         });
       }
     }),
+});
+
+export const updateForumServerInput = createForumServerInput.pick({
+  body: true,
 });

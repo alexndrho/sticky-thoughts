@@ -1,0 +1,12 @@
+.forum {
+  transition: all 0.3s ease;
+}
+
+.forum:hover {
+  transform: translateY(calc(-1 * var(--mantine-spacing-xs)));
+}
+
+.forum__content {
+  text-decoration: none;
+  color: inherit;
+}

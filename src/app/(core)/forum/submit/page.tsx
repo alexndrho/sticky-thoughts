@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "@mantine/form";
-import { RichTextEditor, Link } from "@mantine/tiptap";
 import {
   Button,
   Container,
@@ -12,14 +11,14 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import { useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Placeholder from "@tiptap/extension-placeholder";
 
 import { authClient } from "@/lib/auth-client";
-import { submitForum } from "@/services/forum";
+import { submitForumPost } from "@/services/forum";
 import { FORM_BODY_MAX_LENGTH } from "@/lib/validations/form";
 import { useEffect } from "react";
+import { useTiptapEditor } from "@/hooks/use-tiptap";
+import TextEditor from "@/components/TextEditor";
+import ServerError from "@/utils/error/ServerError";
 
 export default function ForumSubmitPage() {
   const router = useRouter();
@@ -57,17 +56,7 @@ export default function ForumSubmitPage() {
     },
   });
 
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Link.configure({
-        HTMLAttributes: {
-          target: null,
-        },
-      }),
-      Placeholder.configure({ placeholder: "Body" }),
-    ],
-    immediatelyRender: false,
+  const editor = useTiptapEditor({
     onUpdate: ({ editor }) => {
       form.setFieldValue("body", editor.getHTML());
     },
@@ -75,13 +64,13 @@ export default function ForumSubmitPage() {
   });
 
   const mutation = useMutation({
-    mutationFn: submitForum,
+    mutationFn: submitForumPost,
     onSuccess: ({ id }) => {
       router.push(`/forum/post/${id}`);
     },
     onError: (error) => {
-      if (error instanceof Error) {
-        form.setFieldError("root", error.message);
+      if (error instanceof ServerError) {
+        form.setFieldError("root", error.errors[0].message);
       }
     },
   });
@@ -93,71 +82,7 @@ export default function ForumSubmitPage() {
       <form onSubmit={form.onSubmit((value) => mutation.mutate(value))}>
         <TextInput label="Title" {...form.getInputProps("title")} />
 
-        <RichTextEditor
-          mt="md"
-          editor={editor}
-          style={{
-            borderColor: form.errors.body
-              ? "var(--mantine-color-error)"
-              : undefined,
-          }}
-        >
-          <RichTextEditor.Toolbar
-            sticky
-            style={{
-              borderColor: form.errors.body
-                ? "var(--mantine-color-error)"
-                : undefined,
-            }}
-          >
-            <RichTextEditor.ControlsGroup>
-              <RichTextEditor.Bold />
-              <RichTextEditor.Italic />
-              <RichTextEditor.Strikethrough />
-              <RichTextEditor.ClearFormatting />
-              <RichTextEditor.Code />
-            </RichTextEditor.ControlsGroup>
-
-            <RichTextEditor.ControlsGroup>
-              <RichTextEditor.H1 />
-              <RichTextEditor.H2 />
-            </RichTextEditor.ControlsGroup>
-
-            <RichTextEditor.ControlsGroup>
-              <RichTextEditor.Blockquote />
-              <RichTextEditor.Hr />
-              <RichTextEditor.BulletList />
-              <RichTextEditor.OrderedList />
-            </RichTextEditor.ControlsGroup>
-
-            <RichTextEditor.ControlsGroup>
-              <RichTextEditor.Link
-                styles={{
-                  linkEditorInput: {
-                    padding: 0,
-                  },
-                  linkEditorExternalControl: {
-                    display: "none",
-                  },
-                }}
-              />
-              <RichTextEditor.Unlink />
-            </RichTextEditor.ControlsGroup>
-
-            <RichTextEditor.ControlsGroup>
-              <RichTextEditor.Undo />
-              <RichTextEditor.Redo />
-            </RichTextEditor.ControlsGroup>
-          </RichTextEditor.Toolbar>
-
-          <RichTextEditor.Content />
-        </RichTextEditor>
-
-        {form.errors.body && (
-          <Text size="xs" c="red.8" mt={5}>
-            {form.errors.body}
-          </Text>
-        )}
+        <TextEditor editor={editor} error={form.errors.body} />
 
         {form.errors.root && (
           <Text mt="xs" size="xs" c="red.8">
