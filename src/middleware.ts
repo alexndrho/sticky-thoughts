@@ -12,5 +12,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/forum/submit", "/settings"],
+  matcher: ["/forum/submit(.*)", "/settings(.*)"],
 };
