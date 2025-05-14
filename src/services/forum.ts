@@ -52,8 +52,23 @@ export const getForumPost = async (id: string): Promise<ForumPostType> => {
   return dataResponse;
 };
 
-export const getForumPosts = async (): Promise<ForumPostType[]> => {
-  const response = await fetch("/api/forum", {
+export const getForumPosts = async ({
+  lastId,
+  searchTerm,
+}: {
+  lastId?: string;
+  searchTerm?: string;
+}): Promise<ForumPostType[]> => {
+  const params = new URLSearchParams();
+
+  if (lastId) {
+    params.append("lastId", lastId);
+  }
+  if (searchTerm) {
+    params.append("searchTerm", searchTerm);
+  }
+
+  const response = await fetch(`/api/forum?${params}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
