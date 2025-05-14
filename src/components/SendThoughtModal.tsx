@@ -21,7 +21,7 @@ import { notifications } from "@mantine/notifications";
 import { useThrottledCallback } from "@mantine/hooks";
 import { IconDiceFilled } from "@tabler/icons-react";
 
-import { getQueryClient } from "@/app/providers";
+import { getQueryClient } from "@/lib/get-query-client";
 import { submitThought } from "@/services/thought";
 import {
   THOUGHT_MAX_AUTHOR_LENGTH,

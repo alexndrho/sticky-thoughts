@@ -17,7 +17,7 @@ import {
 } from "@mantine/core";
 import { IconDots, IconEdit, IconTrash } from "@tabler/icons-react";
 
-import { getQueryClient } from "@/app/providers";
+import { getQueryClient } from "@/lib/get-query-client";
 import { authClient } from "@/lib/auth-client";
 import DeleteForumPostModal from "@/components/DeleteForumPostModal";
 import {

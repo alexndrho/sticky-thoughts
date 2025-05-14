@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { Button, Flex, Modal, Text } from "@mantine/core";
 
-import { getQueryClient } from "@/app/providers";
+import { getQueryClient } from "@/lib/get-query-client";
 import { deleteForumPost, ForumPostType } from "@/services/forum";
 
 export interface DeleteForumPostModalProps {
