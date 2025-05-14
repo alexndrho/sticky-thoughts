@@ -111,7 +111,7 @@ export default function PostPage() {
         <Flex align="center">
           <Avatar src={query.data?.author.image} mr="xs" size="sm" />
 
-          <Text>{query.data?.author.name}</Text>
+          <Text>{query.data?.author.name || query.data?.author.username}</Text>
         </Flex>
 
         <Menu>

@@ -102,6 +102,7 @@ export async function GET(req: NextRequest) {
         author: {
           select: {
             name: true,
+            username: true,
             image: true,
           },
         },

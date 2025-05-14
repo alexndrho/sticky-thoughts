@@ -97,18 +97,7 @@ export default function ForumPage() {
           ? !querySearchPosts.isFetching
             ? querySearchPosts.data?.pages
                 .reduce((acc, page) => acc.concat(page))
-                .map((post) => (
-                  <ForumPostItem
-                    key={post.id}
-                    id={post.id}
-                    title={post.title}
-                    body={post.body}
-                    author={{
-                      name: post.author.name,
-                      image: post.author.image,
-                    }}
-                  />
-                ))
+                .map((post) => <ForumPostItem key={post.id} post={post} />)
             : Array.from({ length: 5 }, (_, i) => (
                 <Skeleton
                   key={i}
@@ -121,18 +110,7 @@ export default function ForumPage() {
           : !queryPosts.isFetching
             ? queryPosts.data?.pages
                 .reduce((acc, page) => acc.concat(page))
-                .map((post) => (
-                  <ForumPostItem
-                    key={post.id}
-                    id={post.id}
-                    title={post.title}
-                    body={post.body}
-                    author={{
-                      name: post.author.name,
-                      image: post.author.image,
-                    }}
-                  />
-                ))
+                .map((post) => <ForumPostItem key={post.id} post={post} />)
             : Array.from({ length: 5 }, (_, i) => (
                 <Skeleton
                   key={i}

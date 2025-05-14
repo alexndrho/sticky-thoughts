@@ -7,6 +7,7 @@ export type ForumPostType = Prisma.ForumGetPayload<{
     author: {
       select: {
         name: true;
+        username: true;
         image: true;
       };
     };

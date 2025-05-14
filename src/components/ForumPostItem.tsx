@@ -3,23 +3,13 @@ import Link from "next/link";
 
 import { stripHtmlTags } from "@/utils/text";
 import classes from "@/styles/forum-post-item.module.css";
+import { type ForumPostType } from "@/services/forum";
 
 export interface ForumPostItemProps {
-  id: string;
-  title: string;
-  body: string;
-  author: {
-    name: string;
-    image?: string | null;
-  };
+  post: ForumPostType;
 }
 
-export default function ForumPostItem({
-  id,
-  title,
-  body,
-  author,
-}: ForumPostItemProps) {
+export default function ForumPostItem({ post }: ForumPostItemProps) {
   return (
     <Paper
       component="article"
@@ -31,22 +21,22 @@ export default function ForumPostItem({
     >
       <Flex
         component={Link}
-        href={`forum/post/${id}`}
+        href={`forum/post/${post.id}`}
         direction="column"
         className={classes.forum__content}
       >
         <header>
           <Flex align="center" gap="xs">
-            <Avatar src={author.image} size="xs" />
+            <Avatar src={post.author.image} size="xs" />
 
-            <Text size="sm">{author.name}</Text>
+            <Text size="sm">{post.author.name || post.author.username}</Text>
           </Flex>
           <Title order={2} size="h3" lineClamp={2}>
-            {title}
+            {post.title}
           </Title>
         </header>
 
-        <Text lineClamp={5}>{stripHtmlTags(body)}</Text>
+        <Text lineClamp={5}>{stripHtmlTags(post.body)}</Text>
       </Flex>
     </Paper>
   );

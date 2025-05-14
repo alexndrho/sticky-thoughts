@@ -23,6 +23,7 @@ export async function GET(
         author: {
           select: {
             name: true,
+            username: true,
             image: true,
           },
         },
@@ -92,6 +93,7 @@ export async function PUT(
         author: {
           select: {
             name: true,
+            username: true,
             image: true,
           },
         },
