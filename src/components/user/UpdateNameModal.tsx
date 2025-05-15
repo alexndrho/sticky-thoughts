@@ -28,7 +28,12 @@ export default function UpdateNameModal({
 
   const mutation = useMutation({
     mutationFn: (values: typeof form.values) => authClient.updateUser(values),
-    onSuccess: () => {
+    onSuccess: ({ error }) => {
+      if (error) {
+        form.setFieldError("root", error.message);
+        return;
+      }
+
       form.reset();
       onClose();
     },

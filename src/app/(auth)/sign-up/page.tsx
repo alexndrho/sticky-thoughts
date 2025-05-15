@@ -40,7 +40,6 @@ export default function SignUpPage() {
     onSuccess: ({ error }) => {
       if (error) {
         form.setFieldError("root", error.message);
-
         return;
       }
 
