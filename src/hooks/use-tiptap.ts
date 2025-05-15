@@ -25,7 +25,8 @@ const createTiptapExtensions = (placeholder: string) => [
   }),
   Link.configure({
     HTMLAttributes: {
-      target: null,
+      target: "_blank",
+      rel: "noopener noreferrer",
     },
   }),
   Placeholder.configure({ placeholder }),
