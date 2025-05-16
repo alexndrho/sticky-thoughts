@@ -1,20 +1,27 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useDebouncedState } from "@mantine/hooks";
+import { useDebouncedState, useDisclosure } from "@mantine/hooks";
 import { Box, Button, Flex, Input, Kbd, Skeleton } from "@mantine/core";
 import { IconMessage, IconSearch } from "@tabler/icons-react";
 
+import { authClient } from "@/lib/auth-client";
 import {
   forumInfiniteOptions,
   forumSearchInfiniteOptions,
 } from "@/lib/query-options/forum";
 import ForumPostItem from "@/components/ForumPostItem";
+import SignInWarningModal from "@/components/SignInWarningModal";
 
 export default function ForumPage() {
+  const { data: session } = authClient.useSession();
+  const router = useRouter();
+
   const [searchBarValue, setSearchBarValue] = useDebouncedState("", 250);
+  const [signInWarningModalOpened, signInWarningModalHandler] =
+    useDisclosure(false);
 
   const queryPosts = useInfiniteQuery(forumInfiniteOptions);
   const querySearchPosts = useInfiniteQuery(
@@ -49,6 +56,15 @@ export default function ForumPage() {
     };
   }, [queryPosts, querySearchPosts, searchBarValue]);
 
+  const handleClickSubmitPost = () => {
+    if (!session) {
+      signInWarningModalHandler.open();
+      return;
+    }
+
+    router.push("/forum/submit");
+  };
+
   return (
     <Box my="xl" w="100%">
       <Flex w="100%" mb="md" gap="md">
@@ -61,9 +77,8 @@ export default function ForumPage() {
         />
 
         <Button
-          component={Link}
-          href="/forum/submit"
           rightSection={<IconMessage size="1em" />}
+          onClick={handleClickSubmitPost}
         >
           Submit a post
         </Button>
@@ -82,6 +97,13 @@ export default function ForumPage() {
                 .map((post) => <ForumPostItem key={post.id} post={post} />)
             : queryPosts.isFetching && <PostsSkeleton />}
       </Flex>
+
+      {!session && (
+        <SignInWarningModal
+          opened={signInWarningModalOpened}
+          onClose={signInWarningModalHandler.close}
+        />
+      )}
     </Box>
   );
 }
