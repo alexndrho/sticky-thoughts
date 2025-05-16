@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useDebouncedState, useDisclosure } from "@mantine/hooks";
-import { Box, Button, Flex, Input, Kbd, Skeleton } from "@mantine/core";
+import { Box, Button, Flex, Input, Kbd } from "@mantine/core";
 import { IconMessage, IconSearch } from "@tabler/icons-react";
 
 import { authClient } from "@/lib/auth-client";
@@ -14,6 +14,7 @@ import {
 } from "@/lib/query-options/forum";
 import ForumPostItem from "@/components/ForumPostItem";
 import SignInWarningModal from "@/components/SignInWarningModal";
+import { ForumPostsSkeleton } from "./ForumPostsSkeleton";
 
 export default function ForumPage() {
   const { data: session } = authClient.useSession();
@@ -90,12 +91,12 @@ export default function ForumPage() {
             ? querySearchPosts.data?.pages
                 .reduce((acc, page) => acc.concat(page))
                 .map((post) => <ForumPostItem key={post.id} post={post} />)
-            : querySearchPosts.isFetching && <PostsSkeleton />
+            : querySearchPosts.isFetching && <ForumPostsSkeleton />
           : queryPosts.data
             ? queryPosts.data?.pages
                 .reduce((acc, page) => acc.concat(page))
                 .map((post) => <ForumPostItem key={post.id} post={post} />)
-            : queryPosts.isFetching && <PostsSkeleton />}
+            : queryPosts.isFetching && <ForumPostsSkeleton />}
       </Flex>
 
       {!session && (
@@ -107,13 +108,3 @@ export default function ForumPage() {
     </Box>
   );
 }
-
-export const PostsSkeleton = () => {
-  return (
-    <>
-      {Array.from({ length: 5 }, (_, i) => (
-        <Skeleton key={i} height={200} radius="lg" visible={true} />
-      ))}
-    </>
-  );
-};
