@@ -2,47 +2,24 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { useDebouncedState } from "@mantine/hooks";
 import { Box, Button, Flex, Input, Kbd, Skeleton } from "@mantine/core";
 import { IconMessage, IconSearch } from "@tabler/icons-react";
 
+import {
+  forumInfiniteOptions,
+  forumSearchInfiniteOptions,
+} from "@/lib/query-options/forum";
 import ForumPostItem from "@/components/ForumPostItem";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { getForumPosts } from "@/services/forum";
 
 export default function ForumPage() {
   const [searchBarValue, setSearchBarValue] = useDebouncedState("", 250);
 
-  const queryPosts = useInfiniteQuery({
-    queryKey: ["posts"],
-    initialPageParam: undefined,
-    queryFn: async ({ pageParam }: { pageParam: string | undefined }) =>
-      getForumPosts({ lastId: pageParam }),
-    getNextPageParam: (posts) => {
-      if (posts.length === 0) return undefined;
-
-      return posts[posts.length - 1].id;
-    },
-  });
-
-  const querySearchPosts = useInfiniteQuery({
-    queryKey: ["posts", "search", searchBarValue],
-    enabled: Boolean(searchBarValue),
-    initialPageParam: undefined,
-    queryFn: async ({ pageParam }: { pageParam: string | undefined }) => {
-      if (!searchBarValue) return [];
-
-      return await getForumPosts({
-        lastId: pageParam,
-        searchTerm: searchBarValue,
-      });
-    },
-    getNextPageParam: (posts) => {
-      if (posts.length === 0) return undefined;
-
-      return posts[posts.length - 1].id;
-    },
-  });
+  const queryPosts = useInfiniteQuery(forumInfiniteOptions);
+  const querySearchPosts = useInfiniteQuery(
+    forumSearchInfiniteOptions(searchBarValue),
+  );
 
   useEffect(() => {
     function handleScroll() {

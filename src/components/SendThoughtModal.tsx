@@ -22,6 +22,10 @@ import { useThrottledCallback } from "@mantine/hooks";
 import { IconDiceFilled } from "@tabler/icons-react";
 
 import { getQueryClient } from "@/lib/get-query-client";
+import {
+  thoughtInfiniteOptions,
+  thoughtOptions,
+} from "@/lib/query-options/thought";
 import { submitThought } from "@/services/thought";
 import {
   THOUGHT_MAX_AUTHOR_LENGTH,
@@ -122,9 +126,13 @@ export default function SendThoughtModal({
       });
     },
     onSuccess: () => {
-      getQueryClient()
-        .invalidateQueries({ queryKey: ["thoughts"] })
-        .catch(console.error);
+      getQueryClient().invalidateQueries({
+        queryKey: thoughtInfiniteOptions.queryKey,
+      });
+
+      getQueryClient().invalidateQueries({
+        queryKey: thoughtOptions.queryKey,
+      });
 
       notifications.show({
         title: "Thought submitted!",

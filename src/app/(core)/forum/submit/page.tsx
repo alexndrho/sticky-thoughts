@@ -13,8 +13,10 @@ import {
 } from "@mantine/core";
 
 import { authClient } from "@/lib/auth-client";
-import { submitForumPost } from "@/services/forum";
+import { getQueryClient } from "@/lib/get-query-client";
+import { forumInfiniteOptions } from "@/lib/query-options/forum";
 import { FORM_BODY_MAX_LENGTH } from "@/lib/validations/form";
+import { submitForumPost } from "@/services/forum";
 import { useEffect } from "react";
 import { useTiptapEditor } from "@/hooks/use-tiptap";
 import TextEditor from "@/components/TextEditor";
@@ -66,6 +68,9 @@ export default function ForumSubmitPage() {
   const mutation = useMutation({
     mutationFn: submitForumPost,
     onSuccess: ({ id }) => {
+      getQueryClient().invalidateQueries({
+        queryKey: forumInfiniteOptions.queryKey,
+      });
       router.push(`/forum/post/${id}`);
     },
     onError: (error) => {

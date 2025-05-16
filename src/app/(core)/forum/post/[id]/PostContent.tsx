@@ -20,6 +20,10 @@ import { IconDots, IconEdit, IconTrash } from "@tabler/icons-react";
 
 import { getQueryClient } from "@/lib/get-query-client";
 import { authClient } from "@/lib/auth-client";
+import {
+  forumInfiniteOptions,
+  forumPostOptions,
+} from "@/lib/query-options/forum";
 import DeleteForumPostModal from "@/components/DeleteForumPostModal";
 import {
   setTiptapEditable,
@@ -68,7 +72,7 @@ export default function PostContent({ id, post }: PostContentProps) {
       }),
     onSuccess: (data) => {
       getQueryClient().setQueryData(
-        ["forum", id],
+        forumPostOptions(id).queryKey,
         (oldData: ForumPostType | undefined) =>
           oldData
             ? {
@@ -78,15 +82,14 @@ export default function PostContent({ id, post }: PostContentProps) {
             : oldData,
       );
 
-      getQueryClient().setQueryData(
-        ["forum"],
-        (oldData: ForumPostType[] | undefined) =>
-          oldData
-            ? oldData.map((post) =>
-                post.id === id ? { ...post, ...data } : post,
-              )
-            : oldData,
-      );
+      getQueryClient().invalidateQueries({
+        queryKey: forumPostOptions(id).queryKey,
+        refetchType: "none",
+      });
+
+      getQueryClient().invalidateQueries({
+        queryKey: forumInfiniteOptions.queryKey,
+      });
     },
   });
 

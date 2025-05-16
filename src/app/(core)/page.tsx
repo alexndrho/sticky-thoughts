@@ -23,7 +23,11 @@ import { IconCheck, IconMessage, IconSearch, IconX } from "@tabler/icons-react";
 
 import Thoughts from "@/components/Thoughts";
 import SendThoughtModal from "@/components/SendThoughtModal";
-import { getThoughts, getThoughtsCount } from "@/services/thought";
+import {
+  thoughtCountOptions,
+  thoughtInfiniteOptions,
+  thoughtSearchInfiniteOptions,
+} from "@/lib/query-options/thought";
 
 export default function HomePage() {
   const [messageOpen, { open, close, toggle }] = useDisclosure(false);
@@ -38,17 +42,7 @@ export default function HomePage() {
     isFetching: isThoughtsFetching,
     isRefetching: isThoughtsRefetching,
     isRefetchError: isThoughtsError,
-  } = useInfiniteQuery({
-    queryKey: ["thoughts"],
-    initialPageParam: undefined,
-    queryFn: async ({ pageParam }: { pageParam: string | undefined }) =>
-      getThoughts({ lastId: pageParam }),
-    getNextPageParam: (thoughts) => {
-      if (thoughts.length === 0) return undefined;
-
-      return thoughts[thoughts.length - 1].id;
-    },
-  });
+  } = useInfiniteQuery(thoughtInfiniteOptions);
 
   const {
     data: searchData,
@@ -57,21 +51,7 @@ export default function HomePage() {
     isFetching: isSearchFetching,
     isRefetching: isSearchRefetching,
     isRefetchError: isSearchRefetchError,
-  } = useInfiniteQuery({
-    queryKey: ["thoughts", "search", searchBarValue],
-    initialPageParam: undefined,
-    queryFn: async ({ pageParam }: { pageParam: string | undefined }) => {
-      if (!searchBarValue) return [];
-
-      return getThoughts({ lastId: pageParam, searchTerm: searchBarValue });
-    },
-    enabled: Boolean(searchBarValue),
-    getNextPageParam: (thoughts) => {
-      if (thoughts.length === 0) return undefined;
-
-      return thoughts[thoughts.length - 1].id;
-    },
-  });
+  } = useInfiniteQuery(thoughtSearchInfiniteOptions(searchBarValue));
 
   const focusSearchBar = () => {
     searchRef.current?.focus();
@@ -83,12 +63,7 @@ export default function HomePage() {
   ]);
 
   const { data: thoughtsCountData, isFetched: thoughtsCountIsFetched } =
-    useQuery({
-      queryKey: ["thoughts", "count"],
-      queryFn: async () => {
-        return await getThoughtsCount();
-      },
-    });
+    useQuery(thoughtCountOptions);
 
   //useEffect
   useEffect(() => {

@@ -2,7 +2,8 @@ import { useMutation } from "@tanstack/react-query";
 import { Button, Flex, Modal, Text } from "@mantine/core";
 
 import { getQueryClient } from "@/lib/get-query-client";
-import { deleteForumPost, ForumPostType } from "@/services/forum";
+import { forumInfiniteOptions } from "@/lib/query-options/forum";
+import { deleteForumPost } from "@/services/forum";
 
 export interface DeleteForumPostModalProps {
   id: string;
@@ -24,13 +25,9 @@ export default function DeleteForumPostModal({
     onSuccess: () => {
       if (onDelete) onDelete();
 
-      getQueryClient().invalidateQueries({ queryKey: ["forum", id] });
-
-      getQueryClient().setQueryData(
-        ["forum"],
-        (oldData: ForumPostType[] | undefined) =>
-          oldData ? oldData.filter((post) => post.id !== id) : oldData,
-      );
+      getQueryClient().invalidateQueries({
+        queryKey: forumInfiniteOptions.queryKey,
+      });
 
       onClose();
     },
