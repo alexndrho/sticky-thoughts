@@ -71,33 +71,27 @@ export default function ForumPage() {
 
       <Flex direction="column" gap="md">
         {searchBarValue
-          ? !querySearchPosts.isFetching
+          ? querySearchPosts.data
             ? querySearchPosts.data?.pages
                 .reduce((acc, page) => acc.concat(page))
                 .map((post) => <ForumPostItem key={post.id} post={post} />)
-            : Array.from({ length: 5 }, (_, i) => (
-                <Skeleton
-                  key={i}
-                  height={200}
-                  radius="lg"
-                  visible={true}
-                  mb="md"
-                />
-              ))
-          : !queryPosts.isFetching
+            : querySearchPosts.isFetching && <PostsSkeleton />
+          : queryPosts.data
             ? queryPosts.data?.pages
                 .reduce((acc, page) => acc.concat(page))
                 .map((post) => <ForumPostItem key={post.id} post={post} />)
-            : Array.from({ length: 5 }, (_, i) => (
-                <Skeleton
-                  key={i}
-                  height={200}
-                  radius="lg"
-                  visible={true}
-                  mb="md"
-                />
-              ))}
+            : queryPosts.isFetching && <PostsSkeleton />}
       </Flex>
     </Box>
   );
 }
+
+export const PostsSkeleton = () => {
+  return (
+    <>
+      {Array.from({ length: 5 }, (_, i) => (
+        <Skeleton key={i} height={200} radius="lg" visible={true} />
+      ))}
+    </>
+  );
+};
