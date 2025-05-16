@@ -101,7 +101,7 @@ export default function SignInPage() {
           )}
 
           <Button fullWidth mt="lg" type="submit" loading={mutation.isPending}>
-            Log in
+            Sign in
           </Button>
         </form>
       </Paper>
