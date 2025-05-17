@@ -9,9 +9,9 @@ import PostSkeleton from "./PostSkeleton";
 import { NotFoundContent } from "@/app/not-found";
 
 export default function PostPage() {
-  const params = useParams<{ id: string }>();
+  const params = useParams<{ forumId: string }>();
 
-  const query = useQuery(forumPostOptions(params.id));
+  const query = useQuery(forumPostOptions(params.forumId));
 
   if (query.data) {
     return <PostContent id={query.data.id} post={query.data} />;
