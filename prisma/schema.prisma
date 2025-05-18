@@ -27,7 +27,7 @@ model User {
   displayUsername String?
   sessions        Session[]
   accounts        Account[]
-  Forum           Forum[]
+  forums          Forum[]
 
   @@unique([email])
   @@unique([username])
