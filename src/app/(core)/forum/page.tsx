@@ -94,8 +94,8 @@ export default function ForumPage() {
   };
 
   return (
-    <Box my="xl" w="100%">
-      <Flex w="100%" mb="md" gap="md">
+    <Box my="lg" w="100%">
+      <Flex w="100%" mb="lg" gap="md">
         <Input
           flex={1}
           placeholder="Search posts"
@@ -112,7 +112,7 @@ export default function ForumPage() {
         </Button>
       </Flex>
 
-      <Flex direction="column" gap="md">
+      <Flex direction="column" gap="lg">
         {searchBarValue
           ? querySearchPosts.data
             ? querySearchPosts.data?.pages

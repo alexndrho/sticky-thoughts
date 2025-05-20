@@ -148,7 +148,7 @@ export default function PostContent({ id, post }: PostContentProps) {
   };
 
   return (
-    <Box my="xl" w="100%">
+    <Box my="lg" w="100%">
       <Flex mb="xs" justify="space-between">
         <Flex align="center">
           <Avatar src={post.author.image} mr="xs" size="sm" />
