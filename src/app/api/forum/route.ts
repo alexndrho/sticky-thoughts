@@ -8,6 +8,7 @@ import { auth } from "@/lib/auth";
 import { FORUM_POSTS_PER_PAGE } from "@/config/post";
 import { createForumServerInput } from "@/lib/validations/form";
 import type IError from "@/types/error";
+import { ForumPostType } from "@/types/forum";
 
 export async function POST(req: Request) {
   try {
@@ -82,7 +83,11 @@ export async function GET(req: NextRequest) {
   const lastId = searchParams.get("lastId");
 
   try {
-    const posts = await prisma.forum.findMany({
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    const forums = await prisma.forum.findMany({
       take: FORUM_POSTS_PER_PAGE,
       skip: lastId ? 1 : 0,
       cursor: lastId
@@ -106,13 +111,40 @@ export async function GET(req: NextRequest) {
             image: true,
           },
         },
+        likes: session
+          ? {
+              where: {
+                userId: session.user.id,
+              },
+              select: {
+                userId: true,
+              },
+            }
+          : false,
+        _count: {
+          select: {
+            likes: true,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
       },
     });
 
-    return NextResponse.json(posts, { status: 200 });
+    const formattedPosts: ForumPostType[] = forums.map((post) => {
+      const { likes, _count, ...restForums } = post;
+
+      return {
+        ...restForums,
+        likes: {
+          liked: !!likes?.length,
+          count: _count.likes,
+        },
+      } satisfies ForumPostType;
+    });
+
+    return NextResponse.json(formattedPosts, { status: 200 });
   } catch (error) {
     console.error(error);
 

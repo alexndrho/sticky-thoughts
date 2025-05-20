@@ -7,12 +7,17 @@ import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import IError from "@/types/error";
 import { updateForumServerInput } from "@/lib/validations/form";
+import type { ForumPostType } from "@/types/forum";
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ forumId: string }> },
 ) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
     const { forumId } = await params;
 
     const forum = await prisma.forum.findUnique({
@@ -25,6 +30,21 @@ export async function GET(
             name: true,
             username: true,
             image: true,
+          },
+        },
+        likes: session
+          ? {
+              where: {
+                userId: session.user.id,
+              },
+              select: {
+                userId: true,
+              },
+            }
+          : false,
+        _count: {
+          select: {
+            likes: true,
           },
         },
       },
@@ -46,7 +66,17 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(forum);
+    const { likes, _count, ...restForum } = forum;
+
+    const formattedPost: ForumPostType = {
+      ...restForum,
+      likes: {
+        liked: !!likes?.length,
+        count: _count.likes,
+      },
+    };
+
+    return NextResponse.json(formattedPost);
   } catch (error) {
     console.error(error);
 

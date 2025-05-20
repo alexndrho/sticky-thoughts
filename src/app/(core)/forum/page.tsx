@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { useDebouncedState, useDisclosure } from "@mantine/hooks";
 import { Box, Button, Flex, Input, Kbd } from "@mantine/core";
 import { IconMessage, IconSearch } from "@tabler/icons-react";
@@ -12,9 +12,11 @@ import {
   forumInfiniteOptions,
   forumSearchInfiniteOptions,
 } from "@/lib/query-options/forum";
-import ForumPostItem from "@/components/ForumPostItem";
 import SignInWarningModal from "@/components/SignInWarningModal";
+import ForumPostItem from "./ForumPostItem";
 import { ForumPostsSkeleton } from "./ForumPostsSkeleton";
+import { likeForumPost, unlikeForumPost } from "@/services/forum";
+import { setForumQueryData } from "@/lib/set-query-data/forum";
 
 export default function ForumPage() {
   const { data: session } = authClient.useSession();
@@ -66,6 +68,31 @@ export default function ForumPage() {
     router.push("/forum/submit");
   };
 
+  const handleLikeMutation = useMutation({
+    mutationFn: async ({ id, like }: { id: string; like: boolean }) => {
+      if (like) {
+        await likeForumPost(id);
+      } else {
+        await unlikeForumPost(id);
+      }
+
+      return { id, like };
+    },
+
+    onSuccess: (data) => {
+      setForumQueryData(data);
+    },
+  });
+
+  const handleLike = ({ id, like }: { id: string; like: boolean }) => {
+    if (!session) {
+      signInWarningModalHandler.open();
+      return;
+    }
+
+    handleLikeMutation.mutate({ id, like });
+  };
+
   return (
     <Box my="xl" w="100%">
       <Flex w="100%" mb="md" gap="md">
@@ -90,12 +117,24 @@ export default function ForumPage() {
           ? querySearchPosts.data
             ? querySearchPosts.data?.pages
                 .reduce((acc, page) => acc.concat(page))
-                .map((post) => <ForumPostItem key={post.id} post={post} />)
+                .map((post) => (
+                  <ForumPostItem
+                    key={post.id}
+                    post={post}
+                    onLike={handleLike}
+                  />
+                ))
             : querySearchPosts.isFetching && <ForumPostsSkeleton />
           : queryPosts.data
             ? queryPosts.data?.pages
                 .reduce((acc, page) => acc.concat(page))
-                .map((post) => <ForumPostItem key={post.id} post={post} />)
+                .map((post) => (
+                  <ForumPostItem
+                    key={post.id}
+                    post={post}
+                    onLike={handleLike}
+                  />
+                ))
             : queryPosts.isFetching && <ForumPostsSkeleton />}
       </Flex>
 

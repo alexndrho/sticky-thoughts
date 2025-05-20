@@ -1,18 +1,7 @@
 import type { Prisma } from "@prisma/client";
 
 import { toServerError } from "@/utils/error/ServerError";
-
-export type ForumPostType = Prisma.ForumGetPayload<{
-  include: {
-    author: {
-      select: {
-        name: true;
-        username: true;
-        image: true;
-      };
-    };
-  };
-}>;
+import { ForumPostType } from "@/types/forum";
 
 export const submitForumPost = async (
   data: Omit<Prisma.ForumCreateInput, "author">,
@@ -125,6 +114,44 @@ export const deleteForumPost = async (
 
   if (!response.ok) {
     throw toServerError("Failed to delete forum post", data.errors);
+  }
+
+  return data;
+};
+
+export const likeForumPost = async (
+  id: string,
+): Promise<{ message: string }> => {
+  const response = await fetch(`/api/forum/${id}/like`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw toServerError("Failed to like forum post", data.errors);
+  }
+
+  return data;
+};
+
+export const unlikeForumPost = async (
+  id: string,
+): Promise<{ message: string }> => {
+  const response = await fetch(`/api/forum/${id}/like`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw toServerError("Failed to unlike forum post", data.errors);
   }
 
   return data;

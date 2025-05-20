@@ -12,6 +12,7 @@ import {
   Box,
   Button,
   Flex,
+  Group,
   Menu,
   Text,
   Title,
@@ -30,7 +31,16 @@ import {
   setTiptapNewContentState,
   useTiptapEditor,
 } from "@/hooks/use-tiptap";
-import { ForumPostType, updateForumPost } from "@/services/forum";
+import {
+  likeForumPost,
+  unlikeForumPost,
+  updateForumPost,
+} from "@/services/forum";
+import LikeButton from "@/components/LikeButton";
+import ShareButton from "@/components/ShareButton";
+import { ForumPostType } from "@/types/forum";
+import SignInWarningModal from "@/components/SignInWarningModal";
+import { setForumQueryData } from "@/lib/set-query-data/forum";
 
 export interface PostContentProps {
   id: string;
@@ -41,6 +51,8 @@ export default function PostContent({ id, post }: PostContentProps) {
   const router = useRouter();
 
   const { data: session } = authClient.useSession();
+  const [signInWarningModalOpened, signInWarningModalHandlers] =
+    useDisclosure(false);
   const [deleteModalOpened, deleteModalHandlers] = useDisclosure(false);
 
   const editor = useTiptapEditor({
@@ -48,6 +60,7 @@ export default function PostContent({ id, post }: PostContentProps) {
     content: post.body,
   });
 
+  // Content
   const setEditable = (editable: boolean) => {
     if (!editor) return;
 
@@ -105,6 +118,33 @@ export default function PostContent({ id, post }: PostContentProps) {
 
     updateMutation.mutate({ body });
     setEditable(false);
+  };
+
+  // Like
+  const handleLikeMutation = useMutation({
+    mutationFn: () => {
+      if (post.likes.liked) {
+        return unlikeForumPost(id);
+      } else {
+        return likeForumPost(id);
+      }
+    },
+
+    onSuccess: () => {
+      setForumQueryData({
+        id: post.id,
+        like: !post.likes.liked,
+      });
+    },
+  });
+
+  const handleLike = () => {
+    if (!session) {
+      signInWarningModalHandlers.open();
+      return;
+    }
+
+    handleLikeMutation.mutate();
   };
 
   return (
@@ -170,6 +210,20 @@ export default function PostContent({ id, post }: PostContentProps) {
         </Flex>
       )}
 
+      <Group mt="xl">
+        <LikeButton
+          liked={post.likes.liked}
+          count={post.likes.count}
+          onLike={handleLike}
+          size="compact-sm"
+        />
+
+        <ShareButton
+          size="compact-sm"
+          link={`${process.env.NEXT_PUBLIC_BASE_URL}/forum/post/${post.id}`}
+        />
+      </Group>
+
       {post.authorId === session?.user.id && (
         <DeleteForumPostModal
           id={post.id}
@@ -177,6 +231,13 @@ export default function PostContent({ id, post }: PostContentProps) {
           opened={deleteModalOpened}
           onClose={deleteModalHandlers.close}
           onDelete={() => router.push("/forum")}
+        />
+      )}
+
+      {!session && (
+        <SignInWarningModal
+          opened={signInWarningModalOpened}
+          onClose={signInWarningModalHandlers.close}
         />
       )}
     </Box>

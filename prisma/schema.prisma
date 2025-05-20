@@ -16,7 +16,7 @@ model Thought {
 }
 
 model User {
-  id              String    @id
+  id              String      @id
   name            String
   email           String
   emailVerified   Boolean
@@ -28,6 +28,7 @@ model User {
   sessions        Session[]
   accounts        Account[]
   forums          Forum[]
+  forumLikes      ForumLike[]
 
   @@unique([email])
   @@unique([username])
@@ -80,12 +81,25 @@ model Verification {
 }
 
 model Forum {
-  id       String @id @default(cuid())
+  id       String      @id @default(cuid())
   title    String
   body     String
   authorId String
-  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author   User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  likes    ForumLike[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model ForumLike {
+  id      String @id @default(uuid())
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  forumId String
+  forum   Forum  @relation(fields: [forumId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, forumId])
 }
