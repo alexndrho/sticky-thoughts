@@ -1,9 +1,11 @@
 import { Skeleton } from "@mantine/core";
 
+import { FORUM_POSTS_PER_PAGE } from "@/config/post";
+
 export function ForumPostsSkeleton() {
   return (
     <>
-      {Array.from({ length: 5 }, (_, i) => (
+      {Array.from({ length: FORUM_POSTS_PER_PAGE }, (_, i) => (
         <Skeleton key={i} height={200} visible={true} />
       ))}
     </>
