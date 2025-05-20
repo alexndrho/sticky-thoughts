@@ -58,8 +58,8 @@ export async function POST(req: Request) {
           {
             errors: [
               {
-                code: "validation/unique-constraint",
-                message: "Box name must be unique",
+                code: "forum/title-already-exists",
+                message: "Post name must be unique",
               },
             ],
           } satisfies IError,

@@ -75,7 +75,13 @@ export default function ForumSubmitPage() {
     },
     onError: (error) => {
       if (error instanceof ServerError) {
-        form.setFieldError("root", error.errors[0].message);
+        error.errors.forEach((err) => {
+          if (err.code === "forum/title-already-exists") {
+            form.setFieldError("title", err.message);
+          } else {
+            form.setFieldError("root", err.message);
+          }
+        });
       }
     },
   });

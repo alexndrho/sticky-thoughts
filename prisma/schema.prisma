@@ -90,6 +90,8 @@ model Forum {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([authorId, title])
 }
 
 model ForumLike {
