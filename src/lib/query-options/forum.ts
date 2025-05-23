@@ -1,8 +1,12 @@
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 
-import { getForumPost, getForumPosts } from "@/services/forum";
+import {
+  getForumComments,
+  getForumPost,
+  getForumPosts,
+} from "@/services/forum";
 
-// query options
+// forum
 export const forumOptions = queryOptions({
   queryKey: ["forum"],
 });
@@ -14,7 +18,6 @@ export const forumPostOptions = (id: string) => {
   });
 };
 
-// infinite query options
 export const forumInfiniteOptions = infiniteQueryOptions({
   queryKey: ["infiniteForum"],
   initialPageParam: undefined,
@@ -44,6 +47,21 @@ export const forumSearchInfiniteOptions = (search: string) => {
       if (posts.length === 0) return undefined;
 
       return posts[posts.length - 1].id;
+    },
+  });
+};
+
+// forum comments
+export const forumPostCommentsInfiniteOptions = (forumId: string) => {
+  return infiniteQueryOptions({
+    queryKey: [...forumOptions.queryKey, forumId, "comments"],
+    initialPageParam: undefined,
+    queryFn: async ({ pageParam }: { pageParam: string | undefined }) =>
+      getForumComments({ id: forumId, lastId: pageParam }),
+    getNextPageParam: (comments) => {
+      if (comments.length === 0) return undefined;
+
+      return comments[comments.length - 1].id;
     },
   });
 };

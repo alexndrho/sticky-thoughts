@@ -4,6 +4,7 @@ import Link from "next/link";
 import { stripHtmlTags } from "@/utils/text";
 import classes from "@/styles/forum-post-item.module.css";
 import LikeButton from "@/components/LikeButton";
+import CommentButton from "@/components/CommentButton";
 import ShareButton from "@/components/ShareButton";
 import type { ForumPostType } from "@/types/forum";
 
@@ -48,6 +49,13 @@ export default function ForumPostItem({ post, onLike }: ForumPostItemProps) {
               like: !post.likes.liked,
             });
           }}
+        />
+
+        <CommentButton
+          component={Link}
+          href={`forum/post/${post.id}`}
+          count={post.comments.count}
+          size="compact-sm"
         />
 
         <ShareButton

@@ -15,7 +15,7 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { getQueryClient } from "@/lib/get-query-client";
 import { forumInfiniteOptions } from "@/lib/query-options/forum";
-import { FORM_BODY_MAX_LENGTH } from "@/lib/validations/form";
+import { FORUM_BODY_MAX_LENGTH } from "@/lib/validations/form";
 import { submitForumPost } from "@/services/forum";
 import { useEffect } from "react";
 import { useTiptapEditor } from "@/hooks/use-tiptap";
@@ -50,9 +50,9 @@ export default function ForumSubmitPage() {
           return "Body is required";
         } else if (
           (editor?.getText()?.trim().split(/\s+/).length ?? 0) >
-          FORM_BODY_MAX_LENGTH
+          FORUM_BODY_MAX_LENGTH
         ) {
-          return `Body must be at most ${FORM_BODY_MAX_LENGTH.toLocaleString()} characters long`;
+          return `Body must be at most ${FORUM_BODY_MAX_LENGTH.toLocaleString()} characters long`;
         }
       },
     },

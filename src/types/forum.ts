@@ -17,12 +17,39 @@ export type BaseForumPostType = Prisma.ForumGetPayload<{
     _count: {
       select: {
         likes: true;
+        comments: true;
       };
     };
   };
 }>;
 
 export type ForumPostType = Omit<BaseForumPostType, "likes" | "_count"> & {
+  likes: {
+    liked: boolean;
+    count: number;
+  };
+  comments: {
+    count: number;
+  };
+};
+
+export type BaseForumPostCommentType = Prisma.ForumCommentGetPayload<{
+  include: {
+    author: {
+      select: {
+        id: true;
+        name: true;
+        username: true;
+        image: true;
+      };
+    };
+  };
+}>;
+
+export type ForumPostCommentType = Omit<
+  BaseForumPostCommentType,
+  "likes" | "_count"
+> & {
   likes: {
     liked: boolean;
     count: number;

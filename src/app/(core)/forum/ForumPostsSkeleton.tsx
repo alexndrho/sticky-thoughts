@@ -1,6 +1,6 @@
 import { Skeleton } from "@mantine/core";
 
-import { FORUM_POSTS_PER_PAGE } from "@/config/post";
+import { FORUM_POSTS_PER_PAGE } from "@/config/forum";
 
 export function ForumPostsSkeleton() {
   return (

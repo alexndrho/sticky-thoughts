@@ -16,19 +16,21 @@ model Thought {
 }
 
 model User {
-  id              String      @id
-  name            String
-  email           String
-  emailVerified   Boolean
-  image           String?
-  createdAt       DateTime
-  updatedAt       DateTime
-  username        String?
-  displayUsername String?
-  sessions        Session[]
-  accounts        Account[]
-  forums          Forum[]
-  forumLikes      ForumLike[]
+  id                String             @id
+  name              String
+  email             String
+  emailVerified     Boolean
+  image             String?
+  createdAt         DateTime
+  updatedAt         DateTime
+  username          String?
+  displayUsername   String?
+  sessions          Session[]
+  accounts          Account[]
+  forums            Forum[]
+  forumLikes        ForumLike[]
+  forumComments     ForumComment[]
+  ForumCommentLikes ForumCommentLike[]
 
   @@unique([email])
   @@unique([username])
@@ -81,12 +83,13 @@ model Verification {
 }
 
 model Forum {
-  id       String      @id @default(cuid())
+  id       String         @id @default(cuid())
   title    String
   body     String
   authorId String
-  author   User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author   User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
   likes    ForumLike[]
+  comments ForumComment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -104,4 +107,29 @@ model ForumLike {
   createdAt DateTime @default(now())
 
   @@unique([userId, forumId])
+}
+
+model ForumComment {
+  id       String             @id @default(cuid())
+  body     String
+  authorId String
+  author   User               @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  forumId  String
+  forum    Forum              @relation(fields: [forumId], references: [id], onDelete: Cascade)
+  likes    ForumCommentLike[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ForumCommentLike {
+  id        String       @id @default(uuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  commentId String
+  comment   ForumComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, commentId])
 }

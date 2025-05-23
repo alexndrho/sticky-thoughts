@@ -5,7 +5,7 @@ import { ZodError } from "zod";
 
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
-import { FORUM_POSTS_PER_PAGE } from "@/config/post";
+import { FORUM_POSTS_PER_PAGE } from "@/config/forum";
 import { createForumServerInput } from "@/lib/validations/form";
 import type IError from "@/types/error";
 import { ForumPostType } from "@/types/forum";
@@ -124,6 +124,7 @@ export async function GET(req: NextRequest) {
         _count: {
           select: {
             likes: true,
+            comments: true,
           },
         },
       },
@@ -140,6 +141,9 @@ export async function GET(req: NextRequest) {
         likes: {
           liked: !!likes?.length,
           count: _count.likes,
+        },
+        comments: {
+          count: _count.comments,
         },
       } satisfies ForumPostType;
     });

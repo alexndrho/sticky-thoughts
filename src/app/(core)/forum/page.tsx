@@ -16,7 +16,7 @@ import SignInWarningModal from "@/components/SignInWarningModal";
 import ForumPostItem from "./ForumPostItem";
 import { ForumPostsSkeleton } from "./ForumPostsSkeleton";
 import { likeForumPost, unlikeForumPost } from "@/services/forum";
-import { setForumQueryData } from "@/lib/set-query-data/forum";
+import { setLikeForumQueryData } from "@/lib/set-query-data/forum";
 
 export default function ForumPage() {
   const { data: session } = authClient.useSession();
@@ -80,7 +80,7 @@ export default function ForumPage() {
     },
 
     onSuccess: (data) => {
-      setForumQueryData(data);
+      setLikeForumQueryData(data);
     },
   });
 

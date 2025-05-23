@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { type Prisma } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
@@ -25,6 +25,7 @@ import {
   forumInfiniteOptions,
   forumPostOptions,
 } from "@/lib/query-options/forum";
+import CommentSection, { type CommentSectionRef } from "./CommentSection";
 import DeleteForumPostModal from "@/components/DeleteForumPostModal";
 import {
   setTiptapEditable,
@@ -37,10 +38,11 @@ import {
   updateForumPost,
 } from "@/services/forum";
 import LikeButton from "@/components/LikeButton";
+import CommentButton from "@/components/CommentButton";
 import ShareButton from "@/components/ShareButton";
 import { ForumPostType } from "@/types/forum";
 import SignInWarningModal from "@/components/SignInWarningModal";
-import { setForumQueryData } from "@/lib/set-query-data/forum";
+import { setLikeForumQueryData } from "@/lib/set-query-data/forum";
 
 export interface PostContentProps {
   id: string;
@@ -54,6 +56,8 @@ export default function PostContent({ id, post }: PostContentProps) {
   const [signInWarningModalOpened, signInWarningModalHandlers] =
     useDisclosure(false);
   const [deleteModalOpened, deleteModalHandlers] = useDisclosure(false);
+
+  const commentSectionRef = useRef<CommentSectionRef>(null);
 
   const editor = useTiptapEditor({
     editable: false,
@@ -131,7 +135,7 @@ export default function PostContent({ id, post }: PostContentProps) {
     },
 
     onSuccess: () => {
-      setForumQueryData({
+      setLikeForumQueryData({
         id: post.id,
         like: !post.likes.liked,
       });
@@ -210,7 +214,7 @@ export default function PostContent({ id, post }: PostContentProps) {
         </Flex>
       )}
 
-      <Group mt="xl">
+      <Group my="md">
         <LikeButton
           liked={post.likes.liked}
           count={post.likes.count}
@@ -218,11 +222,24 @@ export default function PostContent({ id, post }: PostContentProps) {
           size="compact-sm"
         />
 
+        <CommentButton
+          count={post.comments.count}
+          size="compact-sm"
+          onClick={() => commentSectionRef.current?.editor?.commands.focus()}
+        />
+
         <ShareButton
           size="compact-sm"
           link={`${process.env.NEXT_PUBLIC_BASE_URL}/forum/post/${post.id}`}
         />
       </Group>
+
+      <CommentSection
+        ref={commentSectionRef}
+        postId={post.id}
+        session={session}
+        onOpenSignInWarningModal={signInWarningModalHandlers.open}
+      />
 
       {post.authorId === session?.user.id && (
         <DeleteForumPostModal
