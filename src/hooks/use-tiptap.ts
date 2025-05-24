@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import {
   useEditor,
   type Content,
@@ -13,8 +13,6 @@ import { EditorState } from "@tiptap/pm/state";
 export interface UseTiptapEditorProps extends UseEditorOptions {
   value?: Content;
   placeholder?: string;
-  // debounceDelay?: number;
-  // onBlur?: (content: Content) => void;
 }
 
 const createTiptapExtensions = (placeholder: string) => [
@@ -34,7 +32,6 @@ const createTiptapExtensions = (placeholder: string) => [
 
 export const useTiptapEditor = ({
   value,
-  editable = true,
   placeholder = "",
   ...props
 }: UseTiptapEditorProps) => {
@@ -53,19 +50,6 @@ export const useTiptapEditor = ({
     onCreate: ({ editor }) => handleCreate(editor),
     ...props,
   });
-
-  useEffect(() => {
-    if (editor && !editor.isDestroyed) {
-      editor.options.editable = editable;
-      editor.view.update(editor.view.props);
-
-      if (editable) {
-        editor.view.dom.focus();
-      } else {
-        editor.commands.blur();
-      }
-    }
-  }, [editor, editable]);
 
   return editor;
 };

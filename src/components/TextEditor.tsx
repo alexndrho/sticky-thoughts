@@ -20,15 +20,6 @@ export default function TextEditor({ editor, error }: TextEditorProps) {
       <RichTextEditor
         mt="md"
         editor={editor}
-        style={
-          {
-            // borderColor: !editor.isEditable
-            //   ? "none"
-            //   : error
-            //     ? "var(--mantine-color-error)"
-            //     : undefined,
-          }
-        }
         classNames={{
           content: !editor.isEditable
             ? classes["not-editable-content"]
