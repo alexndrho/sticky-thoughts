@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import {
   useEditor,
   type Content,
@@ -51,31 +51,24 @@ export const useTiptapEditor = ({
     ...props,
   });
 
-  return editor;
-};
+  const setNewContentState = useCallback(
+    (content: Content) => {
+      if (!editor || editor.isDestroyed) return;
 
-export const setTiptapEditable = (editor: Editor, editable: boolean) => {
-  if (editor.isDestroyed) return;
+      editor.commands.setContent(content);
 
-  editor.options.editable = editable;
-  editor.view.update(editor.view.props);
+      const newEditorState = EditorState.create({
+        doc: editor.state.doc,
+        plugins: editor.state.plugins,
+        schema: editor.state.schema,
+      });
+      editor.view.updateState(newEditorState);
+    },
+    [editor],
+  );
 
-  if (editable) {
-    editor.view.dom.focus();
-  } else {
-    editor.commands.blur();
-  }
-};
-
-export const setTiptapNewContentState = (editor: Editor, content: Content) => {
-  if (editor.isDestroyed) return;
-
-  editor.commands.setContent(content);
-
-  const newEditorState = EditorState.create({
-    doc: editor.state.doc,
-    plugins: editor.state.plugins,
-    schema: editor.state.schema,
-  });
-  editor.view.updateState(newEditorState);
+  return useMemo(
+    () => ({ editor, setNewContentState }),
+    [editor, setNewContentState],
+  );
 };

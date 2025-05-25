@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { type Prisma } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
@@ -16,6 +16,7 @@ import {
   Menu,
   Text,
   Title,
+  TypographyStylesProvider,
 } from "@mantine/core";
 import { IconDots, IconEdit, IconTrash } from "@tabler/icons-react";
 
@@ -27,11 +28,7 @@ import {
 } from "@/lib/query-options/forum";
 import CommentSection, { type CommentSectionRef } from "./CommentSection";
 import DeleteForumPostModal from "@/components/DeleteForumPostModal";
-import {
-  setTiptapEditable,
-  setTiptapNewContentState,
-  useTiptapEditor,
-} from "@/hooks/use-tiptap";
+import { useTiptapEditor } from "@/hooks/use-tiptap";
 import {
   likeForumPost,
   unlikeForumPost,
@@ -53,33 +50,22 @@ export default function PostContent({ id, post }: PostContentProps) {
   const router = useRouter();
 
   const { data: session } = authClient.useSession();
+  const [isEditable, setIsEditable] = useState(false);
   const [signInWarningModalOpened, signInWarningModalHandlers] =
     useDisclosure(false);
   const [deleteModalOpened, deleteModalHandlers] = useDisclosure(false);
 
   const commentSectionRef = useRef<CommentSectionRef>(null);
 
-  const editor = useTiptapEditor({
-    editable: false,
+  const { editor, setNewContentState } = useTiptapEditor({
     content: post.body,
   });
 
-  // Content
-  const setEditable = (editable: boolean) => {
-    if (!editor) return;
-
-    setTiptapEditable(editor, editable);
-
-    if (!editable) {
-      setTiptapNewContentState(editor, post.body);
-    }
-  };
-
   useEffect(() => {
     if (editor) {
-      setTiptapNewContentState(editor, post.body);
+      setNewContentState(post.body);
     }
-  }, [editor, post]);
+  }, [editor, setNewContentState, post]);
 
   const updateMutation = useMutation({
     mutationFn: async ({ body }: { body: Prisma.ForumUpdateInput["body"] }) =>
@@ -110,18 +96,31 @@ export default function PostContent({ id, post }: PostContentProps) {
     },
   });
 
+  const handleEditable = (editable: boolean) => {
+    if (!editor) return;
+
+    setIsEditable(editable);
+
+    if (editable) {
+      editor.commands.focus("end");
+    } else {
+      setNewContentState(post.body);
+      editor.commands.blur();
+    }
+  };
+
   const handleUpdate = () => {
     if (!editor) return;
 
     const body = editor.getHTML();
 
     if (body === post?.body) {
-      setEditable(false);
+      handleEditable(false);
       return;
     }
 
     updateMutation.mutate({ body });
-    setEditable(false);
+    handleEditable(false);
   };
 
   // Like
@@ -180,7 +179,7 @@ export default function PostContent({ id, post }: PostContentProps) {
               <>
                 <Menu.Item
                   leftSection={<IconEdit size="1em" />}
-                  onClick={() => setEditable(true)}
+                  onClick={() => handleEditable(true)}
                 >
                   Edit
                 </Menu.Item>
@@ -198,13 +197,21 @@ export default function PostContent({ id, post }: PostContentProps) {
         )}
       </Flex>
 
-      <Title>{post.title}</Title>
+      {isEditable ? (
+        <>
+          <Title>{post.title}</Title>
+          <TextEditor editor={editor} />
+        </>
+      ) : (
+        <TypographyStylesProvider>
+          <h1>{post.title}</h1>
+          <div dangerouslySetInnerHTML={{ __html: post.body }} />
+        </TypographyStylesProvider>
+      )}
 
-      <TextEditor editor={editor} />
-
-      {editor?.isEditable && (
+      {isEditable && (
         <Flex mt="md" justify="end" gap="md">
-          <Button variant="default" onClick={() => setEditable(false)}>
+          <Button variant="default" onClick={() => handleEditable(false)}>
             Cancel
           </Button>
 

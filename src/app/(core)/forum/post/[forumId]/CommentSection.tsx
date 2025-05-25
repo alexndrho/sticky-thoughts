@@ -12,7 +12,7 @@ import { type authClient } from "@/lib/auth-client";
 import TextEditor from "@/components/TextEditor";
 import CommentItem from "./CommentItem";
 import { forumPostCommentsInfiniteOptions } from "@/lib/query-options/forum";
-import { setTiptapNewContentState, useTiptapEditor } from "@/hooks/use-tiptap";
+import { useTiptapEditor } from "@/hooks/use-tiptap";
 import {
   deleteForumPostComment,
   likeForumPostComment,
@@ -52,7 +52,7 @@ const CommentSection = forwardRef<CommentSectionRef, CommentSectionProps>(
       },
     });
 
-    const editor = useTiptapEditor({
+    const { editor, setNewContentState } = useTiptapEditor({
       onUpdate: ({ editor }) => {
         form.setFieldValue("comment", editor.getHTML());
       },
@@ -72,7 +72,7 @@ const CommentSection = forwardRef<CommentSectionRef, CommentSectionProps>(
         form.reset();
         editor?.commands.clearContent();
 
-        if (editor) setTiptapNewContentState(editor, "<p></p>");
+        if (editor) setNewContentState("<p></p>");
 
         notifications.show({
           title: "Comment submitted",

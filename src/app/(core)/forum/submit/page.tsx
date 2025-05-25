@@ -58,7 +58,7 @@ export default function ForumSubmitPage() {
     },
   });
 
-  const editor = useTiptapEditor({
+  const { editor } = useTiptapEditor({
     onUpdate: ({ editor }) => {
       form.setFieldValue("body", editor.getHTML());
     },
