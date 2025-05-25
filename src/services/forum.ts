@@ -215,6 +215,34 @@ export const getForumComments = async ({
   return dataResponse;
 };
 
+export const updateForumPostComment = async ({
+  forumId,
+  commentId,
+  body,
+}: {
+  forumId: string;
+  commentId: string;
+  body: string;
+}): Promise<ForumPostCommentType> => {
+  const response = await fetch(`/api/forum/${forumId}/comments/${commentId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      body,
+    }),
+  });
+
+  const dataResponse = await response.json();
+
+  if (!response.ok) {
+    throw toServerError("Failed to update comment", dataResponse.errors);
+  }
+
+  return dataResponse;
+};
+
 export const deleteForumPostComment = async ({
   forumId,
   commentId,

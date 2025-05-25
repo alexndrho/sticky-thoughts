@@ -150,6 +150,44 @@ export const setCreateForumPostCommentQueryData = ({
   });
 };
 
+export const setUpdateForumPostCommentQueryData = ({
+  postId,
+  commentId,
+  comment,
+}: {
+  postId: string;
+  commentId: string;
+  comment: ForumPostCommentType;
+}) => {
+  const queryClient = getQueryClient();
+
+  queryClient.setQueryData<InfiniteData<ForumPostCommentType[]>>(
+    forumPostCommentsInfiniteOptions(postId).queryKey,
+    (oldData) => {
+      if (!oldData) return oldData;
+
+      return {
+        ...oldData,
+        pages: oldData.pages.map((page) =>
+          page.map((cmt) =>
+            cmt.id === commentId
+              ? ({
+                  ...cmt,
+                  ...comment,
+                } satisfies ForumPostCommentType)
+              : cmt,
+          ),
+        ),
+      };
+    },
+  );
+
+  queryClient.invalidateQueries({
+    queryKey: forumPostCommentsInfiniteOptions(postId).queryKey,
+    refetchType: "none",
+  });
+};
+
 export const setDeleteForumPostCommentQueryData = ({
   postId,
   commentId,
