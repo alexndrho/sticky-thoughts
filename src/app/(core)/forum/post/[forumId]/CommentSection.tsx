@@ -134,6 +134,10 @@ const CommentSection = forwardRef<CommentSectionRef, CommentSectionProps>(
       }
 
       window.addEventListener("scroll", handleScroll);
+
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
     }, [queryComments]);
 
     const commentLikeMutation = useMutation({
