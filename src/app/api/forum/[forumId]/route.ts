@@ -152,7 +152,7 @@ export async function PUT(
             errors: [
               {
                 code: "not-found",
-                message: "Box not found",
+                message: "Forum post not found",
               },
             ],
           } satisfies IError,
@@ -211,7 +211,7 @@ export async function DELETE(
             errors: [
               {
                 code: "not-found",
-                message: "Box not found",
+                message: "Forum post not found",
               },
             ],
           } satisfies IError,
