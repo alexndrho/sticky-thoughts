@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatDistance } from "date-fns";
 import {
   ActionIcon,
@@ -43,76 +43,6 @@ export default function CommentItem({
 }: CommentItemProps) {
   const [isEditable, setIsEditable] = useState(false);
 
-  const updateForm = useForm({
-    initialValues: {
-      comment: comment.body,
-    },
-    validate: {
-      comment: isNotEmptyHTML("Comment is required"),
-    },
-  });
-
-  const {
-    editor: updateEditor,
-    setNewContentState: setUpdateEditorNewContentState,
-  } = useTiptapEditor({
-    onUpdate: ({ editor }) => {
-      updateForm.setFieldValue("comment", editor.getHTML());
-    },
-    placeholder: "Write a comment...",
-    content: comment.body,
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: (values: typeof updateForm.values) =>
-      updateForumPostComment({
-        forumId: comment.forumId,
-        commentId: comment.id,
-        body: values.comment,
-      }),
-    onSuccess: (data) => {
-      setIsEditable(false);
-
-      updateForm.setInitialValues({
-        comment: data.body,
-      });
-      updateForm.reset();
-
-      setUpdateForumPostCommentQueryData({
-        postId: comment.forumId,
-        commentId: comment.id,
-        comment: data,
-      });
-
-      setUpdateEditorNewContentState(data.body);
-    },
-    onError: (error) => {
-      if (error instanceof ServerError) {
-        updateForm.setFieldError("comment", error.errors[0].message);
-      } else {
-        updateForm.setFieldError("comment", "Something went wrong");
-      }
-    },
-  });
-
-  // Enter edit mode
-  const handleStartEdit = () => {
-    if (!updateEditor) return;
-
-    setIsEditable(true);
-    updateEditor.commands.focus("end");
-  };
-
-  // Cancel editing
-  const handleCancelEdit = () => {
-    if (!updateEditor) return;
-
-    setIsEditable(false);
-    updateForm.reset();
-    setUpdateEditorNewContentState(comment.body);
-    updateEditor.commands.blur();
-  };
-
   return (
     <Box>
       <Flex gap="md" align="center">
@@ -150,7 +80,7 @@ export default function CommentItem({
               <Menu.Dropdown>
                 <Menu.Item
                   leftSection={<IconEdit size="1em" />}
-                  onClick={handleStartEdit}
+                  onClick={() => setIsEditable(true)}
                 >
                   Edit
                 </Menu.Item>
@@ -170,30 +100,7 @@ export default function CommentItem({
 
       <Box mt="sm" pl={54}>
         {isEditable ? (
-          <form
-            onSubmit={updateForm.onSubmit((values) =>
-              updateMutation.mutate(values),
-            )}
-          >
-            <TextEditor
-              editor={updateEditor}
-              error={updateForm.errors.comment}
-            />
-
-            <Group mt="md" justify="end">
-              <Button variant="default" onClick={handleCancelEdit}>
-                Cancel
-              </Button>
-
-              <Button
-                type="submit"
-                disabled={!updateForm.isDirty()}
-                loading={updateMutation.isPending}
-              >
-                Save
-              </Button>
-            </Group>
-          </form>
+          <Editor comment={comment} onClose={() => setIsEditable(false)} />
         ) : (
           <>
             <TypographyStylesProvider>
@@ -216,5 +123,88 @@ export default function CommentItem({
         )}
       </Box>
     </Box>
+  );
+}
+
+function Editor({
+  comment,
+  onClose,
+}: {
+  comment: ForumPostCommentType;
+  onClose: () => void;
+}) {
+  const updateForm = useForm({
+    initialValues: {
+      comment: comment.body,
+    },
+    validate: {
+      comment: isNotEmptyHTML("Comment is required"),
+    },
+  });
+
+  const editor = useTiptapEditor({
+    onUpdate: ({ editor }) => {
+      updateForm.setFieldValue("comment", editor.getHTML());
+    },
+    placeholder: "Write a comment...",
+    content: comment.body,
+  });
+
+  useEffect(() => {
+    if (editor) {
+      editor.commands.focus("end");
+    }
+  }, [editor]);
+
+  const updateMutation = useMutation({
+    mutationFn: (values: typeof updateForm.values) =>
+      updateForumPostComment({
+        forumId: comment.forumId,
+        commentId: comment.id,
+        body: values.comment,
+      }),
+    onSuccess: (data) => {
+      onClose();
+
+      updateForm.setInitialValues({
+        comment: data.body,
+      });
+      updateForm.reset();
+
+      setUpdateForumPostCommentQueryData({
+        forumId: comment.forumId,
+        commentId: comment.id,
+        comment: data,
+      });
+    },
+    onError: (error) => {
+      if (error instanceof ServerError) {
+        updateForm.setFieldError("comment", error.errors[0].message);
+      } else {
+        updateForm.setFieldError("comment", "Something went wrong");
+      }
+    },
+  });
+
+  return (
+    <form
+      onSubmit={updateForm.onSubmit((values) => updateMutation.mutate(values))}
+    >
+      <TextEditor editor={editor} error={updateForm.errors.comment} />
+
+      <Group mt="md" justify="end">
+        <Button variant="default" onClick={onClose}>
+          Cancel
+        </Button>
+
+        <Button
+          type="submit"
+          disabled={!updateForm.isDirty()}
+          loading={updateMutation.isPending}
+        >
+          Save
+        </Button>
+      </Group>
+    </form>
   );
 }

@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { type Prisma } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { useDisclosure } from "@mantine/hooks";
-import TextEditor from "@/components/TextEditor";
 import {
   ActionIcon,
   Avatar,
   Box,
   Button,
+  Center,
   Flex,
   Group,
   Menu,
@@ -20,35 +20,25 @@ import {
 } from "@mantine/core";
 import { IconDots, IconEdit, IconTrash } from "@tabler/icons-react";
 
-import { getQueryClient } from "@/lib/get-query-client";
 import { authClient } from "@/lib/auth-client";
-import {
-  forumInfiniteOptions,
-  forumPostOptions,
-} from "@/lib/query-options/forum";
-import CommentSection, { type CommentSectionRef } from "./CommentSection";
+import PostEditor from "./PostEditor";
+import CommentEditor, { type CommentSectionRef } from "./CommentEditor";
+import Comments from "./Comments";
 import DeleteForumPostModal from "@/components/DeleteForumPostModal";
-import { useTiptapEditor } from "@/hooks/use-tiptap";
-import {
-  likeForumPost,
-  unlikeForumPost,
-  updateForumPost,
-} from "@/services/forum";
+import { likeForumPost, unlikeForumPost } from "@/services/forum";
 import LikeButton from "@/components/LikeButton";
 import CommentButton from "@/components/CommentButton";
 import ShareButton from "@/components/ShareButton";
-import { ForumPostType } from "@/types/forum";
 import SignInWarningModal from "@/components/SignInWarningModal";
 import { setLikeForumQueryData } from "@/lib/set-query-data/forum";
-import { isNotEmptyHTML, useForm } from "@mantine/form";
-import ServerError from "@/utils/error/ServerError";
+import type { ForumPostType } from "@/types/forum";
 
-export interface PostContentProps {
+export interface PostProps {
   id: string;
   post: ForumPostType;
 }
 
-export default function PostContent({ id, post }: PostContentProps) {
+export default function Post({ id, post }: PostProps) {
   const router = useRouter();
 
   const { data: session } = authClient.useSession();
@@ -58,103 +48,6 @@ export default function PostContent({ id, post }: PostContentProps) {
   const [deleteModalOpened, deleteModalHandlers] = useDisclosure(false);
 
   const commentSectionRef = useRef<CommentSectionRef>(null);
-
-  const {
-    editor: updateEditor,
-    setNewContentState: setUpdateEditorNewContentState,
-  } = useTiptapEditor({
-    content: post.body,
-    onUpdate: ({ editor }) => {
-      updateForm.setFieldValue("body", editor.getHTML());
-    },
-  });
-
-  const updateForm = useForm({
-    initialValues: {
-      body: post.body,
-    },
-    validate: {
-      body: isNotEmptyHTML("Body is required"),
-    },
-  });
-
-  useEffect(() => {
-    if (updateEditor) {
-      setUpdateEditorNewContentState(post.body);
-    }
-  }, [updateEditor, setUpdateEditorNewContentState, post]);
-
-  const updateMutation = useMutation({
-    mutationFn: async ({ body }: { body: Prisma.ForumUpdateInput["body"] }) =>
-      updateForumPost({
-        id,
-        body,
-      }),
-    onSuccess: (data) => {
-      setIsEditable(false);
-
-      updateForm.setInitialValues({
-        body: data.body,
-      });
-      updateForm.reset();
-
-      getQueryClient().setQueryData(
-        forumPostOptions(id).queryKey,
-        (oldData: ForumPostType | undefined) =>
-          oldData
-            ? {
-                ...oldData,
-                ...data,
-              }
-            : oldData,
-      );
-
-      getQueryClient().invalidateQueries({
-        queryKey: forumPostOptions(id).queryKey,
-        refetchType: "none",
-      });
-
-      getQueryClient().invalidateQueries({
-        queryKey: forumInfiniteOptions.queryKey,
-      });
-
-      setUpdateEditorNewContentState(data.body);
-    },
-    onError: (error) => {
-      if (error instanceof ServerError) {
-        updateForm.setFieldError("root", error.errors[0].message);
-      } else {
-        updateForm.setFieldError("root", "Failed to update post");
-      }
-    },
-  });
-
-  // Enter edit mode
-  const handleStartEdit = () => {
-    if (!updateEditor) return;
-
-    setIsEditable(true);
-    updateEditor.commands.focus("end");
-  };
-
-  // Cancel editing
-  const handleCancelEdit = () => {
-    if (!updateEditor) return;
-
-    setIsEditable(false);
-    updateForm.reset();
-    setUpdateEditorNewContentState(post.body);
-    updateEditor.commands.blur();
-  };
-
-  const handleUpdate = (values: typeof updateForm.values) => {
-    if (values.body === post.body) {
-      handleCancelEdit();
-      return;
-    }
-
-    updateMutation.mutate(values);
-  };
 
   // Like
   const handleLikeMutation = useMutation({
@@ -212,7 +105,7 @@ export default function PostContent({ id, post }: PostContentProps) {
               <>
                 <Menu.Item
                   leftSection={<IconEdit size="1em" />}
-                  onClick={handleStartEdit}
+                  onClick={() => setIsEditable(true)}
                 >
                   Edit
                 </Menu.Item>
@@ -233,25 +126,12 @@ export default function PostContent({ id, post }: PostContentProps) {
       {isEditable ? (
         <>
           <Title>{post.title}</Title>
-          <form onSubmit={updateForm.onSubmit(handleUpdate)}>
-            <TextEditor editor={updateEditor} error={updateForm.errors.body} />
 
-            {updateForm.errors.root && (
-              <Text mt="xs" size="xs" c="red.8">
-                {updateForm.errors.root}
-              </Text>
-            )}
-
-            <Flex mt="md" justify="end" gap="md">
-              <Button variant="default" onClick={handleCancelEdit}>
-                Cancel
-              </Button>
-
-              <Button type="submit" loading={updateMutation.isPending}>
-                Save
-              </Button>
-            </Flex>
-          </form>
+          <PostEditor
+            id={id}
+            body={post.body}
+            onClose={() => setIsEditable(false)}
+          />
         </>
       ) : (
         <TypographyStylesProvider>
@@ -280,12 +160,32 @@ export default function PostContent({ id, post }: PostContentProps) {
         />
       </Group>
 
-      <CommentSection
-        ref={commentSectionRef}
-        postId={post.id}
-        session={session}
-        onOpenSignInWarningModal={signInWarningModalHandlers.open}
-      />
+      <Box component="section">
+        {session ? (
+          <CommentEditor
+            ref={commentSectionRef}
+            forumId={post.id}
+            onOpenSignInWarningModal={signInWarningModalHandlers.open}
+          />
+        ) : (
+          <Center mt="lg">
+            <Button
+              component={Link}
+              href="/sign-in"
+              variant="default"
+              fullWidth
+            >
+              Sign in to comment
+            </Button>
+          </Center>
+        )}
+
+        <Comments
+          forumId={post.id}
+          session={session}
+          onOpenSignInWarningModal={signInWarningModalHandlers.open}
+        />
+      </Box>
 
       {post.authorId === session?.user.id && (
         <DeleteForumPostModal

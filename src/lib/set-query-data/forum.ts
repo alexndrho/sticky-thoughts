@@ -151,18 +151,18 @@ export const setCreateForumPostCommentQueryData = ({
 };
 
 export const setUpdateForumPostCommentQueryData = ({
-  postId,
+  forumId,
   commentId,
   comment,
 }: {
-  postId: string;
+  forumId: string;
   commentId: string;
   comment: ForumPostCommentType;
 }) => {
   const queryClient = getQueryClient();
 
   queryClient.setQueryData<InfiniteData<ForumPostCommentType[]>>(
-    forumPostCommentsInfiniteOptions(postId).queryKey,
+    forumPostCommentsInfiniteOptions(forumId).queryKey,
     (oldData) => {
       if (!oldData) return oldData;
 
@@ -183,22 +183,22 @@ export const setUpdateForumPostCommentQueryData = ({
   );
 
   queryClient.invalidateQueries({
-    queryKey: forumPostCommentsInfiniteOptions(postId).queryKey,
+    queryKey: forumPostCommentsInfiniteOptions(forumId).queryKey,
     refetchType: "none",
   });
 };
 
 export const setDeleteForumPostCommentQueryData = ({
-  postId,
+  forumId,
   commentId,
 }: {
-  postId: string;
+  forumId: string;
   commentId: string;
 }) => {
   const queryClient = getQueryClient();
 
   queryClient.setQueryData<InfiniteData<ForumPostCommentType[]>>(
-    forumPostCommentsInfiniteOptions(postId).queryKey,
+    forumPostCommentsInfiniteOptions(forumId).queryKey,
     (oldData) => {
       if (!oldData) return oldData;
 
@@ -212,25 +212,25 @@ export const setDeleteForumPostCommentQueryData = ({
   );
 
   queryClient.invalidateQueries({
-    queryKey: forumPostCommentsInfiniteOptions(postId).queryKey,
+    queryKey: forumPostCommentsInfiniteOptions(forumId).queryKey,
     refetchType: "none",
   });
 };
 
 // comment like
 export const setLikeForumPostCommentQueryData = ({
-  postId,
+  forumId,
   commentId,
   like,
 }: {
-  postId: string;
+  forumId: string;
   commentId: string;
   like: boolean;
 }) => {
   const queryClient = getQueryClient();
 
   queryClient.setQueryData<InfiniteData<ForumPostCommentType[]>>(
-    forumPostCommentsInfiniteOptions(postId).queryKey,
+    forumPostCommentsInfiniteOptions(forumId).queryKey,
     (oldData) => {
       if (!oldData) return oldData;
 
@@ -257,7 +257,7 @@ export const setLikeForumPostCommentQueryData = ({
   );
 
   queryClient.invalidateQueries({
-    queryKey: forumPostCommentsInfiniteOptions(postId).queryKey,
+    queryKey: forumPostCommentsInfiniteOptions(forumId).queryKey,
     refetchType: "none",
   });
 };

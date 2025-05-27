@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import {
   useEditor,
   type Content,
@@ -8,7 +8,6 @@ import {
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
-import { EditorState } from "@tiptap/pm/state";
 
 export interface UseTiptapEditorProps extends UseEditorOptions {
   value?: Content;
@@ -44,31 +43,10 @@ export const useTiptapEditor = ({
     [value],
   );
 
-  const editor = useEditor({
+  return useEditor({
     immediatelyRender: false,
     extensions: createTiptapExtensions(placeholder),
     onCreate: ({ editor }) => handleCreate(editor),
     ...props,
   });
-
-  const setNewContentState = useCallback(
-    (content: Content) => {
-      if (!editor || editor.isDestroyed) return;
-
-      editor.commands.setContent(content);
-
-      const newEditorState = EditorState.create({
-        doc: editor.state.doc,
-        plugins: editor.state.plugins,
-        schema: editor.state.schema,
-      });
-      editor.view.updateState(newEditorState);
-    },
-    [editor],
-  );
-
-  return useMemo(
-    () => ({ editor, setNewContentState }),
-    [editor, setNewContentState],
-  );
 };
