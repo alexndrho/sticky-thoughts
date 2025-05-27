@@ -59,10 +59,12 @@ export default function ForumSubmitPage() {
   });
 
   const editor = useTiptapEditor({
+    content: "<p></p>",
+    placeholder: "Write your post...",
     onUpdate: ({ editor }) => {
       form.setFieldValue("body", editor.getHTML());
     },
-    content: "<p></p>",
+    shouldRerenderOnTransaction: false,
   });
 
   const mutation = useMutation({
@@ -102,7 +104,11 @@ export default function ForumSubmitPage() {
         )}
 
         <Group mt="md" justify="end">
-          <Button type="submit" loading={mutation.isPending}>
+          <Button
+            type="submit"
+            loading={mutation.isPending}
+            disabled={!form.isDirty()}
+          >
             Submit
           </Button>
         </Group>

@@ -24,9 +24,11 @@ export interface PostEditorProps {
 export default function PostEditor({ id, body, onClose }: PostEditorProps) {
   const editor = useTiptapEditor({
     content: body,
+    placeholder: "Edit your post...",
     onUpdate: ({ editor }) => {
       updateForm.setFieldValue("body", editor.getHTML());
     },
+    shouldRerenderOnTransaction: false,
   });
 
   const updateForm = useForm({
@@ -87,17 +89,10 @@ export default function PostEditor({ id, body, onClose }: PostEditorProps) {
     },
   });
 
-  const handleUpdate = (values: typeof updateForm.values) => {
-    if (values.body === body) {
-      onClose();
-      return;
-    }
-
-    updateMutation.mutate(values);
-  };
-
   return (
-    <form onSubmit={updateForm.onSubmit(handleUpdate)}>
+    <form
+      onSubmit={updateForm.onSubmit((values) => updateMutation.mutate(values))}
+    >
       <TextEditor editor={editor} error={updateForm.errors.body} />
 
       {updateForm.errors.root && (
@@ -111,7 +106,11 @@ export default function PostEditor({ id, body, onClose }: PostEditorProps) {
           Cancel
         </Button>
 
-        <Button type="submit" loading={updateMutation.isPending}>
+        <Button
+          type="submit"
+          loading={updateMutation.isPending}
+          disabled={!updateForm.isDirty()}
+        >
           Save
         </Button>
       </Flex>

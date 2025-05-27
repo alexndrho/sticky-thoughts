@@ -28,26 +28,27 @@ const CommentEditor = forwardRef<CommentSectionRef, CommentEditorProps>(
 
     const form = useForm({
       initialValues: {
-        comment: "<p></p>",
+        body: "<p></p>",
       },
       validate: {
-        comment: isNotEmptyHTML("Comment is required"),
+        body: isNotEmptyHTML("Comment is required"),
       },
     });
 
     const editor = useTiptapEditor({
-      onUpdate: ({ editor }) => {
-        form.setFieldValue("comment", editor.getHTML());
-      },
-      placeholder: "Write a comment...",
       content: "<p></p>",
+      placeholder: "Write a comment...",
+      onUpdate: ({ editor }) => {
+        form.setFieldValue("body", editor.getHTML());
+      },
+      shouldRerenderOnTransaction: false,
     });
 
     const commentMutation = useMutation({
-      mutationFn: (values: { comment: string }) =>
+      mutationFn: (values: typeof form.values) =>
         submitForumPostComment({
           id: forumId,
-          body: values.comment,
+          body: values.body,
         }),
       onSuccess: (data) => {
         setCreateForumPostCommentQueryData({ id: forumId, comment: data });
@@ -62,9 +63,9 @@ const CommentEditor = forwardRef<CommentSectionRef, CommentEditorProps>(
       },
       onError: (error) => {
         if (error instanceof ServerError) {
-          form.setFieldError("comment", error.errors[0].message);
+          form.setFieldError("body", error.errors[0].message);
         } else {
-          form.setFieldError("comment", "Something went wrong");
+          form.setFieldError("body", "Something went wrong");
         }
       },
     });
@@ -74,7 +75,7 @@ const CommentEditor = forwardRef<CommentSectionRef, CommentEditorProps>(
         onSubmit={form.onSubmit((values) => commentMutation.mutate(values))}
       >
         <Flex direction="column">
-          <TextEditor editor={editor} error={form.errors.comment} />
+          <TextEditor editor={editor} error={form.errors.body} />
 
           <Flex mt="md" justify="end">
             <Button

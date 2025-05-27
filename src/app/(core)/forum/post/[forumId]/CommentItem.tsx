@@ -135,19 +135,20 @@ function Editor({
 }) {
   const updateForm = useForm({
     initialValues: {
-      comment: comment.body,
+      body: comment.body,
     },
     validate: {
-      comment: isNotEmptyHTML("Comment is required"),
+      body: isNotEmptyHTML("Comment is required"),
     },
   });
 
   const editor = useTiptapEditor({
-    onUpdate: ({ editor }) => {
-      updateForm.setFieldValue("comment", editor.getHTML());
-    },
-    placeholder: "Write a comment...",
     content: comment.body,
+    placeholder: "Write a comment...",
+    onUpdate: ({ editor }) => {
+      updateForm.setFieldValue("body", editor.getHTML());
+    },
+    shouldRerenderOnTransaction: false,
   });
 
   useEffect(() => {
@@ -161,13 +162,13 @@ function Editor({
       updateForumPostComment({
         forumId: comment.forumId,
         commentId: comment.id,
-        body: values.comment,
+        body: values.body,
       }),
     onSuccess: (data) => {
       onClose();
 
       updateForm.setInitialValues({
-        comment: data.body,
+        body: data.body,
       });
       updateForm.reset();
 
@@ -179,9 +180,9 @@ function Editor({
     },
     onError: (error) => {
       if (error instanceof ServerError) {
-        updateForm.setFieldError("comment", error.errors[0].message);
+        updateForm.setFieldError("body", error.errors[0].message);
       } else {
-        updateForm.setFieldError("comment", "Something went wrong");
+        updateForm.setFieldError("body", "Something went wrong");
       }
     },
   });
