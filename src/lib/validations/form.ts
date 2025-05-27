@@ -37,7 +37,7 @@ const sanitizeBodyHtmlOptions: IOptions = {
       rel: "noopener noreferrer",
     }),
   },
-  selfClosing: ["br", "hr"],
+  selfClosing: ["hr"],
   // allowedStyles: {
   //   "*": {
   //     "text-align": [/^left$/, /^right$/, /^center$/, /^justify$/],
@@ -47,6 +47,15 @@ const sanitizeBodyHtmlOptions: IOptions = {
   // },
   parser: {
     lowerCaseTags: true,
+  },
+  exclusiveFilter: (frame) => {
+    // Preserve self-closing tags like <br> and <hr>
+    const selfClosingTags = ["hr"];
+    if (frame.tag && selfClosingTags.includes(frame.tag)) {
+      return false;
+    }
+    // Remove tags that have no text or only whitespace
+    return !frame.text || !frame.text.trim();
   },
 } as const;
 
