@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { type Editor } from "@tiptap/react";
 import { Box, Button, Center, Flex, Loader } from "@mantine/core";
-import { isNotEmpty, useForm } from "@mantine/form";
+import { isNotEmptyHTML, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 
 import { type authClient } from "@/lib/auth-client";
@@ -48,7 +48,7 @@ const CommentSection = forwardRef<CommentSectionRef, CommentSectionProps>(
         comment: "<p></p>",
       },
       validate: {
-        comment: isNotEmpty("Comment is required"),
+        comment: isNotEmptyHTML("Comment is required"),
       },
     });
 

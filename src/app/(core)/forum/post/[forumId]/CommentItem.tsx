@@ -13,7 +13,7 @@ import {
   Text,
   TypographyStylesProvider,
 } from "@mantine/core";
-import { isNotEmpty, useForm } from "@mantine/form";
+import { isNotEmptyHTML, useForm } from "@mantine/form";
 import { IconDots, IconEdit, IconTrash } from "@tabler/icons-react";
 
 import { type authClient } from "@/lib/auth-client";
@@ -24,6 +24,7 @@ import { useTiptapEditor } from "@/hooks/use-tiptap";
 import type { ForumPostCommentType } from "@/types/forum";
 import { useMutation } from "@tanstack/react-query";
 import { updateForumPostComment } from "@/services/forum";
+import ServerError from "@/utils/error/ServerError";
 
 export interface CommentItemProps {
   session: ReturnType<typeof authClient.useSession>["data"];
@@ -42,61 +43,75 @@ export default function CommentItem({
 }: CommentItemProps) {
   const [isEditable, setIsEditable] = useState(false);
 
-  const form = useForm({
+  const updateForm = useForm({
     initialValues: {
       comment: comment.body,
     },
     validate: {
-      comment: isNotEmpty("Comment is required"),
+      comment: isNotEmptyHTML("Comment is required"),
     },
   });
 
-  const { editor, setNewContentState } = useTiptapEditor({
+  const {
+    editor: updateEditor,
+    setNewContentState: setUpdateEditorNewContentState,
+  } = useTiptapEditor({
     onUpdate: ({ editor }) => {
-      form.setFieldValue("comment", editor.getHTML());
+      updateForm.setFieldValue("comment", editor.getHTML());
     },
     placeholder: "Write a comment...",
     content: comment.body,
   });
 
-  const handleEditable = (editable: boolean) => {
-    if (!editor) return;
-
-    setIsEditable(editable);
-
-    if (editable) {
-      editor.commands.focus("end");
-    } else {
-      setNewContentState(comment.body);
-      editor.commands.blur();
-    }
-  };
-
   const updateMutation = useMutation({
-    mutationFn: (values: typeof form.values) =>
+    mutationFn: (values: typeof updateForm.values) =>
       updateForumPostComment({
         forumId: comment.forumId,
         commentId: comment.id,
         body: values.comment,
       }),
     onSuccess: (data) => {
+      setIsEditable(false);
+
+      updateForm.setInitialValues({
+        comment: data.body,
+      });
+      updateForm.reset();
+
       setUpdateForumPostCommentQueryData({
         postId: comment.forumId,
         commentId: comment.id,
         comment: data,
       });
 
-      handleEditable(false);
-
-      form.setInitialValues({
-        comment: data.body,
-      });
-
-      setNewContentState(data.body);
-
-      form.reset();
+      setUpdateEditorNewContentState(data.body);
+    },
+    onError: (error) => {
+      if (error instanceof ServerError) {
+        updateForm.setFieldError("comment", error.errors[0].message);
+      } else {
+        updateForm.setFieldError("comment", "Something went wrong");
+      }
     },
   });
+
+  // Enter edit mode
+  const handleStartEdit = () => {
+    if (!updateEditor) return;
+
+    setIsEditable(true);
+    updateEditor.commands.focus("end");
+  };
+
+  // Cancel editing
+  const handleCancelEdit = () => {
+    if (!updateEditor) return;
+
+    setIsEditable(false);
+    updateForm.reset();
+    setUpdateEditorNewContentState(comment.body);
+    updateEditor.commands.blur();
+  };
 
   return (
     <Box>
@@ -135,7 +150,7 @@ export default function CommentItem({
               <Menu.Dropdown>
                 <Menu.Item
                   leftSection={<IconEdit size="1em" />}
-                  onClick={() => handleEditable(true)}
+                  onClick={handleStartEdit}
                 >
                   Edit
                 </Menu.Item>
@@ -156,18 +171,23 @@ export default function CommentItem({
       <Box mt="sm" pl={54}>
         {isEditable ? (
           <form
-            onSubmit={form.onSubmit((values) => updateMutation.mutate(values))}
+            onSubmit={updateForm.onSubmit((values) =>
+              updateMutation.mutate(values),
+            )}
           >
-            <TextEditor editor={editor} />
+            <TextEditor
+              editor={updateEditor}
+              error={updateForm.errors.comment}
+            />
 
             <Group mt="md" justify="end">
-              <Button variant="default" onClick={() => handleEditable(false)}>
+              <Button variant="default" onClick={handleCancelEdit}>
                 Cancel
               </Button>
 
               <Button
                 type="submit"
-                disabled={!form.isDirty()}
+                disabled={!updateForm.isDirty()}
                 loading={updateMutation.isPending}
               >
                 Save

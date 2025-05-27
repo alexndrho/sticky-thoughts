@@ -40,6 +40,8 @@ import ShareButton from "@/components/ShareButton";
 import { ForumPostType } from "@/types/forum";
 import SignInWarningModal from "@/components/SignInWarningModal";
 import { setLikeForumQueryData } from "@/lib/set-query-data/forum";
+import { isNotEmptyHTML, useForm } from "@mantine/form";
+import ServerError from "@/utils/error/ServerError";
 
 export interface PostContentProps {
   id: string;
@@ -57,15 +59,30 @@ export default function PostContent({ id, post }: PostContentProps) {
 
   const commentSectionRef = useRef<CommentSectionRef>(null);
 
-  const { editor, setNewContentState } = useTiptapEditor({
+  const {
+    editor: updateEditor,
+    setNewContentState: setUpdateEditorNewContentState,
+  } = useTiptapEditor({
     content: post.body,
+    onUpdate: ({ editor }) => {
+      updateForm.setFieldValue("body", editor.getHTML());
+    },
+  });
+
+  const updateForm = useForm({
+    initialValues: {
+      body: post.body,
+    },
+    validate: {
+      body: isNotEmptyHTML("Body is required"),
+    },
   });
 
   useEffect(() => {
-    if (editor) {
-      setNewContentState(post.body);
+    if (updateEditor) {
+      setUpdateEditorNewContentState(post.body);
     }
-  }, [editor, setNewContentState, post]);
+  }, [updateEditor, setUpdateEditorNewContentState, post]);
 
   const updateMutation = useMutation({
     mutationFn: async ({ body }: { body: Prisma.ForumUpdateInput["body"] }) =>
@@ -74,6 +91,13 @@ export default function PostContent({ id, post }: PostContentProps) {
         body,
       }),
     onSuccess: (data) => {
+      setIsEditable(false);
+
+      updateForm.setInitialValues({
+        body: data.body,
+      });
+      updateForm.reset();
+
       getQueryClient().setQueryData(
         forumPostOptions(id).queryKey,
         (oldData: ForumPostType | undefined) =>
@@ -93,34 +117,43 @@ export default function PostContent({ id, post }: PostContentProps) {
       getQueryClient().invalidateQueries({
         queryKey: forumInfiniteOptions.queryKey,
       });
+
+      setUpdateEditorNewContentState(data.body);
+    },
+    onError: (error) => {
+      if (error instanceof ServerError) {
+        updateForm.setFieldError("root", error.errors[0].message);
+      } else {
+        updateForm.setFieldError("root", "Failed to update post");
+      }
     },
   });
 
-  const handleEditable = (editable: boolean) => {
-    if (!editor) return;
+  // Enter edit mode
+  const handleStartEdit = () => {
+    if (!updateEditor) return;
 
-    setIsEditable(editable);
-
-    if (editable) {
-      editor.commands.focus("end");
-    } else {
-      setNewContentState(post.body);
-      editor.commands.blur();
-    }
+    setIsEditable(true);
+    updateEditor.commands.focus("end");
   };
 
-  const handleUpdate = () => {
-    if (!editor) return;
+  // Cancel editing
+  const handleCancelEdit = () => {
+    if (!updateEditor) return;
 
-    const body = editor.getHTML();
+    setIsEditable(false);
+    updateForm.reset();
+    setUpdateEditorNewContentState(post.body);
+    updateEditor.commands.blur();
+  };
 
-    if (body === post?.body) {
-      handleEditable(false);
+  const handleUpdate = (values: typeof updateForm.values) => {
+    if (values.body === post.body) {
+      handleCancelEdit();
       return;
     }
 
-    updateMutation.mutate({ body });
-    handleEditable(false);
+    updateMutation.mutate(values);
   };
 
   // Like
@@ -179,7 +212,7 @@ export default function PostContent({ id, post }: PostContentProps) {
               <>
                 <Menu.Item
                   leftSection={<IconEdit size="1em" />}
-                  onClick={() => handleEditable(true)}
+                  onClick={handleStartEdit}
                 >
                   Edit
                 </Menu.Item>
@@ -200,25 +233,31 @@ export default function PostContent({ id, post }: PostContentProps) {
       {isEditable ? (
         <>
           <Title>{post.title}</Title>
-          <TextEditor editor={editor} />
+          <form onSubmit={updateForm.onSubmit(handleUpdate)}>
+            <TextEditor editor={updateEditor} error={updateForm.errors.body} />
+
+            {updateForm.errors.root && (
+              <Text mt="xs" size="xs" c="red.8">
+                {updateForm.errors.root}
+              </Text>
+            )}
+
+            <Flex mt="md" justify="end" gap="md">
+              <Button variant="default" onClick={handleCancelEdit}>
+                Cancel
+              </Button>
+
+              <Button type="submit" loading={updateMutation.isPending}>
+                Save
+              </Button>
+            </Flex>
+          </form>
         </>
       ) : (
         <TypographyStylesProvider>
           <h1>{post.title}</h1>
           <div dangerouslySetInnerHTML={{ __html: post.body }} />
         </TypographyStylesProvider>
-      )}
-
-      {isEditable && (
-        <Flex mt="md" justify="end" gap="md">
-          <Button variant="default" onClick={() => handleEditable(false)}>
-            Cancel
-          </Button>
-
-          <Button loading={updateMutation.isPending} onClick={handleUpdate}>
-            Save
-          </Button>
-        </Flex>
       )}
 
       <Group my="md">

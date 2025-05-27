@@ -91,7 +91,7 @@ export const updateForumServerInput = createForumServerInput.pick({
   body: true,
 });
 
-export const createForumCommentInput = z.object({
+export const createForumCommentServerInput = z.object({
   body: z
     .string({
       required_error: "Comment is required",
@@ -117,3 +117,9 @@ export const createForumCommentInput = z.object({
       }
     }),
 });
+
+export const updateForumCommentServerInput = createForumCommentServerInput.pick(
+  {
+    body: true,
+  },
+);

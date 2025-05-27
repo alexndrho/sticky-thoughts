@@ -4,7 +4,7 @@ import { ZodError } from "zod";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { createForumCommentInput } from "@/lib/validations/form";
+import { createForumCommentServerInput } from "@/lib/validations/form";
 import { FORUM_POST_COMMENT_PER_PAGE } from "@/config/forum";
 import type { ForumPostCommentType } from "@/types/forum";
 import type IError from "@/types/error";
@@ -33,7 +33,7 @@ export async function POST(
     }
 
     const { forumId } = await params;
-    const { body } = createForumCommentInput.parse(await request.json());
+    const { body } = createForumCommentServerInput.parse(await request.json());
 
     const comment = await prisma.forumComment.create({
       data: {

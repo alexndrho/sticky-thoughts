@@ -1,10 +1,12 @@
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
+import { ZodError } from "zod";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { updateForumCommentServerInput } from "@/lib/validations/form";
 import type IError from "@/types/error";
-import { Prisma } from "@prisma/client";
 
 export async function PUT(
   request: Request,
@@ -30,8 +32,7 @@ export async function PUT(
     }
 
     const { forumId, commentId } = await params;
-
-    const body = await request.json();
+    const { body } = updateForumCommentServerInput.parse(await request.json());
 
     const updatedComment = await prisma.forumComment.update({
       where: {
@@ -39,13 +40,22 @@ export async function PUT(
         forumId: forumId,
       },
       data: {
-        body: body.body,
+        body,
       },
     });
 
     return NextResponse.json(updatedComment, { status: 200 });
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error instanceof ZodError) {
+      const zodError: IError = {
+        errors: error.errors.map((err) => ({
+          code: "validation/invalid-input",
+          message: err.message,
+        })),
+      };
+
+      return NextResponse.json(zodError, { status: 400 });
+    } else if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2025") {
         return NextResponse.json(
           {
