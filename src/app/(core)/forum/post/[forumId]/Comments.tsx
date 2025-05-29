@@ -30,9 +30,13 @@ export default function Comments({
 }: CommentsProps) {
   const [dateNow, setDateNow] = useState(new Date());
 
-  const queryComments = useInfiniteQuery(
-    forumPostCommentsInfiniteOptions(forumId),
-  );
+  const {
+    data: commentsData,
+    isFetching: isFetchingComments,
+    isRefetching: isRefetchingComments,
+    fetchNextPage: fetchNextCommentsPage,
+    hasNextPage: hasNextCommentsPage,
+  } = useInfiniteQuery(forumPostCommentsInfiniteOptions(forumId));
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -61,7 +65,7 @@ export default function Comments({
 
   useEffect(() => {
     function handleScroll() {
-      if (queryComments.isFetching || queryComments.isRefetching) return;
+      if (isFetchingComments || isRefetchingComments) return;
 
       const isNearBottom =
         window.innerHeight + window.scrollY >=
@@ -69,8 +73,8 @@ export default function Comments({
 
       if (!isNearBottom) return;
 
-      if (queryComments.hasNextPage) {
-        queryComments.fetchNextPage();
+      if (hasNextCommentsPage) {
+        fetchNextCommentsPage();
       }
     }
 
@@ -79,7 +83,12 @@ export default function Comments({
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [queryComments]);
+  }, [
+    isFetchingComments,
+    isRefetchingComments,
+    hasNextCommentsPage,
+    fetchNextCommentsPage,
+  ]);
 
   const commentLikeMutation = useMutation({
     mutationFn: async ({
@@ -133,9 +142,9 @@ export default function Comments({
 
   return (
     <Box>
-      {queryComments.data ? (
+      {commentsData ? (
         <Flex mt="lg" direction="column" gap="lg">
-          {queryComments.data.pages
+          {commentsData.pages
             .reduce((acc, page) => acc.concat(page))
             .map((comment) => (
               <CommentItem
@@ -149,7 +158,7 @@ export default function Comments({
             ))}
         </Flex>
       ) : (
-        queryComments.isFetching && (
+        isFetchingComments && (
           <Center mt="lg" h={250}>
             <Loader />
           </Center>

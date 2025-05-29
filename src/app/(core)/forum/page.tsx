@@ -26,14 +26,22 @@ export default function ForumPage() {
   const [signInWarningModalOpened, signInWarningModalHandler] =
     useDisclosure(false);
 
-  const queryPosts = useInfiniteQuery(forumInfiniteOptions);
-  const querySearchPosts = useInfiniteQuery(
-    forumSearchInfiniteOptions(searchBarValue),
-  );
+  const {
+    data: postsData,
+    isFetching: isFetchingPosts,
+    fetchNextPage: fetchNextPostsPage,
+    hasNextPage: hasNextPostsPage,
+  } = useInfiniteQuery(forumInfiniteOptions);
+  const {
+    data: searchPostsData,
+    isFetching: isFetchingSearchPosts,
+    fetchNextPage: fetchNextSearchPostsPage,
+    hasNextPage: hasNextSearchPostsPage,
+  } = useInfiniteQuery(forumSearchInfiniteOptions(searchBarValue));
 
   useEffect(() => {
     function handleScroll() {
-      if (queryPosts.isFetching || querySearchPosts.isFetching) return;
+      if (isFetchingPosts || isFetchingSearchPosts) return;
 
       const isNearBottom =
         window.innerHeight + window.scrollY >=
@@ -42,12 +50,12 @@ export default function ForumPage() {
       if (!isNearBottom) return;
 
       if (searchBarValue) {
-        if (querySearchPosts.hasNextPage) {
-          querySearchPosts.fetchNextPage();
+        if (hasNextSearchPostsPage) {
+          fetchNextSearchPostsPage();
         }
       } else {
-        if (queryPosts.hasNextPage) {
-          queryPosts.fetchNextPage();
+        if (hasNextPostsPage) {
+          fetchNextPostsPage();
         }
       }
     }
@@ -57,7 +65,15 @@ export default function ForumPage() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [queryPosts, querySearchPosts, searchBarValue]);
+  }, [
+    isFetchingPosts,
+    isFetchingSearchPosts,
+    hasNextPostsPage,
+    hasNextSearchPostsPage,
+    fetchNextPostsPage,
+    fetchNextSearchPostsPage,
+    searchBarValue,
+  ]);
 
   const handleClickSubmitPost = () => {
     if (!session) {
@@ -114,8 +130,8 @@ export default function ForumPage() {
 
       <Flex direction="column" gap="lg">
         {searchBarValue
-          ? querySearchPosts.data
-            ? querySearchPosts.data?.pages
+          ? searchPostsData
+            ? searchPostsData.pages
                 .reduce((acc, page) => acc.concat(page))
                 .map((post) => (
                   <ForumPostItem
@@ -124,9 +140,9 @@ export default function ForumPage() {
                     onLike={handleLike}
                   />
                 ))
-            : querySearchPosts.isFetching && <ForumPostsSkeleton />
-          : queryPosts.data
-            ? queryPosts.data?.pages
+            : isFetchingSearchPosts && <ForumPostsSkeleton />
+          : postsData
+            ? postsData.pages
                 .reduce((acc, page) => acc.concat(page))
                 .map((post) => (
                   <ForumPostItem
@@ -135,7 +151,7 @@ export default function ForumPage() {
                     onLike={handleLike}
                   />
                 ))
-            : queryPosts.isFetching && <ForumPostsSkeleton />}
+            : isFetchingPosts && <ForumPostsSkeleton />}
       </Flex>
 
       {!session && (
