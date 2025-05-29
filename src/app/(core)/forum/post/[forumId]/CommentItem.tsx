@@ -30,6 +30,7 @@ export interface CommentItemProps {
   session: ReturnType<typeof authClient.useSession>["data"];
   comment: ForumPostCommentType;
   dateNow: Date;
+  isForumOwner: boolean;
   onLike: ({ commentId, like }: { commentId: string; like: boolean }) => void;
   onDelete: (commentId: string) => void;
 }
@@ -38,6 +39,7 @@ export default function CommentItem({
   session,
   comment,
   dateNow,
+  isForumOwner,
   onLike,
   onDelete,
 }: CommentItemProps) {
@@ -49,14 +51,30 @@ export default function CommentItem({
         <Avatar src={comment.author.image} />
 
         <div>
-          <Text fw="bold" truncate>
-            {comment.author.name || comment.author.username}
-          </Text>
+          <Flex>
+            <Text fw="bold" truncate>
+              {comment.author.name || comment.author.username}
+
+              {isForumOwner && (
+                <Text c="blue" fz="xs" fw="bold" span>
+                  {" "}
+                  OP
+                </Text>
+              )}
+            </Text>
+          </Flex>
 
           <Text fz="xs" c="dimmed">
             {formatDistance(new Date(comment.createdAt), dateNow, {
               addSuffix: true,
             })}
+
+            {comment.updatedAt !== comment.createdAt && (
+              <Text span inherit>
+                {" "}
+                (edited)
+              </Text>
+            )}
           </Text>
         </div>
 

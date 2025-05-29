@@ -183,6 +183,7 @@ export default function Post({ id, post }: PostProps) {
         <Comments
           forumId={post.id}
           session={session}
+          forumAuthor={post.authorId}
           onOpenSignInWarningModal={signInWarningModalHandlers.open}
         />
       </Box>

@@ -20,12 +20,14 @@ import CommentItem from "./CommentItem";
 export interface CommentsProps {
   forumId: string;
   session: ReturnType<typeof authClient.useSession>["data"];
+  forumAuthor: string;
   onOpenSignInWarningModal: () => void;
 }
 
 export default function Comments({
   forumId,
   session,
+  forumAuthor,
   onOpenSignInWarningModal,
 }: CommentsProps) {
   const [dateNow, setDateNow] = useState(new Date());
@@ -152,6 +154,7 @@ export default function Comments({
                 session={session}
                 comment={comment}
                 dateNow={dateNow}
+                isForumOwner={forumAuthor === comment.author.id}
                 onLike={handleLike}
                 onDelete={deleteMutation.mutate}
               />
