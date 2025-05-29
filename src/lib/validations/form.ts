@@ -23,8 +23,6 @@ const sanitizeBodyHtmlOptions: IOptions = {
     "blockquote",
     "code",
     "pre",
-    "br",
-    "hr",
     "a",
   ],
   allowedAttributes: {

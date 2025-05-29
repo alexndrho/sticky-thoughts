@@ -19,6 +19,8 @@ const createTiptapExtensions = (placeholder: string) => [
     heading: {
       levels: [2],
     },
+    hardBreak: false,
+    horizontalRule: false,
   }),
   Link.configure({
     HTMLAttributes: {

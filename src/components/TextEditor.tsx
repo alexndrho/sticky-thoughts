@@ -49,9 +49,6 @@ export default function TextEditor({ editor, error }: TextEditorProps) {
               <RichTextEditor.Strikethrough />
               <RichTextEditor.ClearFormatting />
               <RichTextEditor.Code />
-            </RichTextEditor.ControlsGroup>
-
-            <RichTextEditor.ControlsGroup>
               <RichTextEditor.Control
                 aria-label="Heading"
                 title="Heading"
@@ -65,7 +62,6 @@ export default function TextEditor({ editor, error }: TextEditorProps) {
 
             <RichTextEditor.ControlsGroup>
               <RichTextEditor.Blockquote />
-              <RichTextEditor.Hr />
               <RichTextEditor.BulletList />
               <RichTextEditor.OrderedList />
             </RichTextEditor.ControlsGroup>
