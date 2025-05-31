@@ -34,7 +34,7 @@ import { getQueryClient } from "@/lib/get-query-client";
 import {
   thoughtInfiniteOptions,
   thoughtOptions,
-} from "@/lib/query-options/thought";
+} from "@/lib/query/options/thought";
 import classes from "@/styles/nav.module.css";
 
 export default function Nav() {

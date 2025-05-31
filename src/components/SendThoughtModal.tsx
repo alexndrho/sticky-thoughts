@@ -25,7 +25,7 @@ import { getQueryClient } from "@/lib/get-query-client";
 import {
   thoughtInfiniteOptions,
   thoughtOptions,
-} from "@/lib/query-options/thought";
+} from "@/lib/query/options/thought";
 import { submitThought } from "@/services/thought";
 import {
   THOUGHT_MAX_AUTHOR_LENGTH,

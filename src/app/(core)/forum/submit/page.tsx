@@ -14,7 +14,7 @@ import {
 
 import { authClient } from "@/lib/auth-client";
 import { getQueryClient } from "@/lib/get-query-client";
-import { forumInfiniteOptions } from "@/lib/query-options/forum";
+import { forumInfiniteOptions } from "@/lib/query/options/forum";
 import { FORUM_BODY_MAX_LENGTH } from "@/lib/validations/form";
 import { submitForumPost } from "@/services/forum";
 import { useEffect } from "react";

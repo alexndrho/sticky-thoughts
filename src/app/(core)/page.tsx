@@ -27,7 +27,7 @@ import {
   thoughtCountOptions,
   thoughtInfiniteOptions,
   thoughtSearchInfiniteOptions,
-} from "@/lib/query-options/thought";
+} from "@/lib/query/options/thought";
 
 export default function HomePage() {
   const [messageOpen, { open, close, toggle }] = useDisclosure(false);

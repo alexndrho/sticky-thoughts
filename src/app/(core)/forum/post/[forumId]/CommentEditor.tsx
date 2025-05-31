@@ -11,7 +11,7 @@ import TextEditor from "@/components/TextEditor";
 import { useTiptapEditor } from "@/hooks/use-tiptap";
 import { submitForumPostComment } from "@/services/forum";
 import ServerError from "@/utils/error/ServerError";
-import { setCreateForumPostCommentQueryData } from "@/lib/set-query-data/forum";
+import { setCreateForumPostCommentQueryData } from "@/lib/query/set-query-data/forum";
 
 export interface CommentEditorProps {
   forumId: string;

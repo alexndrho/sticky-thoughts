@@ -5,7 +5,7 @@ import {
   forumInfiniteOptions,
   forumPostCommentsInfiniteOptions,
   forumPostOptions,
-} from "@/lib/query-options/forum";
+} from "@/lib/query/options/forum";
 import type { ForumPostType, ForumPostCommentType } from "@/types/forum";
 
 export const setLikeForumQueryData = ({

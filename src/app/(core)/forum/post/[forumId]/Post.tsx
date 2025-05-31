@@ -30,7 +30,7 @@ import LikeButton from "@/components/LikeButton";
 import CommentButton from "@/components/CommentButton";
 import ShareButton from "@/components/ShareButton";
 import SignInWarningModal from "@/components/SignInWarningModal";
-import { setLikeForumQueryData } from "@/lib/set-query-data/forum";
+import { setLikeForumQueryData } from "@/lib/query/set-query-data/forum";
 import type { ForumPostType } from "@/types/forum";
 
 export interface PostProps {

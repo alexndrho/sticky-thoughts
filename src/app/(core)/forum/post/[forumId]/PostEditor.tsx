@@ -10,7 +10,7 @@ import { getQueryClient } from "@/lib/get-query-client";
 import {
   forumInfiniteOptions,
   forumPostOptions,
-} from "@/lib/query-options/forum";
+} from "@/lib/query/options/forum";
 import type { ForumPostType } from "@/types/forum";
 import ServerError from "@/utils/error/ServerError";
 import { useEffect } from "react";

@@ -17,7 +17,7 @@ import { isNotEmptyHTML, useForm } from "@mantine/form";
 import { IconDots, IconEdit, IconTrash } from "@tabler/icons-react";
 
 import { type authClient } from "@/lib/auth-client";
-import { setUpdateForumPostCommentQueryData } from "@/lib/set-query-data/forum";
+import { setUpdateForumPostCommentQueryData } from "@/lib/query/set-query-data/forum";
 import TextEditor from "@/components/TextEditor";
 import LikeButton from "@/components/LikeButton";
 import { useTiptapEditor } from "@/hooks/use-tiptap";

@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 
-import { forumPostOptions } from "@/lib/query-options/forum";
+import { forumPostOptions } from "@/lib/query/options/forum";
 import Post from "./Post";
 import PostSkeleton from "./PostSkeleton";
 import { NotFoundContent } from "@/app/not-found";
