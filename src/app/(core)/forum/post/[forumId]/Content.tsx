@@ -21,7 +21,7 @@ import {
 import { IconDots, IconEdit, IconTrash } from "@tabler/icons-react";
 
 import { authClient } from "@/lib/auth-client";
-import PostEditor from "./PostEditor";
+import ForumEditor from "./ForumEditor";
 import CommentEditor, { type CommentSectionRef } from "./CommentEditor";
 import Comments from "./Comments";
 import DeleteForumPostModal from "@/components/DeleteForumPostModal";
@@ -33,12 +33,12 @@ import SignInWarningModal from "@/components/SignInWarningModal";
 import { setLikeForumQueryData } from "@/lib/query/set-query-data/forum";
 import type { ForumPostType } from "@/types/forum";
 
-export interface PostProps {
+export interface ContentProps {
   id: string;
-  post: ForumPostType;
+  forum: ForumPostType;
 }
 
-export default function Post({ id, post }: PostProps) {
+export default function Content({ id, forum }: ContentProps) {
   const router = useRouter();
 
   const { data: session } = authClient.useSession();
@@ -52,7 +52,7 @@ export default function Post({ id, post }: PostProps) {
   // Like
   const handleLikeMutation = useMutation({
     mutationFn: () => {
-      if (post.likes.liked) {
+      if (forum.likes.liked) {
         return unlikeForumPost(id);
       } else {
         return likeForumPost(id);
@@ -61,8 +61,8 @@ export default function Post({ id, post }: PostProps) {
 
     onSuccess: () => {
       setLikeForumQueryData({
-        id: post.id,
-        like: !post.likes.liked,
+        id: forum.id,
+        like: !forum.likes.liked,
       });
     },
   });
@@ -80,12 +80,12 @@ export default function Post({ id, post }: PostProps) {
     <Box my="lg" w="100%">
       <Flex mb="xs" justify="space-between">
         <Flex align="center">
-          <Avatar src={post.author.image} mr="xs" size="sm" />
+          <Avatar src={forum.author.image} mr="xs" size="sm" />
 
-          <Text>{post.author.name || post.author.username}</Text>
+          <Text>{forum.author.name || forum.author.username}</Text>
         </Flex>
 
-        {session?.user.id === post.authorId && (
+        {session?.user.id === forum.authorId && (
           <Menu>
             <Menu.Target>
               <ActionIcon
@@ -125,38 +125,38 @@ export default function Post({ id, post }: PostProps) {
 
       {isEditable ? (
         <>
-          <Title>{post.title}</Title>
+          <Title>{forum.title}</Title>
 
-          <PostEditor
+          <ForumEditor
             id={id}
-            body={post.body}
+            body={forum.body}
             onClose={() => setIsEditable(false)}
           />
         </>
       ) : (
         <TypographyStylesProvider>
-          <h1>{post.title}</h1>
-          <div dangerouslySetInnerHTML={{ __html: post.body }} />
+          <h1>{forum.title}</h1>
+          <div dangerouslySetInnerHTML={{ __html: forum.body }} />
         </TypographyStylesProvider>
       )}
 
       <Group my="md">
         <LikeButton
-          liked={post.likes.liked}
-          count={post.likes.count}
+          liked={forum.likes.liked}
+          count={forum.likes.count}
           onLike={handleLike}
           size="compact-sm"
         />
 
         <CommentButton
-          count={post.comments.count}
+          count={forum.comments.count}
           size="compact-sm"
           onClick={() => commentSectionRef.current?.editor?.commands.focus()}
         />
 
         <ShareButton
           size="compact-sm"
-          link={`${process.env.NEXT_PUBLIC_BASE_URL}/forum/post/${post.id}`}
+          link={`${process.env.NEXT_PUBLIC_BASE_URL}/forum/post/${forum.id}`}
         />
       </Group>
 
@@ -164,7 +164,7 @@ export default function Post({ id, post }: PostProps) {
         {session ? (
           <CommentEditor
             ref={commentSectionRef}
-            forumId={post.id}
+            forumId={forum.id}
             onOpenSignInWarningModal={signInWarningModalHandlers.open}
           />
         ) : (
@@ -181,17 +181,17 @@ export default function Post({ id, post }: PostProps) {
         )}
 
         <Comments
-          forumId={post.id}
+          forumId={forum.id}
           session={session}
-          forumAuthor={post.authorId}
+          forumAuthor={forum.authorId}
           onOpenSignInWarningModal={signInWarningModalHandlers.open}
         />
       </Box>
 
-      {post.authorId === session?.user.id && (
+      {forum.authorId === session?.user.id && (
         <DeleteForumPostModal
-          id={post.id}
-          title={post.title}
+          id={forum.id}
+          title={forum.title}
           opened={deleteModalOpened}
           onClose={deleteModalHandlers.close}
           onDelete={() => router.push("/forum")}

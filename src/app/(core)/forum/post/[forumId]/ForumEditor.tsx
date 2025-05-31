@@ -15,13 +15,13 @@ import type { ForumPostType } from "@/types/forum";
 import ServerError from "@/utils/error/ServerError";
 import { useEffect } from "react";
 
-export interface PostEditorProps {
+export interface ForumEditorProps {
   id: string;
   body: string;
   onClose: () => void;
 }
 
-export default function PostEditor({ id, body, onClose }: PostEditorProps) {
+export default function ForumEditor({ id, body, onClose }: ForumEditorProps) {
   const editor = useTiptapEditor({
     content: body,
     placeholder: "Edit your post...",
