@@ -23,7 +23,7 @@ model User {
   image             String?
   createdAt         DateTime
   updatedAt         DateTime
-  username          String?
+  username          String
   displayUsername   String?
   sessions          Session[]
   accounts          Account[]
