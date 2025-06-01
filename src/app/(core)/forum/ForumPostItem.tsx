@@ -18,7 +18,7 @@ export default function ForumPostItem({ post, onLike }: ForumPostItemProps) {
     <Paper component="article" shadow="xs" withBorder className={classes.forum}>
       <Flex
         component={Link}
-        href={`forum/post/${post.id}`}
+        href={`/forum/post/${post.id}`}
         direction="column"
         className={classes.forum__content}
       >
@@ -53,7 +53,7 @@ export default function ForumPostItem({ post, onLike }: ForumPostItemProps) {
 
         <CommentButton
           component={Link}
-          href={`forum/post/${post.id}`}
+          href={`/forum/post/${post.id}`}
           count={post.comments.count}
           size="compact-sm"
         />
