@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import {
   Button,
@@ -11,13 +11,11 @@ import {
   TextInput,
   Textarea,
   Tooltip,
-  UnstyledButton,
 } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
-import { useThrottledCallback } from "@mantine/hooks";
-import { IconDiceFilled } from "@tabler/icons-react";
 
+import RandomButton from "./RandomButton";
 import CheckColorSwatch from "./CheckColorSwatch";
 import { getQueryClient } from "@/lib/get-query-client";
 import {
@@ -31,7 +29,6 @@ import {
   THOUGHT_MAX_MESSAGE_LENGTH,
   THOUGHT_COLORS,
 } from "@/config/thought";
-import classes from "@/styles/send-thought-modal.module.css";
 
 const ANONYMOUS_AUTHOR = "Anonymous";
 
@@ -45,8 +42,6 @@ export default function SendThoughtModal({
   onClose,
 }: SendThoughtModalProps) {
   const [isAnonymous, setIsAnonymous] = useState(false);
-  const randomColorButtonRef = useRef<HTMLButtonElement>(null);
-  const randomColorTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Store the author input in a state variable to prevent it from being
   // reset when author is set to anonymous.
@@ -66,28 +61,7 @@ export default function SendThoughtModal({
     validate: zodResolver(createThoughtInput),
   });
 
-  const handleRandomColor = useThrottledCallback(() => {
-    if (randomColorTimeoutRef.current) {
-      randomColorButtonRef.current?.classList.remove(
-        classes["random-button--clicked"],
-      );
-      clearTimeout(randomColorTimeoutRef.current);
-    }
-
-    randomColorButtonRef.current?.classList.add(
-      classes["random-button--clicked"],
-    );
-
-    const randomColorTimeout = setTimeout(() => {
-      randomColorButtonRef.current?.classList.remove(
-        classes["random-button--clicked"],
-      );
-
-      randomColorTimeoutRef.current = null;
-    }, 500);
-
-    randomColorTimeoutRef.current = randomColorTimeout;
-
+  const handleRandomColor = () => {
     // Get all colors except the current one.
     const colors = THOUGHT_COLORS.filter(
       (color) => color !== form.values.color,
@@ -96,7 +70,7 @@ export default function SendThoughtModal({
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
     form.setFieldValue("color", randomColor);
-  }, 750);
+  };
 
   const mutation = useMutation({
     mutationFn: (values: typeof form.values) => {
@@ -199,16 +173,7 @@ export default function SendThoughtModal({
 
         <Group justify="center">
           <Tooltip label="Randomize color" position="left">
-            {/* Use a span to prevent tooltip jittering. */}
-            <span>
-              <UnstyledButton
-                ref={randomColorButtonRef}
-                className={classes["random-button"]}
-                onClick={handleRandomColor}
-              >
-                <IconDiceFilled className={classes["dice-icon"]} />
-              </UnstyledButton>
-            </span>
+            <RandomButton onClick={handleRandomColor} />
           </Tooltip>
 
           {THOUGHT_COLORS.map((color) => (
