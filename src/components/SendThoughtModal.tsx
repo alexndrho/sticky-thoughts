@@ -4,8 +4,6 @@ import { useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import {
   Button,
-  CheckIcon,
-  ColorSwatch,
   Group,
   Modal,
   Switch,
@@ -14,26 +12,26 @@ import {
   Textarea,
   Tooltip,
   UnstyledButton,
-  useMantineTheme,
 } from "@mantine/core";
 import { useForm, zodResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useThrottledCallback } from "@mantine/hooks";
 import { IconDiceFilled } from "@tabler/icons-react";
 
+import CheckColorSwatch from "./CheckColorSwatch";
 import { getQueryClient } from "@/lib/get-query-client";
 import {
   thoughtInfiniteOptions,
   thoughtOptions,
 } from "@/lib/query/options/thought";
 import { submitThought } from "@/services/thought";
+import { createThoughtInput } from "@/lib/validations/thought";
 import {
   THOUGHT_MAX_AUTHOR_LENGTH,
   THOUGHT_MAX_MESSAGE_LENGTH,
   THOUGHT_COLORS,
 } from "@/config/thought";
 import classes from "@/styles/send-thought-modal.module.css";
-import { createThoughtInput } from "@/lib/validations/thought";
 
 const ANONYMOUS_AUTHOR = "Anonymous";
 
@@ -46,7 +44,6 @@ export default function SendThoughtModal({
   open,
   onClose,
 }: SendThoughtModalProps) {
-  const theme = useMantineTheme();
   const [isAnonymous, setIsAnonymous] = useState(false);
   const randomColorButtonRef = useRef<HTMLButtonElement>(null);
   const randomColorTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -215,23 +212,13 @@ export default function SendThoughtModal({
           </Tooltip>
 
           {THOUGHT_COLORS.map((color) => (
-            <ColorSwatch
-              aria-label={`thought-theme-${color}`}
-              type="button"
+            <CheckColorSwatch
               key={color}
-              component="button"
-              color={theme.colors[color][5]}
-              disabled={mutation.isPending}
+              color={color}
               onClick={() => form.setFieldValue("color", color)}
-              styles={(theme) => ({
-                root: {
-                  cursor: "pointer",
-                  color: theme.colors.gray[0],
-                },
-              })}
-            >
-              {color === form.values.color && <CheckIcon width="0.75em" />}
-            </ColorSwatch>
+              checked={form.values.color === color}
+              disabled={mutation.isPending}
+            />
           ))}
         </Group>
 
