@@ -54,7 +54,7 @@ export default function Nav() {
 
   return (
     <Box component="header" className={classes.nav}>
-      <Container h="4rem" size="xl">
+      <Container h="4rem" size="lg">
         <Group h="100%" justify="space-between">
           <Text
             component={Link}

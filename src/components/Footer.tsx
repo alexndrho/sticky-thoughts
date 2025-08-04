@@ -16,7 +16,7 @@ import classes from "@/styles/footer.module.css";
 export default function Footer() {
   return (
     <Box component="footer" className={classes.footer}>
-      <Container h="auto" size="xl" py="xl">
+      <Container h="auto" size="lg" py="xl">
         <Flex
           direction={{ base: "column", lg: "row" }}
           justify="space-between"
