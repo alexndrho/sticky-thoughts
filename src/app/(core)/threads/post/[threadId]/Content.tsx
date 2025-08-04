@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
@@ -18,6 +18,7 @@ import {
   Title,
   TypographyStylesProvider,
 } from "@mantine/core";
+import { formatDistance } from "date-fns";
 import { IconDots, IconEdit, IconTrash } from "@tabler/icons-react";
 
 import { authClient } from "@/lib/auth-client";
@@ -42,12 +43,21 @@ export default function Content({ id, thread }: ContentProps) {
   const router = useRouter();
 
   const { data: session } = authClient.useSession();
+  const [dateNow, setDateNow] = useState(new Date());
   const [isEditable, setIsEditable] = useState(false);
   const [signInWarningModalOpened, signInWarningModalHandlers] =
     useDisclosure(false);
   const [deleteModalOpened, deleteModalHandlers] = useDisclosure(false);
 
   const commentSectionRef = useRef<CommentSectionRef>(null);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDateNow(new Date());
+    }, 1000 * 60);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Like
   const handleLikeMutation = useMutation({
@@ -80,9 +90,24 @@ export default function Content({ id, thread }: ContentProps) {
     <Box my="lg" w="100%">
       <Flex mb="xs" justify="space-between">
         <Flex align="center">
-          <Avatar src={thread.author.image} mr="xs" size="sm" />
+          <Avatar src={thread.author.image} mr="xs" />
 
-          <Text>{thread.author.name || thread.author.username}</Text>
+          <div>
+            <Text>{thread.author.name || thread.author.username}</Text>
+
+            <Text fz="xs" c="dimmed">
+              {formatDistance(new Date(thread.createdAt), dateNow, {
+                addSuffix: true,
+              })}
+
+              {thread.updatedAt !== thread.createdAt && (
+                <Text span inherit>
+                  {" "}
+                  (edited)
+                </Text>
+              )}
+            </Text>
+          </div>
         </Flex>
 
         {session?.user.id === thread.authorId && (
@@ -184,6 +209,7 @@ export default function Content({ id, thread }: ContentProps) {
           threadId={thread.id}
           session={session}
           threadAuthor={thread.authorId}
+          dateNow={dateNow}
           onOpenSignInWarningModal={signInWarningModalHandlers.open}
         />
       </Box>

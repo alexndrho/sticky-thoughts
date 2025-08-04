@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { Box, Center, Flex, Loader } from "@mantine/core";
 
@@ -21,6 +21,7 @@ export interface CommentsProps {
   threadId: string;
   session: ReturnType<typeof authClient.useSession>["data"];
   threadAuthor: string;
+  dateNow: Date;
   onOpenSignInWarningModal: () => void;
 }
 
@@ -28,10 +29,9 @@ export default function Comments({
   threadId,
   session,
   threadAuthor,
+  dateNow,
   onOpenSignInWarningModal,
 }: CommentsProps) {
-  const [dateNow, setDateNow] = useState(new Date());
-
   const {
     data: commentsData,
     isFetching: isFetchingComments,
@@ -39,14 +39,6 @@ export default function Comments({
     fetchNextPage: fetchNextCommentsPage,
     hasNextPage: hasNextCommentsPage,
   } = useInfiniteQuery(threadPostCommentsInfiniteOptions(threadId));
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDateNow(new Date());
-    }, 1000 * 60);
-
-    return () => clearInterval(interval);
-  }, []);
 
   const deleteMutation = useMutation({
     mutationFn: async (commentId: string) => {

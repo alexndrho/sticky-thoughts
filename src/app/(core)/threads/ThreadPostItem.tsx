@@ -1,5 +1,6 @@
 import { Avatar, Flex, Group, Paper, Text, Title } from "@mantine/core";
 import Link from "next/link";
+import { formatDistance } from "date-fns";
 
 import { stripHtmlTags } from "@/utils/text";
 import classes from "@/styles/thread-post-item.module.css";
@@ -31,7 +32,14 @@ export default function ThreadPostItem({ post, onLike }: ThreadPostItemProps) {
           <Flex align="center" gap="xs">
             <Avatar src={post.author.image} size="xs" />
 
-            <Text size="sm">{post.author.name || post.author.username}</Text>
+            <Text size="sm">
+              {post.author.name || post.author.username} <span>•</span>{" "}
+              <span>
+                {formatDistance(new Date(post.createdAt), new Date(), {
+                  addSuffix: true,
+                })}
+              </span>
+            </Text>
           </Flex>
           <Title order={2} size="h3" lineClamp={2}>
             {post.title}
