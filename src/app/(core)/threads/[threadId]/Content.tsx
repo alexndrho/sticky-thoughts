@@ -181,7 +181,7 @@ export default function Content({ id, thread }: ContentProps) {
 
         <ShareButton
           size="compact-sm"
-          link={`${process.env.NEXT_PUBLIC_BASE_URL}/threads/post/${thread.id}`}
+          link={`${process.env.NEXT_PUBLIC_BASE_URL}/threads/${thread.id}`}
         />
       </Group>
 

@@ -73,7 +73,7 @@ export default function ThreadSubmitPage() {
       getQueryClient().invalidateQueries({
         queryKey: threadInfiniteOptions.queryKey,
       });
-      router.push(`/threads/post/${id}`);
+      router.push(`/threads/${id}`);
     },
     onError: (error) => {
       if (error instanceof ServerError) {

@@ -24,7 +24,7 @@ export default function ThreadPostItem({ post, onLike }: ThreadPostItemProps) {
     >
       <Flex
         component={Link}
-        href={`/threads/post/${post.id}`}
+        href={`/threads/${post.id}`}
         direction="column"
         className={classes.thread__content}
       >
@@ -66,14 +66,14 @@ export default function ThreadPostItem({ post, onLike }: ThreadPostItemProps) {
 
         <CommentButton
           component={Link}
-          href={`/threads/post/${post.id}`}
+          href={`/threads/${post.id}`}
           count={post.comments.count}
           size="compact-sm"
         />
 
         <ShareButton
           size="compact-sm"
-          link={`${process.env.NEXT_PUBLIC_BASE_URL}/threads/post/${post.id}`}
+          link={`${process.env.NEXT_PUBLIC_BASE_URL}/threads/${post.id}`}
         />
       </Group>
     </Paper>
