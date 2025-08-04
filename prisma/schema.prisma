@@ -16,21 +16,21 @@ model Thought {
 }
 
 model User {
-  id                String             @id
-  name              String
-  email             String
-  emailVerified     Boolean
-  image             String?
-  createdAt         DateTime
-  updatedAt         DateTime
-  username          String
-  displayUsername   String?
-  sessions          Session[]
-  accounts          Account[]
-  forums            Forum[]
-  forumLikes        ForumLike[]
-  forumComments     ForumComment[]
-  ForumCommentLikes ForumCommentLike[]
+  id                 String              @id
+  name               String
+  email              String
+  emailVerified      Boolean
+  image              String?
+  createdAt          DateTime
+  updatedAt          DateTime
+  username           String
+  displayUsername    String?
+  sessions           Session[]
+  accounts           Account[]
+  threads            Thread[]
+  threadLikes        ThreadLike[]
+  threadComments     ThreadComment[]
+  ThreadCommentLikes ThreadCommentLike[]
 
   @@unique([email])
   @@unique([username])
@@ -82,14 +82,14 @@ model Verification {
   @@map("verification")
 }
 
-model Forum {
-  id       String         @id @default(cuid())
+model Thread {
+  id       String          @id @default(cuid())
   title    String
   body     String
   authorId String
-  author   User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  likes    ForumLike[]
-  comments ForumComment[]
+  author   User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  likes    ThreadLike[]
+  comments ThreadComment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -97,37 +97,37 @@ model Forum {
   @@unique([authorId, title])
 }
 
-model ForumLike {
-  id      String @id @default(uuid())
-  userId  String
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  forumId String
-  forum   Forum  @relation(fields: [forumId], references: [id], onDelete: Cascade)
+model ThreadLike {
+  id       String @id @default(uuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  threadId String
+  thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
-  @@unique([userId, forumId])
+  @@unique([userId, threadId])
 }
 
-model ForumComment {
-  id       String             @id @default(cuid())
+model ThreadComment {
+  id       String              @id @default(cuid())
   body     String
   authorId String
-  author   User               @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  forumId  String
-  forum    Forum              @relation(fields: [forumId], references: [id], onDelete: Cascade)
-  likes    ForumCommentLike[]
+  author   User                @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  threadId String
+  thread   Thread              @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  likes    ThreadCommentLike[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model ForumCommentLike {
-  id        String       @id @default(uuid())
+model ThreadCommentLike {
+  id        String        @id @default(uuid())
   userId    String
-  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   commentId String
-  comment   ForumComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  comment   ThreadComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 

@@ -1,2 +1,0 @@
-export const FORUM_POSTS_PER_PAGE = 10;
-export const FORUM_POST_COMMENT_PER_PAGE = 10;

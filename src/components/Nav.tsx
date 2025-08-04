@@ -87,11 +87,11 @@ export default function Nav() {
 
               <Button
                 component={Link}
-                href="/forum"
+                href="/threads"
                 variant="subtle"
                 size="compact-sm"
               >
-                Forum
+                Threads
               </Button>
 
               {/* <Button

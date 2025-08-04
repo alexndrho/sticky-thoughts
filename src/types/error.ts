@@ -7,9 +7,9 @@ export type validationCode =
   | "validation/invalid-input"
   | "validation/too-large";
 
-export type forumCode = "forum/title-already-exists";
+export type threadCode = "thread/title-already-exists";
 
-export type errorCode = systemCode | authCode | validationCode | forumCode;
+export type errorCode = systemCode | authCode | validationCode | threadCode;
 
 export default interface IError {
   errors: {

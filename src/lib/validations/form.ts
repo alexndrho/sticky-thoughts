@@ -2,12 +2,12 @@ import { z } from "zod";
 import sanitizeHtml, { type IOptions } from "sanitize-html";
 import * as cheerio from "cheerio";
 
-export const FORUM_TITLE_MIN_LENGTH = 1;
-export const FORUM_TITLE_MAX_LENGTH = 100;
-export const FORUM_BODY_MIN_LENGTH = 1;
-export const FORUM_BODY_MAX_LENGTH = 20000;
+export const THREAD_TITLE_MIN_LENGTH = 1;
+export const THREAD_TITLE_MAX_LENGTH = 100;
+export const THREAD_BODY_MIN_LENGTH = 1;
+export const THREAD_BODY_MAX_LENGTH = 20000;
 
-export const FORUM_COMMENT_MAX_LENGTH = 7500;
+export const THREAD_COMMENT_MAX_LENGTH = 7500;
 
 const sanitizeBodyHtmlOptions: IOptions = {
   allowedTags: [
@@ -57,26 +57,26 @@ const sanitizeBodyHtmlOptions: IOptions = {
   },
 } as const;
 
-export const createForumServerInput = z.object({
+export const createThreadServerInput = z.object({
   title: z
     .string({
       required_error: "Title is required",
     })
     .trim()
-    .min(FORUM_TITLE_MIN_LENGTH, "Title is required")
+    .min(THREAD_TITLE_MIN_LENGTH, "Title is required")
     .max(
-      FORUM_TITLE_MAX_LENGTH,
-      `Title must be at most ${FORUM_TITLE_MAX_LENGTH.toLocaleString()} characters long`,
+      THREAD_TITLE_MAX_LENGTH,
+      `Title must be at most ${THREAD_TITLE_MAX_LENGTH.toLocaleString()} characters long`,
     ),
   body: z
     .string({
       required_error: "Body is required",
     })
     .trim()
-    .min(FORUM_BODY_MIN_LENGTH, "Body is required")
+    .min(THREAD_BODY_MIN_LENGTH, "Body is required")
     .max(
-      FORUM_BODY_MAX_LENGTH,
-      `Body must be at most ${FORUM_BODY_MAX_LENGTH.toLocaleString()} characters, including formatting and spaces.`,
+      THREAD_BODY_MAX_LENGTH,
+      `Body must be at most ${THREAD_BODY_MAX_LENGTH.toLocaleString()} characters, including formatting and spaces.`,
     )
     .transform((value) => {
       return sanitizeHtml(value, sanitizeBodyHtmlOptions);
@@ -85,7 +85,7 @@ export const createForumServerInput = z.object({
       const $ = cheerio.load(value);
       const text = $.text().trim();
 
-      if (text.length < FORUM_BODY_MIN_LENGTH) {
+      if (text.length < THREAD_BODY_MIN_LENGTH) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Body is required",
@@ -94,20 +94,20 @@ export const createForumServerInput = z.object({
     }),
 });
 
-export const updateForumServerInput = createForumServerInput.pick({
+export const updateThreadServerInput = createThreadServerInput.pick({
   body: true,
 });
 
-export const createForumCommentServerInput = z.object({
+export const createThreadCommentServerInput = z.object({
   body: z
     .string({
       required_error: "Comment is required",
     })
     .trim()
-    .min(FORUM_BODY_MIN_LENGTH, "Comment is required")
+    .min(THREAD_BODY_MIN_LENGTH, "Comment is required")
     .max(
-      FORUM_COMMENT_MAX_LENGTH,
-      `Comment must be at most ${FORUM_COMMENT_MAX_LENGTH.toLocaleString()} characters long`,
+      THREAD_COMMENT_MAX_LENGTH,
+      `Comment must be at most ${THREAD_COMMENT_MAX_LENGTH.toLocaleString()} characters long`,
     )
     .transform((value) => {
       return sanitizeHtml(value, sanitizeBodyHtmlOptions);
@@ -116,7 +116,7 @@ export const createForumCommentServerInput = z.object({
       const $ = cheerio.load(value);
       const text = $.text().trim();
 
-      if (text.length < FORUM_BODY_MIN_LENGTH) {
+      if (text.length < THREAD_BODY_MIN_LENGTH) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Comment is required",
@@ -125,7 +125,7 @@ export const createForumCommentServerInput = z.object({
     }),
 });
 
-export const updateForumCommentServerInput = createForumCommentServerInput.pick(
+export const updateThreadCommentServerInput = createThreadCommentServerInput.pick(
   {
     body: true,
   },
