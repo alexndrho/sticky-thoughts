@@ -21,8 +21,8 @@ import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { IconCheck, IconMessage, IconSearch, IconX } from "@tabler/icons-react";
 
-import Thoughts from "@/components/Thoughts";
-import SendThoughtModal from "@/components/SendThoughtModal";
+import Thoughts from "@/app/(core)/Thoughts";
+import SendThoughtModal from "./SendThoughtModal";
 import {
   thoughtCountOptions,
   thoughtInfiniteOptions,

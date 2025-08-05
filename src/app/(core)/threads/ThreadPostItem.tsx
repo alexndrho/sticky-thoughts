@@ -4,9 +4,9 @@ import { formatDistance } from "date-fns";
 
 import { stripHtmlTags } from "@/utils/text";
 import classes from "@/styles/thread-post-item.module.css";
-import LikeButton from "@/components/LikeButton";
-import CommentButton from "@/components/CommentButton";
-import ShareButton from "@/components/ShareButton";
+import LikeButton from "@/app/(core)/threads/LikeButton";
+import CommentButton from "@/app/(core)/threads/CommentButton";
+import ShareButton from "@/app/(core)/threads/ShareButton";
 import type { ThreadPostType } from "@/types/thread";
 
 export interface ThreadPostItemProps {

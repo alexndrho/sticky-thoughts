@@ -15,8 +15,8 @@ import {
 import { useForm, zodResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 
-import RandomButton from "./RandomButton";
-import CheckColorSwatch from "./CheckColorSwatch";
+import RandomButton from "@/components/RandomButton";
+import CheckColorSwatch from "@/components/CheckColorSwatch";
 import { getQueryClient } from "@/lib/get-query-client";
 import {
   thoughtInfiniteOptions,
