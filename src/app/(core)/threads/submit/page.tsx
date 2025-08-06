@@ -21,6 +21,7 @@ import { useEffect } from "react";
 import { useTiptapEditor } from "@/hooks/use-tiptap";
 import TextEditor from "@/components/TextEditor";
 import ServerError from "@/utils/error/ServerError";
+import { userThreadsInfiniteOptions } from "@/lib/query/options/user";
 
 export default function ThreadSubmitPage() {
   const router = useRouter();
@@ -73,6 +74,13 @@ export default function ThreadSubmitPage() {
       getQueryClient().invalidateQueries({
         queryKey: threadInfiniteOptions.queryKey,
       });
+
+      if (session?.user.username) {
+        getQueryClient().invalidateQueries({
+          queryKey: userThreadsInfiniteOptions(session.user.username).queryKey,
+        });
+      }
+
       router.push(`/threads/${id}`);
     },
     onError: (error) => {

@@ -1,6 +1,7 @@
 import { type InfiniteData } from "@tanstack/react-query";
 
 import { getQueryClient } from "@/lib/get-query-client";
+import { userThreadsInfiniteOptions, userOptions } from "../options/user";
 import {
   threadInfiniteOptions,
   threadPostCommentsInfiniteOptions,
@@ -9,16 +10,18 @@ import {
 import type { ThreadPostType, ThreadPostCommentType } from "@/types/thread";
 
 export const setLikeThreadQueryData = ({
-  id,
+  username, // optional, used for user-specific queries
+  threadId,
   like,
 }: {
-  id: string;
+  username?: string;
+  threadId: string;
   like: boolean;
 }) => {
   const queryClient = getQueryClient();
 
   queryClient.setQueryData<ThreadPostType>(
-    threadPostOptions(id).queryKey,
+    threadPostOptions(threadId).queryKey,
     (oldData) =>
       oldData
         ? ({
@@ -42,7 +45,7 @@ export const setLikeThreadQueryData = ({
         ...oldData,
         pages: oldData.pages.map((page) =>
           page.map((post) =>
-            post.id === id
+            post.id === threadId
               ? ({
                   ...post,
                   likes: {
@@ -58,8 +61,47 @@ export const setLikeThreadQueryData = ({
     },
   );
 
+  if (username) {
+    queryClient.setQueryData<InfiniteData<ThreadPostType[]>>(
+      userThreadsInfiniteOptions(username).queryKey,
+      (oldData) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page) =>
+            page.map((post) =>
+              post.id === threadId
+                ? ({
+                    ...post,
+                    likes: {
+                      ...post.likes,
+                      liked: like,
+                      count: like ? post.likes.count + 1 : post.likes.count - 1,
+                    },
+                  } satisfies ThreadPostType)
+                : post,
+            ),
+          ),
+        };
+      },
+    );
+
+    queryClient.invalidateQueries({
+      queryKey: userThreadsInfiniteOptions(username).queryKey,
+      refetchType: "none",
+    });
+  } else {
+    console.log(
+      "Invalidating user threads query for like update:",
+      userOptions.queryKey,
+    );
+    queryClient.invalidateQueries({
+      queryKey: userOptions.queryKey,
+    });
+  }
+
   queryClient.invalidateQueries({
-    queryKey: threadPostOptions(id).queryKey,
+    queryKey: threadPostOptions(threadId).queryKey,
     refetchType: "none",
   });
 
@@ -147,6 +189,10 @@ export const setCreateThreadPostCommentQueryData = ({
   queryClient.invalidateQueries({
     queryKey: threadInfiniteOptions.queryKey,
     refetchType: "none",
+  });
+
+  queryClient.invalidateQueries({
+    queryKey: userOptions.queryKey,
   });
 };
 

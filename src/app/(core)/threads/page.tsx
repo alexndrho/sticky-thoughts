@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { useDebouncedState, useDisclosure } from "@mantine/hooks";
-import { Box, Button, Flex, Input, Kbd } from "@mantine/core";
+import { Box, Button, Flex, Group, Input, Kbd, Loader } from "@mantine/core";
 import { IconMessage, IconSearch } from "@tabler/icons-react";
 
 import { authClient } from "@/lib/auth-client";
@@ -16,6 +16,7 @@ import SignInWarningModal from "@/components/SignInWarningModal";
 import ThreadPostItem from "./ThreadPostItem";
 import { ThreadPostsSkeleton } from "./ThreadPostsSkeleton";
 import { likeThreadPost, unlikeThreadPost } from "@/services/thread";
+import { useIsNearScrollEnd } from "@/hooks/use-is-near-scroll-end";
 import { setLikeThreadQueryData } from "@/lib/query/set-query-data/thread";
 
 export default function ThreadPage() {
@@ -23,6 +24,7 @@ export default function ThreadPage() {
   const router = useRouter();
 
   const [searchBarValue, setSearchBarValue] = useDebouncedState("", 250);
+  const isNearScrollEnd = useIsNearScrollEnd();
   const [signInWarningModalOpened, signInWarningModalHandler] =
     useDisclosure(false);
 
@@ -40,32 +42,21 @@ export default function ThreadPage() {
   } = useInfiniteQuery(threadSearchInfiniteOptions(searchBarValue));
 
   useEffect(() => {
-    function handleScroll() {
-      if (isFetchingPosts || isFetchingSearchPosts) return;
+    if (isFetchingPosts || isFetchingSearchPosts) return;
 
-      const isNearBottom =
-        window.innerHeight + window.scrollY >=
-        document.documentElement.scrollHeight - 500;
+    if (!isNearScrollEnd) return;
 
-      if (!isNearBottom) return;
-
-      if (searchBarValue) {
-        if (hasNextSearchPostsPage) {
-          fetchNextSearchPostsPage();
-        }
-      } else {
-        if (hasNextPostsPage) {
-          fetchNextPostsPage();
-        }
+    if (searchBarValue) {
+      if (hasNextSearchPostsPage) {
+        fetchNextSearchPostsPage();
+      }
+    } else {
+      if (hasNextPostsPage) {
+        fetchNextPostsPage();
       }
     }
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
   }, [
+    isNearScrollEnd,
     isFetchingPosts,
     isFetchingSearchPosts,
     hasNextPostsPage,
@@ -92,7 +83,7 @@ export default function ThreadPage() {
         await unlikeThreadPost(id);
       }
 
-      return { id, like };
+      return { threadId: id, like };
     },
 
     onSuccess: (data) => {
@@ -153,6 +144,10 @@ export default function ThreadPage() {
                 ))
             : isFetchingPosts && <ThreadPostsSkeleton />}
       </Flex>
+
+      <Group my="xl" h="2.25rem" justify="center">
+        {(isFetchingPosts || isFetchingSearchPosts) && <Loader />}
+      </Group>
 
       {!session && (
         <SignInWarningModal

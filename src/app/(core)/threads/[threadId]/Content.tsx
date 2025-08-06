@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useDisclosure } from "@mantine/hooks";
 import {
   ActionIcon,
+  Anchor,
   Avatar,
   Box,
   Button,
@@ -71,7 +72,7 @@ export default function Content({ id, thread }: ContentProps) {
 
     onSuccess: () => {
       setLikeThreadQueryData({
-        id: thread.id,
+        threadId: thread.id,
         like: !thread.likes.liked,
       });
     },
@@ -93,7 +94,15 @@ export default function Content({ id, thread }: ContentProps) {
           <Avatar src={thread.author.image} mr="xs" />
 
           <div>
-            <Text>{thread.author.name || thread.author.username}</Text>
+            <Anchor
+              component={Link}
+              href={`/user/${thread.author.username}`}
+              c="inherit"
+              fw="bold"
+              inherit
+            >
+              {thread.author.name || thread.author.username}
+            </Anchor>
 
             <Text fz="xs" c="dimmed">
               {formatDistance(new Date(thread.createdAt), dateNow, {

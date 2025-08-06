@@ -23,6 +23,7 @@ import { IconCheck, IconMessage, IconSearch, IconX } from "@tabler/icons-react";
 
 import Thoughts from "@/app/(core)/Thoughts";
 import SendThoughtModal from "./SendThoughtModal";
+import { useIsNearScrollEnd } from "@/hooks/use-is-near-scroll-end";
 import {
   thoughtCountOptions,
   thoughtInfiniteOptions,
@@ -34,6 +35,7 @@ export default function HomePage() {
 
   const searchRef = useRef<HTMLInputElement>(null);
   const [searchBarValue, setSearchBarValue] = useDebouncedState("", 250);
+  const isNearScrollEnd = useIsNearScrollEnd();
 
   const {
     data: thoughtsData,
@@ -67,27 +69,16 @@ export default function HomePage() {
 
   //useEffect
   useEffect(() => {
-    function handleScroll() {
-      if (isThoughtsFetching || isSearchFetching) return;
+    if (isThoughtsFetching || isSearchFetching) return;
 
-      const isNearBottom =
-        window.innerHeight + window.scrollY >=
-        document.documentElement.scrollHeight - 500;
+    if (!isNearScrollEnd) return;
 
-      if (!isNearBottom) return;
+    if (searchBarValue.length > 0 && hasSearchNextPage) fetchSearchNextPage();
 
-      if (searchBarValue.length > 0 && hasSearchNextPage) fetchSearchNextPage();
-
-      if (searchBarValue.length === 0 && hasThoughtsNextPage)
-        fetchThoughtsNextPage();
-    }
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    if (searchBarValue.length === 0 && hasThoughtsNextPage)
+      fetchThoughtsNextPage();
   }, [
+    isNearScrollEnd,
     isThoughtsFetching,
     isSearchFetching,
     fetchThoughtsNextPage,

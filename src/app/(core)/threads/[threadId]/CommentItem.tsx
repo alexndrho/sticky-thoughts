@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { formatDistance } from "date-fns";
 import {
   ActionIcon,
+  Anchor,
   Avatar,
   Box,
   Button,
@@ -25,6 +26,7 @@ import type { ThreadPostCommentType } from "@/types/thread";
 import { useMutation } from "@tanstack/react-query";
 import { updateThreadPostComment } from "@/services/thread";
 import ServerError from "@/utils/error/ServerError";
+import Link from "next/link";
 
 export interface CommentItemProps {
   session: ReturnType<typeof authClient.useSession>["data"];
@@ -53,7 +55,14 @@ export default function CommentItem({
         <div>
           <Flex>
             <Text fw="bold" truncate>
-              {comment.author.name || comment.author.username}
+              <Anchor
+                component={Link}
+                href={`/user/${comment.author.username}`}
+                c="inherit"
+                inherit
+              >
+                {comment.author.name || comment.author.username}
+              </Anchor>
 
               {isThreadOwner && (
                 <Text c="blue" fz="xs" fw="bold" span>

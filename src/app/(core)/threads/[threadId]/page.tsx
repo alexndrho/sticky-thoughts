@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { threadPostOptions } from "@/lib/query/options/thread";
 import Content from "./Content";
-import ContentSkeleton from "./ContentSkeleton";
+import ContentSkeleton from "@/components/ContentSkeleton";
 import { NotFoundContent } from "@/app/not-found";
 
 export default function PostPage() {

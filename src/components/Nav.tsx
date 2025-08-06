@@ -26,6 +26,7 @@ import {
   IconInfoCircle,
   IconAddressBook,
   IconLogin,
+  IconUser,
 } from "@tabler/icons-react";
 import { useThrottledCallback } from "@mantine/hooks";
 
@@ -125,6 +126,16 @@ export default function Nav() {
                 </Menu.Target>
 
                 <Menu.Dropdown>
+                  {session.user && (
+                    <Menu.Item
+                      component={Link}
+                      href={`/user/${session.user.username}`}
+                      leftSection={<IconUser size="1em" />}
+                    >
+                      Profile
+                    </Menu.Item>
+                  )}
+
                   <Menu.Item
                     component={Link}
                     href="/settings"
