@@ -1,11 +1,12 @@
 import type { User } from "@prisma/client";
 import { Avatar, Box, Flex, Tabs, Text, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconMessage } from "@tabler/icons-react";
+import { IconHeart, IconMessage } from "@tabler/icons-react";
 
 import { authClient } from "@/lib/auth-client";
 import Threads from "./ThreadsTab";
 import SignInWarningModal from "@/components/SignInWarningModal";
+import LikesTab from "./LikesTab";
 
 export interface ContentProps {
   user: User;
@@ -36,9 +37,19 @@ export default function Content({ user }: ContentProps) {
           <Tabs.Tab value="threads" leftSection={<IconMessage size="1em" />}>
             Threads
           </Tabs.Tab>
+
+          <Tabs.Tab value="likes" leftSection={<IconHeart size="1em" />}>
+            Likes
+          </Tabs.Tab>
         </Tabs.List>
 
         <Threads
+          username={user.username}
+          session={session}
+          openSignInWarningModal={signInWarningModalHandler.open}
+        />
+
+        <LikesTab
           username={user.username}
           session={session}
           openSignInWarningModal={signInWarningModalHandler.open}

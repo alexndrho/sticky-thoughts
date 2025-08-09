@@ -1,35 +1,45 @@
 "use client";
 
-import { useEffect } from "react";
-import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { Flex, Group, Loader, Tabs } from "@mantine/core";
+import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 
-import type { authClient } from "@/lib/auth-client";
-import ThreadPostItem from "../../threads/ThreadPostItem";
-import { userThreadsInfiniteOptions } from "@/lib/query/options/user";
-import { likeThreadPost, unlikeThreadPost } from "@/services/thread";
-import { useIsNearScrollEnd } from "@/hooks/use-is-near-scroll-end";
+import { authClient } from "@/lib/auth-client";
+import { userLikedThreadsInfiniteOptions } from "@/lib/query/options/user";
 import { setLikeThreadQueryData } from "@/lib/query/set-query-data/thread";
+import { useIsNearScrollEnd } from "@/hooks/use-is-near-scroll-end";
+import { useEffect } from "react";
+import ThreadPostItem from "../../threads/ThreadPostItem";
+import { likeThreadPost, unlikeThreadPost } from "@/services/thread";
 
-interface ThreadsTabProps {
+export interface LikesTabProps {
   username: string;
   session: ReturnType<typeof authClient.useSession>["data"];
   openSignInWarningModal: () => void;
 }
 
-export default function Threads({
+export default function LikesTab({
   username,
   session,
   openSignInWarningModal,
-}: ThreadsTabProps) {
+}: LikesTabProps) {
   const isNearScrollEnd = useIsNearScrollEnd();
 
   const {
-    data: threads,
-    isFetching: isThreadsFetching,
-    fetchNextPage: fetchNextThreadsPage,
-    hasNextPage: hasNextThreadsPage,
-  } = useInfiniteQuery(userThreadsInfiniteOptions(username));
+    data: likedThreads,
+    isFetching: isLikedThreadsFetching,
+    fetchNextPage: fetchNextLikedThreadsPage,
+    hasNextPage: hasNextLikedThreadsPage,
+  } = useInfiniteQuery(userLikedThreadsInfiniteOptions(username));
+
+  useEffect(() => {
+    if (isLikedThreadsFetching) return;
+
+    if (!isNearScrollEnd) return;
+
+    if (hasNextLikedThreadsPage) {
+      fetchNextLikedThreadsPage();
+    }
+  }, [isNearScrollEnd, isLikedThreadsFetching, hasNextLikedThreadsPage]);
 
   const likeMutation = useMutation({
     mutationFn: async ({ id, like }: { id: string; like: boolean }) => {
@@ -51,21 +61,6 @@ export default function Threads({
     },
   });
 
-  useEffect(() => {
-    if (isThreadsFetching) return;
-
-    if (!isNearScrollEnd) return;
-
-    if (hasNextThreadsPage) {
-      fetchNextThreadsPage();
-    }
-  }, [
-    isNearScrollEnd,
-    isThreadsFetching,
-    hasNextThreadsPage,
-    fetchNextThreadsPage,
-  ]);
-
   const handleLike = ({ id, like }: { id: string; like: boolean }) => {
     if (!session) {
       openSignInWarningModal();
@@ -76,9 +71,9 @@ export default function Threads({
   };
 
   return (
-    <Tabs.Panel value="threads" py="md">
+    <Tabs.Panel value="likes" py="md">
       <Flex direction="column" gap="md">
-        {threads?.pages.map((page) =>
+        {likedThreads?.pages.map((page) =>
           page.map((thread) => (
             <ThreadPostItem key={thread.id} post={thread} onLike={handleLike} />
           )),
@@ -86,7 +81,7 @@ export default function Threads({
       </Flex>
 
       <Group my="xl" h="2.25rem" justify="center">
-        {isThreadsFetching && <Loader />}
+        {isLikedThreadsFetching && <Loader />}
       </Group>
     </Tabs.Panel>
   );

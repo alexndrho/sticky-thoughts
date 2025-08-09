@@ -1,7 +1,11 @@
 import { type InfiniteData } from "@tanstack/react-query";
 
 import { getQueryClient } from "@/lib/get-query-client";
-import { userThreadsInfiniteOptions, userOptions } from "../options/user";
+import {
+  userThreadsInfiniteOptions,
+  userOptions,
+  userLikedThreadsInfiniteOptions,
+} from "../options/user";
 import {
   threadInfiniteOptions,
   threadPostCommentsInfiniteOptions,
@@ -86,15 +90,40 @@ export const setLikeThreadQueryData = ({
       },
     );
 
+    queryClient.setQueryData<InfiniteData<ThreadPostType[]>>(
+      userLikedThreadsInfiniteOptions(username).queryKey,
+      (oldData) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          pages: oldData.pages.map((page) =>
+            page.map((post) =>
+              post.id === threadId
+                ? ({
+                    ...post,
+                    likes: {
+                      ...post.likes,
+                      liked: like,
+                      count: like ? post.likes.count + 1 : post.likes.count - 1,
+                    },
+                  } satisfies ThreadPostType)
+                : post,
+            ),
+          ),
+        };
+      },
+    );
+
     queryClient.invalidateQueries({
       queryKey: userThreadsInfiniteOptions(username).queryKey,
       refetchType: "none",
     });
+
+    queryClient.invalidateQueries({
+      queryKey: userLikedThreadsInfiniteOptions(username).queryKey,
+      refetchType: "none",
+    });
   } else {
-    console.log(
-      "Invalidating user threads query for like update:",
-      userOptions.queryKey,
-    );
     queryClient.invalidateQueries({
       queryKey: userOptions.queryKey,
     });

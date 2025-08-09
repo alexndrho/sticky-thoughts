@@ -46,6 +46,8 @@ export const removeProfilePicture = async (): Promise<{ message: string }> => {
   return data;
 };
 
+// profile
+
 export const getUserThreads = async ({
   username,
   lastId,
@@ -70,6 +72,30 @@ export const getUserThreads = async ({
 
   if (!res.ok) {
     throw toServerError("User threads fetch error", data.errors);
+  }
+
+  return data;
+};
+
+export const getUserLikedThreads = async ({
+  username,
+  lastId,
+}: {
+  username: string;
+  lastId?: string;
+}): Promise<ThreadPostType[]> => {
+  const searchParams = new URLSearchParams();
+
+  if (lastId) {
+    searchParams.append("lastId", lastId);
+  }
+
+  const res = await fetch(`/api/user/${username}/likes?${searchParams}`);
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw toServerError("User liked threads fetch error", data.errors);
   }
 
   return data;
