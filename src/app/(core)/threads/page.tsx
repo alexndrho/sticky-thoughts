@@ -101,7 +101,7 @@ export default function ThreadPage() {
   };
 
   return (
-    <Box my="lg" w="100%">
+    <Box my="md" w="100%">
       <Flex w="100%" mb="lg" gap="md">
         <Input
           flex={1}
@@ -119,7 +119,7 @@ export default function ThreadPage() {
         </Button>
       </Flex>
 
-      <Flex direction="column" gap="lg">
+      <Flex direction="column" gap="md">
         {searchBarValue
           ? searchPostsData
             ? searchPostsData.pages
