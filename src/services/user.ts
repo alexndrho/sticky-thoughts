@@ -51,19 +51,14 @@ export const removeProfilePicture = async (): Promise<{ message: string }> => {
 export const getUserThreads = async ({
   username,
   lastId,
-  searchTerm,
 }: {
   username: string;
   lastId?: string;
-  searchTerm?: string;
 }): Promise<ThreadPostType[]> => {
   const searchParams = new URLSearchParams();
 
   if (lastId) {
     searchParams.append("lastId", lastId);
-  }
-  if (searchTerm) {
-    searchParams.append("searchTerm", searchTerm);
   }
 
   const res = await fetch(`/api/user/${username}/threads?${searchParams}`);
