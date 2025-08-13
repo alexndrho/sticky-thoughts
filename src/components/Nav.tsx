@@ -27,6 +27,7 @@ import {
   IconAddressBook,
   IconLogin,
   IconUser,
+  IconMessage,
 } from "@tabler/icons-react";
 import { useThrottledCallback } from "@mantine/hooks";
 
@@ -37,6 +38,29 @@ import {
   thoughtOptions,
 } from "@/lib/query/options/thought";
 import classes from "@/styles/nav.module.css";
+
+const navLinks = [
+  {
+    label: "Home",
+    icon: IconHome,
+    href: "/",
+  },
+  {
+    label: "Threads",
+    icon: IconMessage,
+    href: "/threads",
+  },
+  {
+    label: "About",
+    icon: IconInfoCircle,
+    href: "/about",
+  },
+  {
+    label: "Contact",
+    icon: IconAddressBook,
+    href: "/contact",
+  },
+];
 
 export default function Nav() {
   const pathname = usePathname();
@@ -76,42 +100,53 @@ export default function Nav() {
           </Text>
 
           <Group>
-            <Group component="nav" display={{ base: "none", xs: "flex" }}>
-              <Button
-                component={Link}
-                href="/"
-                variant="subtle"
-                size="compact-sm"
-              >
-                Home
-              </Button>
+            <Group component="nav">
+              <Group display={{ base: "none", sm: "flex" }}>
+                {navLinks.map((link) => (
+                  <Button
+                    key={link.label}
+                    component={Link}
+                    href={link.href}
+                    variant="subtle"
+                    size="compact-sm"
+                  >
+                    {link.label}
+                  </Button>
+                ))}
+              </Group>
 
-              <Button
-                component={Link}
-                href="/threads"
-                variant="subtle"
-                size="compact-sm"
-              >
-                Threads
-              </Button>
+              <Box display={{ base: "block", sm: "none" }}>
+                <Menu>
+                  <Menu.Target>
+                    <ActionIcon aria-label="toggle menu" variant="default">
+                      <IconMenu size="1em" />
+                    </ActionIcon>
+                  </Menu.Target>
 
-              {/* <Button
-                component={Link}
-                href="/about"
-                variant="subtle"
-                size="compact-sm"
-              >
-                About
-              </Button>
+                  <Menu.Dropdown>
+                    <Menu.Item
+                      component={Link}
+                      href="/sign-in"
+                      leftSection={<IconLogin size="1em" />}
+                    >
+                      Sign in
+                    </Menu.Item>
 
-              <Button
-                component={Link}
-                href="/contact"
-                variant="subtle"
-                size="compact-sm"
-              >
-                Contact
-              </Button> */}
+                    <Menu.Divider />
+
+                    {navLinks.map((link) => (
+                      <Menu.Item
+                        key={link.label}
+                        component={Link}
+                        href={link.href}
+                        leftSection={<link.icon size="1em" />}
+                      >
+                        {link.label}
+                      </Menu.Item>
+                    ))}
+                  </Menu.Dropdown>
+                </Menu>
+              </Box>
 
               <Divider orientation="vertical" />
             </Group>
@@ -173,54 +208,10 @@ export default function Nav() {
               </Menu>
             ) : (
               <>
-                <Box display={{ base: "none", xs: "block" }}>
+                <Box display={{ base: "none", sm: "block" }}>
                   <Button component={Link} href="/sign-in" size="compact-sm">
                     Sign in
                   </Button>
-                </Box>
-
-                <Box display={{ base: "block", xs: "none" }}>
-                  <Menu>
-                    <Menu.Target>
-                      <ActionIcon aria-label="toggle menu" variant="default">
-                        <IconMenu size="1em" />
-                      </ActionIcon>
-                    </Menu.Target>
-
-                    <Menu.Dropdown>
-                      <Menu.Item
-                        component={Link}
-                        href="/sign-in"
-                        leftSection={<IconLogin size="1em" />}
-                      >
-                        Sign in
-                      </Menu.Item>
-
-                      <Menu.Divider />
-
-                      <Menu.Item
-                        component={Link}
-                        href="/"
-                        leftSection={<IconHome size="1em" />}
-                      >
-                        Home
-                      </Menu.Item>
-                      <Menu.Item
-                        component={Link}
-                        href="/about"
-                        leftSection={<IconInfoCircle size="1em" />}
-                      >
-                        About
-                      </Menu.Item>
-                      <Menu.Item
-                        component={Link}
-                        href="/contact"
-                        leftSection={<IconAddressBook size="1em" />}
-                      >
-                        Contact
-                      </Menu.Item>
-                    </Menu.Dropdown>
-                  </Menu>
                 </Box>
 
                 <Tooltip
