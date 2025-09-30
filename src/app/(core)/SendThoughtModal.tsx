@@ -30,8 +30,6 @@ import {
   THOUGHT_COLORS,
 } from "@/config/thought";
 
-const ANONYMOUS_AUTHOR = "Anonymous";
-
 export interface SendThoughtModalProps {
   open: boolean;
   onClose: () => void;
@@ -41,14 +39,6 @@ export default function SendThoughtModal({
   open,
   onClose,
 }: SendThoughtModalProps) {
-  const [isAnonymous, setIsAnonymous] = useState(false);
-
-  // Store the author input in a state variable to prevent it from being
-  // reset when author is set to anonymous.
-  const [savedAuthorInput, setSavedAuthorInput] = useState(
-    typeof window !== "undefined" ? localStorage.getItem("author") || "" : "",
-  );
-
   const form = useForm({
     initialValues: {
       message: "",
@@ -73,19 +63,12 @@ export default function SendThoughtModal({
   };
 
   const mutation = useMutation({
-    mutationFn: (values: typeof form.values) => {
-      if (!isAnonymous) {
-        localStorage.setItem("author", values.author);
-        form.setInitialValues({
-          message: "",
-          author: values.author,
-          color: THOUGHT_COLORS[0],
-        });
-      }
-
-      return submitThought({
+    mutationFn: async (values: typeof form.values) => {
+      const response = await submitThought({
         ...values,
       });
+
+      return { response, formValues: values };
     },
     onError: (error) => {
       console.error(error);
@@ -96,7 +79,14 @@ export default function SendThoughtModal({
         color: "red",
       });
     },
-    onSuccess: () => {
+    onSuccess: ({ formValues }) => {
+      localStorage.setItem("author", formValues.author);
+      form.setInitialValues({
+        message: "",
+        author: formValues.author,
+        color: THOUGHT_COLORS[0],
+      });
+
       getQueryClient().invalidateQueries({
         queryKey: thoughtInfiniteOptions.queryKey,
       });
@@ -112,23 +102,8 @@ export default function SendThoughtModal({
       });
       onClose();
       form.reset();
-      setIsAnonymous(false);
     },
   });
-
-  const handleAnonymousChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    if (event.currentTarget.checked) {
-      form.setFieldValue("author", ANONYMOUS_AUTHOR);
-      setSavedAuthorInput(form.values.author);
-    } else {
-      form.setFieldValue("author", savedAuthorInput);
-    }
-
-    setIsAnonymous(event.currentTarget.checked);
-    form.clearFieldError("author");
-  };
 
   return (
     <Modal opened={open} onClose={onClose} title="Share a thought" centered>
@@ -138,9 +113,8 @@ export default function SendThoughtModal({
           label="Author:"
           withAsterisk
           maxLength={THOUGHT_MAX_AUTHOR_LENGTH}
-          disabled={isAnonymous || mutation.isPending}
+          disabled={mutation.isPending}
           {...form.getInputProps("author")}
-          value={isAnonymous ? ANONYMOUS_AUTHOR : form.values.author}
         />
 
         <Textarea
@@ -162,14 +136,6 @@ export default function SendThoughtModal({
               : ""
           }
         >{`${form.values.message.length}/${THOUGHT_MAX_MESSAGE_LENGTH}`}</Text>
-
-        <Switch
-          mb="sm"
-          label="Anonymous"
-          checked={isAnonymous}
-          disabled={mutation.isPending}
-          onChange={(e) => handleAnonymousChange(e)}
-        />
 
         <Group justify="center">
           <Tooltip label="Randomize color" position="left">
