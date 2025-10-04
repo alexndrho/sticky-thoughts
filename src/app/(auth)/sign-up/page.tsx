@@ -8,7 +8,6 @@ import {
   Anchor,
   Box,
   Button,
-  Paper,
   PasswordInput,
   Text,
   TextInput,
@@ -16,6 +15,7 @@ import {
 } from "@mantine/core";
 
 import { authClient } from "@/lib/auth-client";
+import { AuthContainer } from "../AuthContainer";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -66,7 +66,7 @@ export default function SignUpPage() {
         </Text>
       </Box>
 
-      <Paper p={30} mt={30} shadow="md" radius="md" withBorder>
+      <AuthContainer>
         <form onSubmit={form.onSubmit((values) => mutation.mutate(values))}>
           <TextInput label="Name" {...form.getInputProps("name")} />
 
@@ -102,7 +102,7 @@ export default function SignUpPage() {
             Sign up
           </Button>
         </form>
-      </Paper>
+      </AuthContainer>
     </>
   );
 }
