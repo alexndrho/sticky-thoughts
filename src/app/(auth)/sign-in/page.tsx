@@ -9,12 +9,14 @@ import {
   Box,
   Button,
   Checkbox,
-  Paper,
+  Group,
   PasswordInput,
   Text,
   TextInput,
   Title,
 } from "@mantine/core";
+
+import { AuthContainer } from "../AuthContainer";
 import { authClient } from "@/lib/auth-client";
 
 export default function SignInPage() {
@@ -73,7 +75,7 @@ export default function SignInPage() {
         </Text>
       </Box>
 
-      <Paper p={30} mt={30} shadow="md" radius="md" withBorder>
+      <AuthContainer>
         <form onSubmit={form.onSubmit((values) => mutation.mutate(values))}>
           <TextInput
             label="Username"
@@ -88,11 +90,16 @@ export default function SignInPage() {
             {...form.getInputProps("password")}
           />
 
-          <Checkbox
-            mt="md"
-            label="Remember me"
-            {...form.getInputProps("rememberMe", { type: "checkbox" })}
-          />
+          <Group mt="md" justify="space-between">
+            <Checkbox
+              label="Remember me"
+              {...form.getInputProps("rememberMe", { type: "checkbox" })}
+            />
+
+            <Anchor component={Link} href="/forgot-password" size="sm">
+              Forgot Password?
+            </Anchor>
+          </Group>
 
           {form.errors.root && (
             <Text mt="xs" size="xs" c="red.8">
@@ -104,7 +111,7 @@ export default function SignInPage() {
             Sign in
           </Button>
         </form>
-      </Paper>
+      </AuthContainer>
     </>
   );
 }

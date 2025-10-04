@@ -18,7 +18,7 @@ export default async function AuthLayout({
 
   return (
     <Center w="100%" h="100%">
-      <Container w={420}>{children}</Container>
+      <Container>{children}</Container>
     </Center>
   );
 }
