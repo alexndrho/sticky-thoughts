@@ -17,7 +17,7 @@ export const auth = betterAuth({
     enabled: true,
   },
   emailVerification: {
-    sendVerificationEmail: async ({ user, url }, request) => {
+    sendVerificationEmail: async ({ user, url }) => {
       await resend.emails.send({
         from: "StickyThoughts <no-reply@mail.alexanderho.dev>",
         to: user.email,
@@ -51,7 +51,7 @@ export const auth = betterAuth({
           from: "StickyThoughts <no-reply@mail.alexanderho.dev>",
           to: email,
           subject: `${otp} is your StickyThoughts verification code`,
-          react: EmailOTPTemplate({ email, otp, type }),
+          react: EmailOTPTemplate({ otp, type }),
         });
       },
     }),

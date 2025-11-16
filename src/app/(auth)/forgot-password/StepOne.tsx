@@ -1,15 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Anchor,
-  Box,
-  Button,
-  Center,
-  Group,
-  Stepper,
-  TextInput,
-} from "@mantine/core";
+import { Anchor, Box, Button, Center, Group, TextInput } from "@mantine/core";
 import { isEmail, useForm } from "@mantine/form";
 import { useMutation } from "@tanstack/react-query";
 import { IconArrowLeft } from "@tabler/icons-react";

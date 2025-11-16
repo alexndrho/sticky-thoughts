@@ -39,7 +39,12 @@ export default function LikesTab({
     if (hasNextLikedThreadsPage) {
       fetchNextLikedThreadsPage();
     }
-  }, [isNearScrollEnd, isLikedThreadsFetching, hasNextLikedThreadsPage]);
+  }, [
+    isNearScrollEnd,
+    isLikedThreadsFetching,
+    hasNextLikedThreadsPage,
+    fetchNextLikedThreadsPage,
+  ]);
 
   const likeMutation = useMutation({
     mutationFn: async ({ id, like }: { id: string; like: boolean }) => {

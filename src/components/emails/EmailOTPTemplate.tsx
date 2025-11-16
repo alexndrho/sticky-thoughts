@@ -1,16 +1,11 @@
 import { Body, Container, Head, Html, Text, Hr } from "@react-email/components";
 
 interface EmailOTPTemplateProps {
-  email: string;
   otp: string;
   type: "sign-in" | "email-verification" | "forget-password";
 }
 
-export default function EmailOTPTemplate({
-  email,
-  otp,
-  type,
-}: EmailOTPTemplateProps) {
+export default function EmailOTPTemplate({ otp, type }: EmailOTPTemplateProps) {
   const getSubject = () => {
     switch (type) {
       case "sign-in":

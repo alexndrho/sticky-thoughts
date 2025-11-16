@@ -25,7 +25,7 @@ export default function StepTwo({
     if (!email) {
       resetStep();
     }
-  }, [email]);
+  }, [email, resetStep]);
 
   const checkVerificationCodeForm = useForm({
     initialValues: {

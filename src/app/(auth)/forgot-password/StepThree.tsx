@@ -25,7 +25,7 @@ export default function StepThree({
     if (!email || !verificationCode) {
       resetStep();
     }
-  }, [email, verificationCode]);
+  }, [email, verificationCode, resetStep]);
 
   const newPasswordForm = useForm({
     initialValues: {
