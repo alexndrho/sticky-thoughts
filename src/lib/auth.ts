@@ -7,6 +7,7 @@ import { emailOTP, username } from "better-auth/plugins";
 import { prisma } from "./db";
 import { resend } from "./email";
 import EmailOTPTemplate from "@/components/emails/EmailOTPTemplate";
+import EmailLinkTemplate from "@/components/emails/EmailLinkTemplate";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -14,6 +15,16 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+  },
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url }, request) => {
+      await resend.emails.send({
+        from: "StickyThoughts <no-reply@mail.alexanderho.dev>",
+        to: user.email,
+        subject: "Verify your email address",
+        react: EmailLinkTemplate({ url, type: "email-verification" }),
+      });
+    },
   },
   databaseHooks: {
     user: {
