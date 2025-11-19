@@ -115,7 +115,7 @@ export default function ThreadPage() {
           rightSection={<IconMessage size="1em" />}
           onClick={handleClickSubmitPost}
         >
-          Submit a post
+          Submit a thread
         </Button>
       </Flex>
 
