@@ -26,6 +26,19 @@ export const auth = betterAuth({
       });
     },
   },
+  user: {
+    changeEmail: {
+      enabled: true,
+      sendChangeEmailVerification: async ({ user, url }) => {
+        await resend.emails.send({
+          from: "StickyThoughts <no-reply@mail.alexanderho.dev>",
+          to: user.email,
+          subject: "Approve your email change",
+          react: EmailLinkTemplate({ url, type: "email-change" }),
+        });
+      },
+    },
+  },
   databaseHooks: {
     user: {
       create: {

@@ -10,7 +10,7 @@ import {
 
 interface EmailLinkTemplateProps {
   url: string;
-  type: "email-verification" | "password-reset";
+  type: "email-verification" | "email-change";
 }
 
 export default function EmailLinkTemplate({
@@ -21,8 +21,8 @@ export default function EmailLinkTemplate({
     switch (type) {
       case "email-verification":
         return "Verify Your Email - StickyThoughts";
-      case "password-reset":
-        return "Reset Your Password - StickyThoughts";
+      case "email-change":
+        return "Approve Your Email Change - StickyThoughts";
       default:
         return "StickyThoughts";
     }
@@ -32,8 +32,8 @@ export default function EmailLinkTemplate({
     switch (type) {
       case "email-verification":
         return "Verify Your Email Address";
-      case "password-reset":
-        return "Reset Your Password";
+      case "email-change":
+        return "Approve Your Email Change";
       default:
         return "StickyThoughts";
     }
@@ -43,8 +43,8 @@ export default function EmailLinkTemplate({
     switch (type) {
       case "email-verification":
         return "Thank you for signing up for StickyThoughts! Click the link below to verify your email address:";
-      case "password-reset":
-        return "You requested to reset your password for your StickyThoughts account. Click the link below to reset your password:";
+      case "email-change":
+        return "You requested to change your email address for your StickyThoughts account. Click the link below to approve your email change:";
       default:
         return "Click the link below:";
     }
@@ -54,8 +54,8 @@ export default function EmailLinkTemplate({
     switch (type) {
       case "email-verification":
         return "Verify Email";
-      case "password-reset":
-        return "Reset Password";
+      case "email-change":
+        return "Approve Email Change";
       default:
         return "Continue";
     }
@@ -65,8 +65,8 @@ export default function EmailLinkTemplate({
     switch (type) {
       case "email-verification":
         return "If you didn't create an account with StickyThoughts, please ignore this email.";
-      case "password-reset":
-        return "If you didn't request a password reset, please ignore this email. Your password will remain unchanged.";
+      case "email-change":
+        return "If you didn't request an email change, please ignore this email.";
       default:
         return "If you didn't request this, please ignore this email.";
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDisclosure } from "@mantine/hooks";
 import { useMutation } from "@tanstack/react-query";
@@ -15,7 +15,6 @@ import {
   Skeleton,
   Text,
   Title,
-  Tooltip,
 } from "@mantine/core";
 import {
   IconCheck,
@@ -27,23 +26,18 @@ import {
 } from "@tabler/icons-react";
 
 import UploadProfilePictureModal from "@/components/user/UploadProfilePictureModal";
-import UpdateUsernameModal from "@/components/user/UpdateUsernameModal";
 import UpdateNameModal from "@/components/user/UpdateNameModal";
+import UpdateEmailModal from "@/components/user/UpdateEmailModal";
+import UpdateUsernameModal from "@/components/user/UpdateUsernameModal";
 
 import { authClient } from "@/lib/auth-client";
-import { removeProfilePicture } from "@/services/user";
-import classes from "@/styles/settings.module.css";
 import { secondsToMinutesExtended } from "@/utils/date";
-
-const emailVerificationSentTimeout = 3 * 60 * 1000; // 3 minutes
+import { removeProfilePicture } from "@/services/user";
+import { useTimer } from "@/hooks/use-timer";
+import classes from "@/styles/settings.module.css";
 
 export default function SettingsPage() {
   const router = useRouter();
-
-  const [emailVerificationTimerCountdown, setEmailVerificationTimerCountdown] =
-    useState(0);
-
-  const [isEmailVerificationSent, setIsEmailVerificationSent] = useState(false);
 
   const {
     data: session,
@@ -65,14 +59,25 @@ export default function SettingsPage() {
     },
   ] = useDisclosure(false);
 
+  const [timeLeftEmailVerification, startEmailVerificationTimer] = useTimer({
+    duration: 3 * 60, // 3 minutes
+  });
+
+  const isEmailVerificationSent = timeLeftEmailVerification > 0;
+
   const [
-    updateUsernameModalOpened,
-    { open: openUpdateUsernameModal, close: closeUpdateUsernameModal },
+    updateNameModalOpened,
+    { open: openUpdateNameModal, close: closeUpdateNameModal },
   ] = useDisclosure(false);
 
   const [
     updateEmailModalOpened,
     { open: openUpdateEmailModal, close: closeUpdateEmailModal },
+  ] = useDisclosure(false);
+
+  const [
+    updateUsernameModalOpened,
+    { open: openUpdateUsernameModal, close: closeUpdateUsernameModal },
   ] = useDisclosure(false);
 
   const handleRemoveProfilePicture = async () => {
@@ -94,14 +99,14 @@ export default function SettingsPage() {
     },
 
     onSuccess: () => {
+      startEmailVerificationTimer();
+
       notifications.show({
         title: "Verification Email Sent",
         message: "Please check your email to verify your email address.",
         color: "green",
         icon: <IconCheck />,
       });
-
-      setIsEmailVerificationSent(true);
     },
     onError: (error: Error) => {
       notifications.show({
@@ -113,29 +118,6 @@ export default function SettingsPage() {
     },
   });
 
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval>;
-
-    if (isEmailVerificationSent) {
-      setEmailVerificationTimerCountdown(emailVerificationSentTimeout / 1000);
-
-      interval = setInterval(() => {
-        setEmailVerificationTimerCountdown((prev) => {
-          if (prev <= 1) {
-            clearInterval(interval);
-            setIsEmailVerificationSent(false);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [isEmailVerificationSent]);
-
   const accountItems = [
     {
       label: "Name",
@@ -144,7 +126,7 @@ export default function SettingsPage() {
         <Button
           variant="default"
           size="compact-md"
-          onClick={openUpdateEmailModal}
+          onClick={openUpdateNameModal}
         >
           Edit
         </Button>
@@ -164,11 +146,13 @@ export default function SettingsPage() {
       ),
       rightSection: (
         <>
-          <Tooltip label="Not available yet" withArrow>
-            <Button variant="default" size="compact-md" disabled>
-              Edit
-            </Button>
-          </Tooltip>
+          <Button
+            variant="default"
+            size="compact-md"
+            onClick={openUpdateEmailModal}
+          >
+            Edit
+          </Button>
 
           {!session?.user.emailVerified && (
             <Button
@@ -179,7 +163,7 @@ export default function SettingsPage() {
               onClick={() => emailVerificationMutation.mutate()}
             >
               {isEmailVerificationSent
-                ? secondsToMinutesExtended(emailVerificationTimerCountdown)
+                ? secondsToMinutesExtended(timeLeftEmailVerification)
                 : "Verify"}
             </Button>
           )}
@@ -316,8 +300,14 @@ export default function SettingsPage() {
       />
 
       <UpdateNameModal
+        opened={updateNameModalOpened}
+        onClose={closeUpdateNameModal}
+      />
+
+      <UpdateEmailModal
         opened={updateEmailModalOpened}
         onClose={closeUpdateEmailModal}
+        session={session}
       />
 
       <UpdateUsernameModal
