@@ -5,7 +5,6 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
   Box,
   Button,
-  Center,
   Flex,
   Group,
   Input,
@@ -14,6 +13,7 @@ import {
   rem,
   Skeleton,
   Text,
+  Title,
   Tooltip,
   VisuallyHidden,
 } from "@mantine/core";
@@ -130,7 +130,11 @@ export default function HomePage() {
   return (
     <>
       <Box mih="100dvh">
-        <Center mt="lg">
+        <Flex mt="md" direction="column" justify="center" align="center">
+          <Title mb="md" ta="center">
+            A place where you can freely express yourself
+          </Title>
+
           <Skeleton w="auto" h="auto" visible={!thoughtsCountIsFetched}>
             <Group gap={5}>
               <IconMessage />
@@ -144,7 +148,7 @@ export default function HomePage() {
               </Text>
             </Group>
           </Skeleton>
-        </Center>
+        </Flex>
 
         <Flex my="lg" gap="md">
           <Input
