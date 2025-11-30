@@ -1,8 +1,8 @@
-import type { User } from "@prisma/client";
 import { Avatar, Box, Flex, Tabs, Text, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconHeart, IconMessage } from "@tabler/icons-react";
 
+import type { User } from "@/generated/prisma/client";
 import { authClient } from "@/lib/auth-client";
 import Threads from "./ThreadsTab";
 import SignInWarningModal from "@/components/SignInWarningModal";

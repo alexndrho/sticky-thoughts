@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { Prisma } from "@prisma/client";
 
+import { Prisma } from "@/generated/prisma/client";
 import {
   THOUGHT_COLORS,
   THOUGHT_MAX_AUTHOR_LENGTH,

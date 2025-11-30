@@ -1,5 +1,4 @@
-import type { Prisma } from "@prisma/client";
-
+import type { Prisma } from "@/generated/prisma/client";
 import { toServerError } from "@/utils/error/ServerError";
 import type { ThreadPostCommentType, ThreadPostType } from "@/types/thread";
 

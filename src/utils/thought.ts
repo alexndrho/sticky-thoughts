@@ -1,4 +1,4 @@
-import type { Thought } from "@prisma/client";
+import type { Thought } from "@/generated/prisma/client";
 
 // Override date type to string
 export type ThoughtFromServer = Omit<Thought, "createdAt" | "updatedAt"> & {

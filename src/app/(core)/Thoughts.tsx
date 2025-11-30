@@ -1,5 +1,6 @@
-import type { Thought as ThoughtType } from "@prisma/client";
 import { Box } from "@mantine/core";
+
+import type { Thought as ThoughtType } from "@/generated/prisma/client";
 import Thought from "./Thought";
 import classes from "@/styles/thoughts.module.css";
 

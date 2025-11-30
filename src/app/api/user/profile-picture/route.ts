@@ -1,8 +1,8 @@
-import { Prisma } from "@prisma/client";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import sharp from "sharp";
 
+import { Prisma } from "@/generated/prisma/client";
 import { auth } from "@/lib/auth";
 import IError from "@/types/error";
 import { deleteFile, isUrlStorage, uploadFile } from "@/lib/storage";

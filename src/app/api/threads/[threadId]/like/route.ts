@@ -1,10 +1,10 @@
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
+import { Prisma } from "@/generated/prisma/client";
+import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import IError from "@/types/error";
-import { prisma } from "@/lib/db";
-import { Prisma } from "@prisma/client";
 
 export async function POST(
   request: Request,

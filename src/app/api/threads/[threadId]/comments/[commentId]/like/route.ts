@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
-import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 
+import { Prisma } from "@/generated/prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import type IError from "@/types/error";

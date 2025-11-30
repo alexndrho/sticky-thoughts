@@ -1,10 +1,10 @@
 import { Button, Flex, Text } from "@mantine/core";
 
+import type { Prisma } from "@/generated/prisma/client";
 import TextEditor from "@/components/TextEditor";
 import { useTiptapEditor } from "@/hooks/use-tiptap";
 import { isNotEmptyHTML, useForm } from "@mantine/form";
 import { useMutation } from "@tanstack/react-query";
-import type { Prisma } from "@prisma/client";
 import { updateThreadPost } from "@/services/thread";
 import { getQueryClient } from "@/lib/get-query-client";
 import {

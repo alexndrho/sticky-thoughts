@@ -1,5 +1,4 @@
-import type { User } from "@prisma/client";
-
+import type { User } from "@/generated/prisma/client";
 import { toServerError } from "@/utils/error/ServerError";
 import type { ThreadPostType } from "@/types/thread";
 

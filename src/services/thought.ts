@@ -1,5 +1,4 @@
-import type { Prisma, Thought } from "@prisma/client";
-
+import type { Prisma, Thought } from "@/generated/prisma/client";
 import { convertThoughtDates, ThoughtFromServer } from "@/utils/thought";
 import { toServerError } from "@/utils/error/ServerError";
 
