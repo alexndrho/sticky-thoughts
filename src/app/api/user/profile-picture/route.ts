@@ -22,6 +22,9 @@ export async function PUT(req: Request) {
     );
   }
 
+  let newFileKey: string | null = null;
+  let oldImageKey: string | null = null;
+
   try {
     const formData = await req.formData();
     const userImg = formData.get("user-image");
@@ -77,18 +80,14 @@ export async function PUT(req: Request) {
       })
       .toBuffer();
 
+    // Store old image key for cleanup if needed
     if (session.user.image && isUrlStorage(session.user.image)) {
-      const existingImageKey = extractKeyFromUrl(session.user.image);
-
-      await deleteFile({
-        params: {
-          Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,
-          Key: existingImageKey,
-        },
-      });
+      oldImageKey = extractKeyFromUrl(session.user.image);
     }
 
+    // Upload new file first
     const fileName = `user/${session.user.id}/profile/${Date.now()}.png`;
+    newFileKey = fileName;
 
     const imageUrl = await uploadFile({
       params: {
@@ -100,12 +99,28 @@ export async function PUT(req: Request) {
       },
     });
 
+    // Update database
     await auth.api.updateUser({
       headers: await headers(),
       body: {
         image: imageUrl,
       },
     });
+
+    // Only delete old file after successful database update
+    if (oldImageKey) {
+      try {
+        await deleteFile({
+          params: {
+            Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,
+            Key: oldImageKey,
+          },
+        });
+      } catch (deleteError) {
+        // Log but don't fail the request if old file deletion fails
+        console.error("Failed to delete old profile picture:", deleteError);
+      }
+    }
 
     return NextResponse.json(
       {
@@ -114,13 +129,27 @@ export async function PUT(req: Request) {
       { status: 200 },
     );
   } catch (error) {
+    // Clean up uploaded file if database update failed
+    if (newFileKey) {
+      try {
+        await deleteFile({
+          params: {
+            Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,
+            Key: newFileKey,
+          },
+        });
+      } catch (cleanupError) {
+        console.error("Failed to clean up uploaded file:", cleanupError);
+      }
+    }
+
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2015") {
         return NextResponse.json(
           {
             errors: [{ code: "not-found", message: "User not found" }],
           } satisfies IError,
-          { status: 400 },
+          { status: 404 },
         );
       }
     }
@@ -159,18 +188,12 @@ export async function DELETE() {
     );
   }
 
+  const imageKey = isUrlStorage(session.user.image)
+    ? extractKeyFromUrl(session.user.image)
+    : null;
+
   try {
-    if (isUrlStorage(session.user.image)) {
-      const existingImageKey = extractKeyFromUrl(session.user.image);
-
-      await deleteFile({
-        params: {
-          Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,
-          Key: existingImageKey,
-        },
-      });
-    }
-
+    // Update database first
     await auth.api.updateUser({
       headers: await headers(),
       body: {
@@ -178,6 +201,24 @@ export async function DELETE() {
         image: null,
       },
     });
+
+    // Delete from storage after successful database update
+    if (imageKey) {
+      try {
+        await deleteFile({
+          params: {
+            Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,
+            Key: imageKey,
+          },
+        });
+      } catch (deleteError) {
+        // Log but don't fail the request if file deletion fails
+        console.error(
+          "Failed to delete profile picture from storage:",
+          deleteError,
+        );
+      }
+    }
 
     return NextResponse.json(
       {
@@ -192,7 +233,7 @@ export async function DELETE() {
           {
             errors: [{ code: "not-found", message: "User not found" }],
           } satisfies IError,
-          { status: 400 },
+          { status: 404 },
         );
       }
     }
