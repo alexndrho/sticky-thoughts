@@ -1,13 +1,5 @@
-import { Profanity, ProfanityOptions } from "@2toad/profanity";
-
-import badwords from "@/config/badwords.json";
+import { profanity } from "@/lib/profanity";
 import { urlRegex } from "@/config/text";
-
-const options = new ProfanityOptions();
-options.grawlix = "*****";
-
-const profanity = new Profanity(options);
-profanity.addWords([...badwords.filipino]);
 
 export const containsUrl = (text: string) => {
   return urlRegex.test(text);

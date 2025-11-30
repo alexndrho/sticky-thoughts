@@ -8,6 +8,8 @@ import { prisma } from "./db";
 import { resend } from "./email";
 import EmailOTPTemplate from "@/components/emails/EmailOTPTemplate";
 import EmailLinkTemplate from "@/components/emails/EmailLinkTemplate";
+import { profanity } from "./profanity";
+import reservedUsernames from "@/config/reserved-usernames.json";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -56,7 +58,29 @@ export const auth = betterAuth({
     },
   },
   plugins: [
-    username(),
+    username({
+      usernameValidator: (username) => {
+        if (
+          profanity.exists(username) ||
+          reservedUsernames.reserved_usernames.includes(username.toLowerCase())
+        ) {
+          throw new APIError("BAD_REQUEST", {
+            message: "This username is not allowed.",
+          });
+        }
+
+        return true;
+      },
+      displayUsernameValidator: (displayUsername) => {
+        if (profanity.exists(displayUsername)) {
+          throw new APIError("BAD_REQUEST", {
+            message: "This display name is not allowed.",
+          });
+        }
+
+        return true;
+      },
+    }),
     nextCookies(),
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
