@@ -8,7 +8,7 @@
     "start": "next start",
     "email": "email dev --dir src/components/emails",
     "lint": "next lint",
-    "postinstall": "prisma migrate deploy && prisma generate --no-engine"
+    "postinstall": "prisma migrate deploy && prisma generate"
   },
   "dependencies": {
     "@2toad/profanity": "^3.1.1",
