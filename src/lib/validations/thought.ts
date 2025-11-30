@@ -1,7 +1,8 @@
 import { z } from "zod";
-import { Prisma } from "@prisma/client";
 
+import { Prisma } from "@/generated/prisma/client";
 import {
+  THOUGHT_COLORS,
   THOUGHT_MAX_AUTHOR_LENGTH,
   THOUGHT_MAX_MESSAGE_LENGTH,
   THOUGHT_MIN_AUTHOR_LENGTH,
@@ -9,14 +10,7 @@ import {
 } from "@/config/thought";
 import { containsUrl } from "@/utils/text";
 
-export const thoughtColorZod = z.enum([
-  "yellow",
-  "blue",
-  "red",
-  "violet",
-  "green",
-  "pink",
-]);
+export const thoughtColorZod = z.enum(THOUGHT_COLORS);
 
 export const createThoughtInput = z.object({
   author: z
