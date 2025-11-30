@@ -18,19 +18,19 @@ import { isNotEmptyHTML, useForm } from "@mantine/form";
 import { IconDots, IconEdit, IconTrash } from "@tabler/icons-react";
 
 import { type authClient } from "@/lib/auth-client";
-import { setUpdateThreadPostCommentQueryData } from "@/lib/query/set-query-data/thread";
+import { setUpdateThreadCommentQueryData } from "@/lib/query/set-query-data/thread";
 import TextEditor from "@/components/TextEditor";
 import LikeButton from "@/app/(core)/threads/LikeButton";
 import { useTiptapEditor } from "@/hooks/use-tiptap";
-import type { ThreadPostCommentType } from "@/types/thread";
+import type { ThreadCommentType } from "@/types/thread";
 import { useMutation } from "@tanstack/react-query";
-import { updateThreadPostComment } from "@/services/thread";
+import { updateThreadComment } from "@/services/thread";
 import ServerError from "@/utils/error/ServerError";
 import Link from "next/link";
 
 export interface CommentItemProps {
   session: ReturnType<typeof authClient.useSession>["data"];
-  comment: ThreadPostCommentType;
+  comment: ThreadCommentType;
   dateNow: Date;
   isThreadOwner: boolean;
   onLike: ({ commentId, like }: { commentId: string; like: boolean }) => void;
@@ -157,7 +157,7 @@ function Editor({
   comment,
   onClose,
 }: {
-  comment: ThreadPostCommentType;
+  comment: ThreadCommentType;
   onClose: () => void;
 }) {
   const updateForm = useForm({
@@ -186,7 +186,7 @@ function Editor({
 
   const updateMutation = useMutation({
     mutationFn: (values: typeof updateForm.values) =>
-      updateThreadPostComment({
+      updateThreadComment({
         threadId: comment.threadId,
         commentId: comment.id,
         body: values.body,
@@ -199,7 +199,7 @@ function Editor({
       });
       updateForm.reset();
 
-      setUpdateThreadPostCommentQueryData({
+      setUpdateThreadCommentQueryData({
         threadId: comment.threadId,
         commentId: comment.id,
         comment: data,

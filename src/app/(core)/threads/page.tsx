@@ -13,9 +13,9 @@ import {
   threadSearchInfiniteOptions,
 } from "@/lib/query/options/thread";
 import SignInWarningModal from "@/components/SignInWarningModal";
-import ThreadPostItem from "./ThreadPostItem";
-import { ThreadPostsSkeleton } from "./ThreadPostsSkeleton";
-import { likeThreadPost, unlikeThreadPost } from "@/services/thread";
+import ThreadItem from "./ThreadItem";
+import { ThreadsSkeleton } from "./ThreadsSkeleton";
+import { likeThread, unlikeThread } from "@/services/thread";
 import { useIsNearScrollEnd } from "@/hooks/use-is-near-scroll-end";
 import { setLikeThreadQueryData } from "@/lib/query/set-query-data/thread";
 
@@ -78,9 +78,9 @@ export default function ThreadPage() {
   const handleLikeMutation = useMutation({
     mutationFn: async ({ id, like }: { id: string; like: boolean }) => {
       if (like) {
-        await likeThreadPost(id);
+        await likeThread(id);
       } else {
-        await unlikeThreadPost(id);
+        await unlikeThread(id);
       }
 
       return { threadId: id, like };
@@ -125,24 +125,16 @@ export default function ThreadPage() {
             ? searchPostsData.pages
                 .reduce((acc, page) => acc.concat(page))
                 .map((post) => (
-                  <ThreadPostItem
-                    key={post.id}
-                    post={post}
-                    onLike={handleLike}
-                  />
+                  <ThreadItem key={post.id} post={post} onLike={handleLike} />
                 ))
-            : isFetchingSearchPosts && <ThreadPostsSkeleton />
+            : isFetchingSearchPosts && <ThreadsSkeleton />
           : postsData
             ? postsData.pages
                 .reduce((acc, page) => acc.concat(page))
                 .map((post) => (
-                  <ThreadPostItem
-                    key={post.id}
-                    post={post}
-                    onLike={handleLike}
-                  />
+                  <ThreadItem key={post.id} post={post} onLike={handleLike} />
                 ))
-            : isFetchingPosts && <ThreadPostsSkeleton />}
+            : isFetchingPosts && <ThreadsSkeleton />}
       </Flex>
 
       <Group my="xl" h="2.25rem" justify="center">

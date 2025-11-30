@@ -2,7 +2,7 @@ import { Skeleton } from "@mantine/core";
 
 import { THREAD_POSTS_PER_PAGE } from "@/config/thread";
 
-export function ThreadPostsSkeleton() {
+export function ThreadsSkeleton() {
   return (
     <>
       {Array.from({ length: THREAD_POSTS_PER_PAGE }, (_, i) => (

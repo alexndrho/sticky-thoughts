@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 
-import { threadPostOptions } from "@/lib/query/options/thread";
+import { threadOptions } from "@/lib/query/options/thread";
 import Content from "./Content";
 import ContentSkeleton from "@/components/ContentSkeleton";
 import { NotFoundContent } from "@/app/not-found";
@@ -11,7 +11,7 @@ import { NotFoundContent } from "@/app/not-found";
 export default function PostPage() {
   const params = useParams<{ threadId: string }>();
 
-  const query = useQuery(threadPostOptions(params.threadId));
+  const query = useQuery(threadOptions(params.threadId));
 
   if (query.data) {
     return <Content id={query.data.id} thread={query.data} />;

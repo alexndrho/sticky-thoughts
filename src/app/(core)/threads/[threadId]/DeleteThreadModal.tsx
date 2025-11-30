@@ -3,9 +3,9 @@ import { Button, Flex, Modal, Text } from "@mantine/core";
 
 import { getQueryClient } from "@/lib/get-query-client";
 import { threadInfiniteOptions } from "@/lib/query/options/thread";
-import { deleteThreadPost } from "@/services/thread";
+import { deleteThread } from "@/services/thread";
 
-export interface DeleteThreadPostModalProps {
+export interface DeleteThreadModalProps {
   id: string;
   title: string;
   opened: boolean;
@@ -13,15 +13,15 @@ export interface DeleteThreadPostModalProps {
   onDelete?: () => void;
 }
 
-export default function DeleteThreadPostModal({
+export default function DeleteThreadModal({
   id,
   title,
   opened,
   onClose,
   onDelete,
-}: DeleteThreadPostModalProps) {
+}: DeleteThreadModalProps) {
   const deleteMutation = useMutation({
-    mutationFn: () => deleteThreadPost(id),
+    mutationFn: () => deleteThread(id),
     onSuccess: () => {
       if (onDelete) onDelete();
 

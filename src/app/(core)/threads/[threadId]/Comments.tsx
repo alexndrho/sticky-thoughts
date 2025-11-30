@@ -5,15 +5,15 @@ import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { Box, Center, Flex, Loader } from "@mantine/core";
 
 import { type authClient } from "@/lib/auth-client";
-import { threadPostCommentsInfiniteOptions } from "@/lib/query/options/thread";
+import { threadCommentsInfiniteOptions } from "@/lib/query/options/thread";
 import {
-  deleteThreadPostComment,
-  likeThreadPostComment,
-  unlikeThreadPostComment,
+  deleteThreadComment,
+  likeThreadComment,
+  unlikeThreadComment,
 } from "@/services/thread";
 import {
-  setDeleteThreadPostCommentQueryData,
-  setLikeThreadPostCommentQueryData,
+  setDeleteThreadCommentQueryData,
+  setLikeThreadCommentQueryData,
 } from "@/lib/query/set-query-data/thread";
 import CommentItem from "./CommentItem";
 
@@ -38,11 +38,11 @@ export default function Comments({
     isRefetching: isRefetchingComments,
     fetchNextPage: fetchNextCommentsPage,
     hasNextPage: hasNextCommentsPage,
-  } = useInfiniteQuery(threadPostCommentsInfiniteOptions(threadId));
+  } = useInfiniteQuery(threadCommentsInfiniteOptions(threadId));
 
   const deleteMutation = useMutation({
     mutationFn: async (commentId: string) => {
-      await deleteThreadPostComment({
+      await deleteThreadComment({
         threadId,
         commentId,
       });
@@ -50,7 +50,7 @@ export default function Comments({
       return { commentId };
     },
     onSuccess: (data) => {
-      setDeleteThreadPostCommentQueryData({
+      setDeleteThreadCommentQueryData({
         threadId,
         commentId: data.commentId,
       });
@@ -93,12 +93,12 @@ export default function Comments({
       like: boolean;
     }) => {
       if (like) {
-        await likeThreadPostComment({
+        await likeThreadComment({
           threadId,
           commentId,
         });
       } else {
-        await unlikeThreadPostComment({
+        await unlikeThreadComment({
           threadId,
           commentId,
         });
@@ -107,7 +107,7 @@ export default function Comments({
       return { commentId, like };
     },
     onSuccess: (data) => {
-      setLikeThreadPostCommentQueryData({
+      setLikeThreadCommentQueryData({
         threadId,
         commentId: data.commentId,
         like: data.like,

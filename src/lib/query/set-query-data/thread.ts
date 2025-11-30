@@ -8,10 +8,10 @@ import {
 } from "../options/user";
 import {
   threadInfiniteOptions,
-  threadPostCommentsInfiniteOptions,
-  threadPostOptions,
+  threadCommentsInfiniteOptions,
+  threadOptions,
 } from "@/lib/query/options/thread";
-import type { ThreadPostType, ThreadPostCommentType } from "@/types/thread";
+import type { ThreadType, ThreadCommentType } from "@/types/thread";
 
 export const setLikeThreadQueryData = ({
   username, // optional, used for user-specific queries
@@ -24,8 +24,8 @@ export const setLikeThreadQueryData = ({
 }) => {
   const queryClient = getQueryClient();
 
-  queryClient.setQueryData<ThreadPostType>(
-    threadPostOptions(threadId).queryKey,
+  queryClient.setQueryData<ThreadType>(
+    threadOptions(threadId).queryKey,
     (oldData) =>
       oldData
         ? ({
@@ -37,11 +37,11 @@ export const setLikeThreadQueryData = ({
                 ? oldData.likes.count - 1
                 : oldData.likes.count + 1,
             },
-          } satisfies ThreadPostType)
+          } satisfies ThreadType)
         : oldData,
   );
 
-  queryClient.setQueryData<InfiniteData<ThreadPostType[]>>(
+  queryClient.setQueryData<InfiniteData<ThreadType[]>>(
     threadInfiniteOptions.queryKey,
     (oldData) => {
       if (!oldData) return oldData;
@@ -57,7 +57,7 @@ export const setLikeThreadQueryData = ({
                     liked: like,
                     count: like ? post.likes.count + 1 : post.likes.count - 1,
                   },
-                } satisfies ThreadPostType)
+                } satisfies ThreadType)
               : post,
           ),
         ),
@@ -66,7 +66,7 @@ export const setLikeThreadQueryData = ({
   );
 
   if (username) {
-    queryClient.setQueryData<InfiniteData<ThreadPostType[]>>(
+    queryClient.setQueryData<InfiniteData<ThreadType[]>>(
       userThreadsInfiniteOptions(username).queryKey,
       (oldData) => {
         if (!oldData) return oldData;
@@ -82,7 +82,7 @@ export const setLikeThreadQueryData = ({
                       liked: like,
                       count: like ? post.likes.count + 1 : post.likes.count - 1,
                     },
-                  } satisfies ThreadPostType)
+                  } satisfies ThreadType)
                 : post,
             ),
           ),
@@ -90,7 +90,7 @@ export const setLikeThreadQueryData = ({
       },
     );
 
-    queryClient.setQueryData<InfiniteData<ThreadPostType[]>>(
+    queryClient.setQueryData<InfiniteData<ThreadType[]>>(
       userLikedThreadsInfiniteOptions(username).queryKey,
       (oldData) => {
         if (!oldData) return oldData;
@@ -106,7 +106,7 @@ export const setLikeThreadQueryData = ({
                       liked: like,
                       count: like ? post.likes.count + 1 : post.likes.count - 1,
                     },
-                  } satisfies ThreadPostType)
+                  } satisfies ThreadType)
                 : post,
             ),
           ),
@@ -130,7 +130,7 @@ export const setLikeThreadQueryData = ({
   }
 
   queryClient.invalidateQueries({
-    queryKey: threadPostOptions(threadId).queryKey,
+    queryKey: threadOptions(threadId).queryKey,
     refetchType: "none",
   });
 
@@ -140,17 +140,17 @@ export const setLikeThreadQueryData = ({
   });
 };
 
-export const setCreateThreadPostCommentQueryData = ({
+export const setCreateThreadCommentQueryData = ({
   id,
   comment,
 }: {
   id: string;
-  comment: ThreadPostCommentType;
+  comment: ThreadCommentType;
 }) => {
   const queryClient = getQueryClient();
 
-  queryClient.setQueryData<InfiniteData<ThreadPostCommentType[]>>(
-    threadPostCommentsInfiniteOptions(id).queryKey,
+  queryClient.setQueryData<InfiniteData<ThreadCommentType[]>>(
+    threadCommentsInfiniteOptions(id).queryKey,
     (oldData) => {
       if (!oldData) return oldData;
 
@@ -160,7 +160,7 @@ export const setCreateThreadPostCommentQueryData = ({
           [
             {
               ...comment,
-            } satisfies ThreadPostCommentType,
+            } satisfies ThreadCommentType,
           ],
           ...oldData.pages,
         ],
@@ -168,21 +168,19 @@ export const setCreateThreadPostCommentQueryData = ({
     },
   );
 
-  queryClient.setQueryData<ThreadPostType>(
-    threadPostOptions(id).queryKey,
-    (oldData) =>
-      oldData
-        ? ({
-            ...oldData,
-            comments: {
-              ...oldData.comments,
-              count: oldData.comments.count + 1,
-            },
-          } satisfies ThreadPostType)
-        : oldData,
+  queryClient.setQueryData<ThreadType>(threadOptions(id).queryKey, (oldData) =>
+    oldData
+      ? ({
+          ...oldData,
+          comments: {
+            ...oldData.comments,
+            count: oldData.comments.count + 1,
+          },
+        } satisfies ThreadType)
+      : oldData,
   );
 
-  queryClient.setQueryData<InfiniteData<ThreadPostType[]>>(
+  queryClient.setQueryData<InfiniteData<ThreadType[]>>(
     threadInfiniteOptions.queryKey,
     (oldData) => {
       if (!oldData) return oldData;
@@ -197,7 +195,7 @@ export const setCreateThreadPostCommentQueryData = ({
                     ...post.comments,
                     count: post.comments.count + 1,
                   },
-                } satisfies ThreadPostType)
+                } satisfies ThreadType)
               : post,
           ),
         ),
@@ -206,12 +204,12 @@ export const setCreateThreadPostCommentQueryData = ({
   );
 
   queryClient.invalidateQueries({
-    queryKey: threadPostCommentsInfiniteOptions(id).queryKey,
+    queryKey: threadCommentsInfiniteOptions(id).queryKey,
     refetchType: "none",
   });
 
   queryClient.invalidateQueries({
-    queryKey: threadPostOptions(id).queryKey,
+    queryKey: threadOptions(id).queryKey,
     refetchType: "none",
   });
 
@@ -225,19 +223,19 @@ export const setCreateThreadPostCommentQueryData = ({
   });
 };
 
-export const setUpdateThreadPostCommentQueryData = ({
+export const setUpdateThreadCommentQueryData = ({
   threadId,
   commentId,
   comment,
 }: {
   threadId: string;
   commentId: string;
-  comment: ThreadPostCommentType;
+  comment: ThreadCommentType;
 }) => {
   const queryClient = getQueryClient();
 
-  queryClient.setQueryData<InfiniteData<ThreadPostCommentType[]>>(
-    threadPostCommentsInfiniteOptions(threadId).queryKey,
+  queryClient.setQueryData<InfiniteData<ThreadCommentType[]>>(
+    threadCommentsInfiniteOptions(threadId).queryKey,
     (oldData) => {
       if (!oldData) return oldData;
 
@@ -249,7 +247,7 @@ export const setUpdateThreadPostCommentQueryData = ({
               ? ({
                   ...cmt,
                   ...comment,
-                } satisfies ThreadPostCommentType)
+                } satisfies ThreadCommentType)
               : cmt,
           ),
         ),
@@ -258,12 +256,12 @@ export const setUpdateThreadPostCommentQueryData = ({
   );
 
   queryClient.invalidateQueries({
-    queryKey: threadPostCommentsInfiniteOptions(threadId).queryKey,
+    queryKey: threadCommentsInfiniteOptions(threadId).queryKey,
     refetchType: "none",
   });
 };
 
-export const setDeleteThreadPostCommentQueryData = ({
+export const setDeleteThreadCommentQueryData = ({
   threadId,
   commentId,
 }: {
@@ -272,8 +270,8 @@ export const setDeleteThreadPostCommentQueryData = ({
 }) => {
   const queryClient = getQueryClient();
 
-  queryClient.setQueryData<InfiniteData<ThreadPostCommentType[]>>(
-    threadPostCommentsInfiniteOptions(threadId).queryKey,
+  queryClient.setQueryData<InfiniteData<ThreadCommentType[]>>(
+    threadCommentsInfiniteOptions(threadId).queryKey,
     (oldData) => {
       if (!oldData) return oldData;
 
@@ -287,13 +285,13 @@ export const setDeleteThreadPostCommentQueryData = ({
   );
 
   queryClient.invalidateQueries({
-    queryKey: threadPostCommentsInfiniteOptions(threadId).queryKey,
+    queryKey: threadCommentsInfiniteOptions(threadId).queryKey,
     refetchType: "none",
   });
 };
 
 // comment like
-export const setLikeThreadPostCommentQueryData = ({
+export const setLikeThreadCommentQueryData = ({
   threadId,
   commentId,
   like,
@@ -304,8 +302,8 @@ export const setLikeThreadPostCommentQueryData = ({
 }) => {
   const queryClient = getQueryClient();
 
-  queryClient.setQueryData<InfiniteData<ThreadPostCommentType[]>>(
-    threadPostCommentsInfiniteOptions(threadId).queryKey,
+  queryClient.setQueryData<InfiniteData<ThreadCommentType[]>>(
+    threadCommentsInfiniteOptions(threadId).queryKey,
     (oldData) => {
       if (!oldData) return oldData;
 
@@ -323,7 +321,7 @@ export const setLikeThreadPostCommentQueryData = ({
                       ? comment.likes.count + 1
                       : comment.likes.count - 1,
                   },
-                } satisfies ThreadPostCommentType)
+                } satisfies ThreadCommentType)
               : comment,
           ),
         ),
@@ -332,7 +330,7 @@ export const setLikeThreadPostCommentQueryData = ({
   );
 
   queryClient.invalidateQueries({
-    queryKey: threadPostCommentsInfiniteOptions(threadId).queryKey,
+    queryKey: threadCommentsInfiniteOptions(threadId).queryKey,
     refetchType: "none",
   });
 };

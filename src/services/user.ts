@@ -1,6 +1,6 @@
 import type { User } from "@/generated/prisma/client";
 import { toServerError } from "@/utils/error/ServerError";
-import type { ThreadPostType } from "@/types/thread";
+import type { ThreadType } from "@/types/thread";
 
 export const getUser = async (username: string): Promise<User> => {
   const res = await fetch(`/api/user/${username}`);
@@ -53,7 +53,7 @@ export const getUserThreads = async ({
 }: {
   username: string;
   lastId?: string;
-}): Promise<ThreadPostType[]> => {
+}): Promise<ThreadType[]> => {
   const searchParams = new URLSearchParams();
 
   if (lastId) {
@@ -77,7 +77,7 @@ export const getUserLikedThreads = async ({
 }: {
   username: string;
   lastId?: string;
-}): Promise<ThreadPostType[]> => {
+}): Promise<ThreadType[]> => {
   const searchParams = new URLSearchParams();
 
   if (lastId) {

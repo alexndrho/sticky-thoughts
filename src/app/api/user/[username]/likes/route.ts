@@ -4,7 +4,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import type IError from "@/types/error";
-import type { ThreadPostType } from "@/types/thread";
+import type { ThreadType } from "@/types/thread";
 
 export async function GET(
   req: NextRequest,
@@ -66,7 +66,7 @@ export async function GET(
       },
     });
 
-    const formattedThreads: ThreadPostType[] = threads.map((thread) => {
+    const formattedThreads: ThreadType[] = threads.map((thread) => {
       const { likes, _count, ...rest } = thread;
 
       return {
@@ -78,7 +78,7 @@ export async function GET(
         comments: {
           count: _count.comments,
         },
-      } satisfies ThreadPostType;
+      } satisfies ThreadType;
     });
 
     return NextResponse.json(formattedThreads);

@@ -7,7 +7,7 @@ import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import IError from "@/types/error";
 import { updateThreadServerInput } from "@/lib/validations/form";
-import type { ThreadPostType } from "@/types/thread";
+import type { ThreadType } from "@/types/thread";
 
 export async function GET(
   request: Request,
@@ -69,7 +69,7 @@ export async function GET(
 
     const { likes, _count, ...restThread } = thread;
 
-    const formattedPost: ThreadPostType = {
+    const formattedPost: ThreadType = {
       ...restThread,
       likes: {
         liked: !!likes?.length,

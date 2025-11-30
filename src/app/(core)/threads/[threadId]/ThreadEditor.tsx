@@ -5,13 +5,13 @@ import TextEditor from "@/components/TextEditor";
 import { useTiptapEditor } from "@/hooks/use-tiptap";
 import { isNotEmptyHTML, useForm } from "@mantine/form";
 import { useMutation } from "@tanstack/react-query";
-import { updateThreadPost } from "@/services/thread";
+import { updateThread } from "@/services/thread";
 import { getQueryClient } from "@/lib/get-query-client";
 import {
   threadInfiniteOptions,
-  threadPostOptions,
+  threadOptions,
 } from "@/lib/query/options/thread";
-import type { ThreadPostType } from "@/types/thread";
+import type { ThreadType } from "@/types/thread";
 import ServerError from "@/utils/error/ServerError";
 import { useEffect } from "react";
 
@@ -48,7 +48,7 @@ export default function ForumEditor({ id, body, onClose }: ForumEditorProps) {
 
   const updateMutation = useMutation({
     mutationFn: async ({ body }: { body: Prisma.ThreadUpdateInput["body"] }) =>
-      updateThreadPost({
+      updateThread({
         id,
         body,
       }),
@@ -61,8 +61,8 @@ export default function ForumEditor({ id, body, onClose }: ForumEditorProps) {
       updateForm.reset();
 
       getQueryClient().setQueryData(
-        threadPostOptions(id).queryKey,
-        (oldData: ThreadPostType | undefined) =>
+        threadOptions(id).queryKey,
+        (oldData: ThreadType | undefined) =>
           oldData
             ? {
                 ...oldData,
@@ -72,7 +72,7 @@ export default function ForumEditor({ id, body, onClose }: ForumEditorProps) {
       );
 
       getQueryClient().invalidateQueries({
-        queryKey: threadPostOptions(id).queryKey,
+        queryKey: threadOptions(id).queryKey,
         refetchType: "none",
       });
 

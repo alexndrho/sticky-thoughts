@@ -3,18 +3,18 @@ import Link from "next/link";
 import { formatDistance } from "date-fns";
 
 import { stripHtmlTags } from "@/utils/text";
-import classes from "@/styles/thread-post-item.module.css";
+import classes from "@/styles/thread-item.module.css";
 import LikeButton from "@/app/(core)/threads/LikeButton";
 import CommentButton from "@/app/(core)/threads/CommentButton";
 import ShareButton from "@/app/(core)/threads/ShareButton";
-import type { ThreadPostType } from "@/types/thread";
+import type { ThreadType } from "@/types/thread";
 
-export interface ThreadPostItemProps {
-  post: ThreadPostType;
+export interface ThreadItemProps {
+  post: ThreadType;
   onLike?: ({ id, like }: { id: string; like: boolean }) => void;
 }
 
-export default function ThreadPostItem({ post, onLike }: ThreadPostItemProps) {
+export default function ThreadItem({ post, onLike }: ThreadItemProps) {
   return (
     <Paper
       component="article"

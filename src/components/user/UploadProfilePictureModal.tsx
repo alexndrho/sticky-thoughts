@@ -18,7 +18,7 @@ import { uploadProfilePicture } from "@/services/user";
 import { getQueryClient } from "@/lib/get-query-client";
 import {
   threadInfiniteOptions,
-  threadOptions,
+  threadBaseOptions,
 } from "@/lib/query/options/thread";
 import ServerError from "@/utils/error/ServerError";
 
@@ -65,7 +65,7 @@ export default function UploadProfilePictureModal({
       const queryClient = getQueryClient();
 
       queryClient.invalidateQueries({
-        queryKey: threadOptions.queryKey,
+        queryKey: threadBaseOptions.queryKey,
       });
 
       queryClient.invalidateQueries({

@@ -5,9 +5,9 @@ import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { Flex, Group, Loader, Tabs } from "@mantine/core";
 
 import type { authClient } from "@/lib/auth-client";
-import ThreadPostItem from "../../threads/ThreadPostItem";
+import ThreadItem from "../../threads/ThreadItem";
 import { userThreadsInfiniteOptions } from "@/lib/query/options/user";
-import { likeThreadPost, unlikeThreadPost } from "@/services/thread";
+import { likeThread, unlikeThread } from "@/services/thread";
 import { useIsNearScrollEnd } from "@/hooks/use-is-near-scroll-end";
 import { setLikeThreadQueryData } from "@/lib/query/set-query-data/thread";
 
@@ -34,9 +34,9 @@ export default function Threads({
   const likeMutation = useMutation({
     mutationFn: async ({ id, like }: { id: string; like: boolean }) => {
       if (like) {
-        await likeThreadPost(id);
+        await likeThread(id);
       } else {
-        await unlikeThreadPost(id);
+        await unlikeThread(id);
       }
 
       return { id, like };
@@ -80,7 +80,7 @@ export default function Threads({
       <Flex direction="column" gap="md">
         {threads?.pages.map((page) =>
           page.map((thread) => (
-            <ThreadPostItem key={thread.id} post={thread} onLike={handleLike} />
+            <ThreadItem key={thread.id} post={thread} onLike={handleLike} />
           )),
         )}
       </Flex>

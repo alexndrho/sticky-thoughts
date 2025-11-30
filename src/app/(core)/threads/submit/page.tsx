@@ -16,7 +16,7 @@ import { authClient } from "@/lib/auth-client";
 import { getQueryClient } from "@/lib/get-query-client";
 import { threadInfiniteOptions } from "@/lib/query/options/thread";
 import { THREAD_BODY_MAX_LENGTH } from "@/lib/validations/form";
-import { submitThreadPost } from "@/services/thread";
+import { submitThread } from "@/services/thread";
 import { useEffect } from "react";
 import { useTiptapEditor } from "@/hooks/use-tiptap";
 import TextEditor from "@/components/TextEditor";
@@ -69,7 +69,7 @@ export default function ThreadSubmitPage() {
   });
 
   const mutation = useMutation({
-    mutationFn: submitThreadPost,
+    mutationFn: submitThread,
     onSuccess: ({ id }) => {
       getQueryClient().invalidateQueries({
         queryKey: threadInfiniteOptions.queryKey,

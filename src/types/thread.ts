@@ -1,6 +1,6 @@
 import { type Prisma } from "@/generated/prisma/client";
 
-export type BaseThreadPostType = Prisma.ThreadGetPayload<{
+export type BaseThreadType = Prisma.ThreadGetPayload<{
   include: {
     author: {
       select: {
@@ -23,7 +23,7 @@ export type BaseThreadPostType = Prisma.ThreadGetPayload<{
   };
 }>;
 
-export type ThreadPostType = Omit<BaseThreadPostType, "likes" | "_count"> & {
+export type ThreadType = Omit<BaseThreadType, "likes" | "_count"> & {
   likes: {
     liked: boolean;
     count: number;
@@ -33,7 +33,7 @@ export type ThreadPostType = Omit<BaseThreadPostType, "likes" | "_count"> & {
   };
 };
 
-export type BaseThreadPostCommentType = Prisma.ThreadCommentGetPayload<{
+export type BaseThreadCommentType = Prisma.ThreadCommentGetPayload<{
   include: {
     author: {
       select: {
@@ -46,8 +46,8 @@ export type BaseThreadPostCommentType = Prisma.ThreadCommentGetPayload<{
   };
 }>;
 
-export type ThreadPostCommentType = Omit<
-  BaseThreadPostCommentType,
+export type ThreadCommentType = Omit<
+  BaseThreadCommentType,
   "likes" | "_count"
 > & {
   likes: {

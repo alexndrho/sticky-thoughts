@@ -26,18 +26,18 @@ import { authClient } from "@/lib/auth-client";
 import ThreadEditor from "./ThreadEditor";
 import CommentEditor, { type CommentSectionRef } from "./CommentEditor";
 import Comments from "./Comments";
-import DeleteThreadPostModal from "@/app/(core)/threads/[threadId]/DeleteThreadPostModal";
-import { likeThreadPost, unlikeThreadPost } from "@/services/thread";
+import DeleteThreadModal from "./DeleteThreadModal";
+import { likeThread, unlikeThread } from "@/services/thread";
 import LikeButton from "@/app/(core)/threads/LikeButton";
 import CommentButton from "@/app/(core)/threads/CommentButton";
 import ShareButton from "@/app/(core)/threads/ShareButton";
 import SignInWarningModal from "@/components/SignInWarningModal";
 import { setLikeThreadQueryData } from "@/lib/query/set-query-data/thread";
-import type { ThreadPostType } from "@/types/thread";
+import type { ThreadType } from "@/types/thread";
 
 export interface ContentProps {
   id: string;
-  thread: ThreadPostType;
+  thread: ThreadType;
 }
 
 export default function Content({ id, thread }: ContentProps) {
@@ -64,9 +64,9 @@ export default function Content({ id, thread }: ContentProps) {
   const handleLikeMutation = useMutation({
     mutationFn: () => {
       if (thread.likes.liked) {
-        return unlikeThreadPost(id);
+        return unlikeThread(id);
       } else {
-        return likeThreadPost(id);
+        return likeThread(id);
       }
     },
 
@@ -224,7 +224,7 @@ export default function Content({ id, thread }: ContentProps) {
       </Box>
 
       {thread.authorId === session?.user.id && (
-        <DeleteThreadPostModal
+        <DeleteThreadModal
           id={thread.id}
           title={thread.title}
           opened={deleteModalOpened}

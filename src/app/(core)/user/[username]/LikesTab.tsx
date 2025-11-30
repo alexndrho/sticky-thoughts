@@ -8,8 +8,8 @@ import { userLikedThreadsInfiniteOptions } from "@/lib/query/options/user";
 import { setLikeThreadQueryData } from "@/lib/query/set-query-data/thread";
 import { useIsNearScrollEnd } from "@/hooks/use-is-near-scroll-end";
 import { useEffect } from "react";
-import ThreadPostItem from "../../threads/ThreadPostItem";
-import { likeThreadPost, unlikeThreadPost } from "@/services/thread";
+import ThreadItem from "../../threads/ThreadItem";
+import { likeThread, unlikeThread } from "@/services/thread";
 
 export interface LikesTabProps {
   username: string;
@@ -49,9 +49,9 @@ export default function LikesTab({
   const likeMutation = useMutation({
     mutationFn: async ({ id, like }: { id: string; like: boolean }) => {
       if (like) {
-        await likeThreadPost(id);
+        await likeThread(id);
       } else {
-        await unlikeThreadPost(id);
+        await unlikeThread(id);
       }
 
       return { id, like };
@@ -80,7 +80,7 @@ export default function LikesTab({
       <Flex direction="column" gap="md">
         {likedThreads?.pages.map((page) =>
           page.map((thread) => (
-            <ThreadPostItem key={thread.id} post={thread} onLike={handleLike} />
+            <ThreadItem key={thread.id} post={thread} onLike={handleLike} />
           )),
         )}
       </Flex>

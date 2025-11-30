@@ -9,9 +9,9 @@ import { notifications } from "@mantine/notifications";
 
 import TextEditor from "@/components/TextEditor";
 import { useTiptapEditor } from "@/hooks/use-tiptap";
-import { submitThreadPostComment } from "@/services/thread";
+import { submitThreadComment } from "@/services/thread";
 import ServerError from "@/utils/error/ServerError";
-import { setCreateThreadPostCommentQueryData } from "@/lib/query/set-query-data/thread";
+import { setCreateThreadCommentQueryData } from "@/lib/query/set-query-data/thread";
 
 export interface CommentEditorProps {
   threadId: string;
@@ -46,12 +46,12 @@ const CommentEditor = forwardRef<CommentSectionRef, CommentEditorProps>(
 
     const commentMutation = useMutation({
       mutationFn: (values: typeof form.values) =>
-        submitThreadPostComment({
+        submitThreadComment({
           id: threadId,
           body: values.body,
         }),
       onSuccess: (data) => {
-        setCreateThreadPostCommentQueryData({ id: threadId, comment: data });
+        setCreateThreadCommentQueryData({ id: threadId, comment: data });
 
         form.reset();
         editor?.commands.clearContent();

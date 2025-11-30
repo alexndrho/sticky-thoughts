@@ -1,20 +1,16 @@
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 
-import {
-  getThreadComments,
-  getThreadPost,
-  getThreadPosts,
-} from "@/services/thread";
+import { getThreadComments, getThread, getThreads } from "@/services/thread";
 
 // thread
-export const threadOptions = queryOptions({
+export const threadBaseOptions = queryOptions({
   queryKey: ["thread"],
 });
 
-export const threadPostOptions = (id: string) => {
+export const threadOptions = (id: string) => {
   return queryOptions({
-    queryKey: [...threadOptions.queryKey, id],
-    queryFn: () => getThreadPost(id),
+    queryKey: [...threadBaseOptions.queryKey, id],
+    queryFn: () => getThread(id),
   });
 };
 
@@ -22,7 +18,7 @@ export const threadInfiniteOptions = infiniteQueryOptions({
   queryKey: ["infiniteThread"],
   initialPageParam: undefined,
   queryFn: async ({ pageParam }: { pageParam: string | undefined }) =>
-    getThreadPosts({ lastId: pageParam }),
+    getThreads({ lastId: pageParam }),
   getNextPageParam: (posts) => {
     if (posts.length === 0) return undefined;
 
@@ -38,7 +34,7 @@ export const threadSearchInfiniteOptions = (search: string) => {
     queryFn: async ({ pageParam }: { pageParam: string | undefined }) => {
       if (!search) return [];
 
-      return await getThreadPosts({
+      return await getThreads({
         lastId: pageParam,
         searchTerm: search,
       });
@@ -52,9 +48,9 @@ export const threadSearchInfiniteOptions = (search: string) => {
 };
 
 // thread comments
-export const threadPostCommentsInfiniteOptions = (threadId: string) => {
+export const threadCommentsInfiniteOptions = (threadId: string) => {
   return infiniteQueryOptions({
-    queryKey: [...threadOptions.queryKey, threadId, "comments"],
+    queryKey: [...threadBaseOptions.queryKey, threadId, "comments"],
     initialPageParam: undefined,
     queryFn: async ({ pageParam }: { pageParam: string | undefined }) =>
       getThreadComments({ id: threadId, lastId: pageParam }),

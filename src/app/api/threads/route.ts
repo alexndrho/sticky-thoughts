@@ -8,7 +8,7 @@ import { auth } from "@/lib/auth";
 import { THREAD_POSTS_PER_PAGE } from "@/config/thread";
 import { createThreadServerInput } from "@/lib/validations/form";
 import type IError from "@/types/error";
-import { ThreadPostType } from "@/types/thread";
+import { ThreadType } from "@/types/thread";
 
 export async function POST(req: Request) {
   try {
@@ -133,19 +133,19 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    const formattedPosts: ThreadPostType[] = Threads.map((post) => {
-      const { likes, _count, ...restThreads } = post;
+    const formattedPosts: ThreadType[] = Threads.map((post) => {
+      const { likes, _count, ...rest } = post;
 
       return {
-        ...restThreads,
+        ...rest,
         likes: {
-          liked: !!likes?.length,
+          liked: !!likes.length,
           count: _count.likes,
         },
         comments: {
           count: _count.comments,
         },
-      } satisfies ThreadPostType;
+      } satisfies ThreadType;
     });
 
     return NextResponse.json(formattedPosts, { status: 200 });

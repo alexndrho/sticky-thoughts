@@ -1,9 +1,9 @@
 import type { Prisma } from "@/generated/prisma/client";
 import { toServerError } from "@/utils/error/ServerError";
-import type { ThreadPostCommentType, ThreadPostType } from "@/types/thread";
+import type { ThreadCommentType, ThreadType } from "@/types/thread";
 
 // thread
-export const submitThreadPost = async (
+export const submitThread = async (
   data: Omit<Prisma.ThreadCreateInput, "author">,
 ): Promise<{ id: string }> => {
   const response = await fetch("/api/threads", {
@@ -25,7 +25,7 @@ export const submitThreadPost = async (
   return dataResponse;
 };
 
-export const getThreadPost = async (id: string): Promise<ThreadPostType> => {
+export const getThread = async (id: string): Promise<ThreadType> => {
   const response = await fetch(`/api/threads/${id}`, {
     method: "GET",
     headers: {
@@ -42,13 +42,13 @@ export const getThreadPost = async (id: string): Promise<ThreadPostType> => {
   return dataResponse;
 };
 
-export const getThreadPosts = async ({
+export const getThreads = async ({
   lastId,
   searchTerm,
 }: {
   lastId?: string;
   searchTerm?: string;
-}): Promise<ThreadPostType[]> => {
+}): Promise<ThreadType[]> => {
   const params = new URLSearchParams();
 
   if (lastId) {
@@ -74,13 +74,13 @@ export const getThreadPosts = async ({
   return dataResponse;
 };
 
-export const updateThreadPost = async ({
+export const updateThread = async ({
   id,
   body,
 }: {
   id: string;
   body: Prisma.ThreadUpdateInput["body"];
-}): Promise<ThreadPostType> => {
+}): Promise<ThreadType> => {
   const response = await fetch(`/api/threads/${id}`, {
     method: "PUT",
     headers: {
@@ -100,7 +100,7 @@ export const updateThreadPost = async ({
   return data;
 };
 
-export const deleteThreadPost = async (
+export const deleteThread = async (
   id: string,
 ): Promise<{ message: string }> => {
   const response = await fetch(`/api/threads/${id}`, {
@@ -120,9 +120,7 @@ export const deleteThreadPost = async (
 };
 
 // thread like
-export const likeThreadPost = async (
-  id: string,
-): Promise<{ message: string }> => {
+export const likeThread = async (id: string): Promise<{ message: string }> => {
   const response = await fetch(`/api/threads/${id}/like`, {
     method: "POST",
     headers: {
@@ -139,7 +137,7 @@ export const likeThreadPost = async (
   return data;
 };
 
-export const unlikeThreadPost = async (
+export const unlikeThread = async (
   id: string,
 ): Promise<{ message: string }> => {
   const response = await fetch(`/api/threads/${id}/like`, {
@@ -159,13 +157,13 @@ export const unlikeThreadPost = async (
 };
 
 // comment
-export const submitThreadPostComment = async ({
+export const submitThreadComment = async ({
   id,
   body,
 }: {
   id: string;
   body: Prisma.ThreadCreateInput["body"];
-}): Promise<ThreadPostCommentType> => {
+}): Promise<ThreadCommentType> => {
   const response = await fetch(`/api/threads/${id}/comments`, {
     method: "POST",
     headers: {
@@ -191,7 +189,7 @@ export const getThreadComments = async ({
 }: {
   id: string;
   lastId?: string;
-}): Promise<ThreadPostCommentType[]> => {
+}): Promise<ThreadCommentType[]> => {
   const params = new URLSearchParams();
 
   if (lastId) {
@@ -214,7 +212,7 @@ export const getThreadComments = async ({
   return dataResponse;
 };
 
-export const updateThreadPostComment = async ({
+export const updateThreadComment = async ({
   threadId,
   commentId,
   body,
@@ -222,7 +220,7 @@ export const updateThreadPostComment = async ({
   threadId: string;
   commentId: string;
   body: string;
-}): Promise<ThreadPostCommentType> => {
+}): Promise<ThreadCommentType> => {
   const response = await fetch(
     `/api/threads/${threadId}/comments/${commentId}`,
     {
@@ -245,7 +243,7 @@ export const updateThreadPostComment = async ({
   return dataResponse;
 };
 
-export const deleteThreadPostComment = async ({
+export const deleteThreadComment = async ({
   threadId,
   commentId,
 }: {
@@ -272,7 +270,7 @@ export const deleteThreadPostComment = async ({
 };
 
 // comment like
-export const likeThreadPostComment = async ({
+export const likeThreadComment = async ({
   threadId,
   commentId,
 }: {
@@ -298,7 +296,7 @@ export const likeThreadPostComment = async ({
   return dataResponse;
 };
 
-export const unlikeThreadPostComment = async ({
+export const unlikeThreadComment = async ({
   threadId,
   commentId,
 }: {
