@@ -20,6 +20,7 @@
     "@mantine/tiptap": "^8.3.9",
     "@prisma/adapter-pg": "^7.0.1",
     "@prisma/client": "^7.0.1",
+    "@prisma/extension-accelerate": "^3.0.0",
     "@react-email/components": "0.5.5",
     "@tabler/icons-react": "^3.31.0",
     "@tanstack/react-query": "^5.69.0",
