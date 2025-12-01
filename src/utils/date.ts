@@ -1,3 +1,5 @@
+import { secondsToMinutes } from "date-fns";
+
 const formatTime = new Intl.DateTimeFormat("en-US", {
   hour: "numeric",
   minute: "numeric",
@@ -33,4 +35,17 @@ export const getFormattedDate = (date: Date) => {
   } else {
     return formatDateTime.format(date);
   }
+};
+
+export const secondsToMinutesExtended = (seconds: number): string => {
+  const minutes = secondsToMinutes(seconds);
+  const secondsLeft = seconds - minutes * 60;
+
+  if (minutes > 0) {
+    // m:ss seconds always padded when minutes > 0
+    return `${minutes}:${String(secondsLeft).padStart(2, "0")}`;
+  }
+
+  // Under 1 minute: just show seconds
+  return String(secondsLeft);
 };

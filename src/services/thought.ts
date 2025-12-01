@@ -1,6 +1,6 @@
-import type { Prisma, Thought } from "@prisma/client";
-
+import type { Prisma, Thought } from "@/generated/prisma/client";
 import { convertThoughtDates, ThoughtFromServer } from "@/utils/thought";
+import { toServerError } from "@/utils/error/ServerError";
 
 const getThoughts = async ({
   lastId,
@@ -26,7 +26,7 @@ const getThoughts = async ({
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.errors[0].message);
+    throw toServerError("Failed to get thoughts", data.errors);
   }
 
   return data.map(convertThoughtDates);
@@ -48,9 +48,7 @@ const submitThought = async (
   const dataResponse = await response.json();
 
   if (!response.ok) {
-    console.log(dataResponse);
-
-    throw new Error(dataResponse.errors[0].message);
+    throw toServerError("Failed to submit thought", dataResponse.errors);
   }
 
   return dataResponse;
@@ -61,7 +59,7 @@ const getThoughtsCount = async (): Promise<number> => {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.errors[0].message);
+    throw toServerError("Failed to get thoughts count", data.errors);
   }
 
   return data.count;
