@@ -152,6 +152,10 @@ export async function PUT(req: Request) {
           { status: 404 },
         );
       }
+    } else if (error instanceof Error) {
+      console.error("Error message:", error.stack);
+    } else {
+      console.error("Error updating profile picture:", error);
     }
 
     return NextResponse.json(
@@ -236,6 +240,10 @@ export async function DELETE() {
           { status: 404 },
         );
       }
+    } else if (error instanceof Error) {
+      console.error("Error message:", error.stack);
+    } else {
+      console.error("Error deleting profile picture:", error);
     }
 
     return NextResponse.json(
