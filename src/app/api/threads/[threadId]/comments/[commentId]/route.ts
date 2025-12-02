@@ -20,7 +20,7 @@ export async function PUT(
     if (!session?.user?.id) {
       return NextResponse.json(
         {
-          errors: [
+          issues: [
             {
               code: "auth/unauthorized",
               message: "You must be logged in to like a post",
@@ -48,9 +48,9 @@ export async function PUT(
   } catch (error) {
     if (error instanceof ZodError) {
       const zodError: IError = {
-        errors: error.errors.map((err) => ({
+        issues: error.issues.map((issue) => ({
           code: "validation/invalid-input",
-          message: err.message,
+          message: issue.message,
         })),
       };
 
@@ -59,7 +59,7 @@ export async function PUT(
       if (error.code === "P2025") {
         return NextResponse.json(
           {
-            errors: [
+            issues: [
               {
                 code: "not-found",
                 message: "Comment not found",
@@ -73,7 +73,7 @@ export async function PUT(
 
     return NextResponse.json(
       {
-        errors: [{ code: "unknown-error", message: "Unknown error" }],
+        issues: [{ code: "unknown-error", message: "Unknown error" }],
       } satisfies IError,
       { status: 500 },
     );
@@ -92,7 +92,7 @@ export async function DELETE(
     if (!session?.user?.id) {
       return NextResponse.json(
         {
-          errors: [
+          issues: [
             {
               code: "auth/unauthorized",
               message: "You must be logged in to like a post",
@@ -123,7 +123,7 @@ export async function DELETE(
       if (error.code === "P2025") {
         return NextResponse.json(
           {
-            errors: [
+            issues: [
               {
                 code: "not-found",
                 message: "Comment not found",
@@ -137,7 +137,7 @@ export async function DELETE(
 
     return NextResponse.json(
       {
-        errors: [{ code: "unknown-error", message: "Unknown error" }],
+        issues: [{ code: "unknown-error", message: "Unknown error" }],
       } satisfies IError,
       { status: 500 },
     );

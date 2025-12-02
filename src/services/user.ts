@@ -8,7 +8,7 @@ export const getUser = async (username: string): Promise<User> => {
   const data = await res.json();
 
   if (!res.ok) {
-    throw toServerError("User fetch error", data.errors);
+    throw toServerError("User fetch error", data.issues);
   }
 
   return data;
@@ -25,7 +25,7 @@ export const uploadProfilePicture = async (
   const data = await res.json();
 
   if (!res.ok) {
-    throw toServerError("Profile picture upload error", data.errors);
+    throw toServerError("Profile picture upload error", data.issues);
   }
 
   return data;
@@ -39,7 +39,7 @@ export const removeProfilePicture = async (): Promise<{ message: string }> => {
   const data = await res.json();
 
   if (!res.ok) {
-    throw toServerError("Profile picture delete error", data.errors);
+    throw toServerError("Profile picture delete error", data.issues);
   }
 
   return data;
@@ -65,7 +65,7 @@ export const getUserThreads = async ({
   const data = await res.json();
 
   if (!res.ok) {
-    throw toServerError("User threads fetch error", data.errors);
+    throw toServerError("User threads fetch error", data.issues);
   }
 
   return data;
@@ -89,7 +89,7 @@ export const getUserLikedThreads = async ({
   const data = await res.json();
 
   if (!res.ok) {
-    throw toServerError("User liked threads fetch error", data.errors);
+    throw toServerError("User liked threads fetch error", data.issues);
   }
 
   return data;

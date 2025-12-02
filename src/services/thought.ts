@@ -26,7 +26,7 @@ const getThoughts = async ({
   const data = await response.json();
 
   if (!response.ok) {
-    throw toServerError("Failed to get thoughts", data.errors);
+    throw toServerError("Failed to get thoughts", data.issues);
   }
 
   return data.map(convertThoughtDates);
@@ -48,7 +48,7 @@ const submitThought = async (
   const dataResponse = await response.json();
 
   if (!response.ok) {
-    throw toServerError("Failed to submit thought", dataResponse.errors);
+    throw toServerError("Failed to submit thought", dataResponse.issues);
   }
 
   return dataResponse;
@@ -59,7 +59,7 @@ const getThoughtsCount = async (): Promise<number> => {
   const data = await response.json();
 
   if (!response.ok) {
-    throw toServerError("Failed to get thoughts count", data.errors);
+    throw toServerError("Failed to get thoughts count", data.issues);
   }
 
   return data.count;
@@ -73,7 +73,7 @@ const getThoughtsCount = async (): Promise<number> => {
 //   const data = await response.json();
 
 //   if (!response.ok) {
-//     throw new Error(data.errors[0].message);
+//     throw new Error(data.issues[0].message);
 //   }
 
 //   return data.map(convertThoughtDates);

@@ -19,7 +19,7 @@ export async function GET(
     if (!user) {
       return NextResponse.json(
         {
-          errors: [
+          issues: [
             {
               code: "not-found",
               message: `User not found`,
@@ -36,7 +36,7 @@ export async function GET(
 
     return NextResponse.json(
       {
-        errors: [{ code: "unknown-error", message: "Unknown error" }],
+        issues: [{ code: "unknown-error", message: "Unknown error" }],
       } satisfies IError,
       { status: 500 },
     );

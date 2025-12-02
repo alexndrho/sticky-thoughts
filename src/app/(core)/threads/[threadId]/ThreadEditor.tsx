@@ -82,7 +82,7 @@ export default function ForumEditor({ id, body, onClose }: ForumEditorProps) {
     },
     onError: (error) => {
       if (error instanceof ServerError) {
-        updateForm.setFieldError("root", error.errors[0].message);
+        updateForm.setFieldError("root", error.issues[0].message);
       } else {
         updateForm.setFieldError("root", "Failed to update post");
       }

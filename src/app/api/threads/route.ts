@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     if (!session?.user?.id) {
       return NextResponse.json(
         {
-          errors: [{ code: "auth/unauthorized", message: "Unauthorized" }],
+          issues: [{ code: "auth/unauthorized", message: "Unauthorized" }],
         } satisfies IError,
         { status: 401 },
       );
@@ -45,9 +45,9 @@ export async function POST(req: Request) {
   } catch (error) {
     if (error instanceof ZodError) {
       const zodError: IError = {
-        errors: error.errors.map((err) => ({
+        issues: error.issues.map((issue) => ({
           code: "validation/invalid-input",
-          message: err.message,
+          message: issue.message,
         })),
       };
 
@@ -56,7 +56,7 @@ export async function POST(req: Request) {
       if (error.code === "P2002") {
         return NextResponse.json(
           {
-            errors: [
+            issues: [
               {
                 code: "thread/title-already-exists",
                 message: "Post name must be unique",
@@ -70,7 +70,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(
       {
-        errors: [{ code: "unknown-error", message: "Something went wrong" }],
+        issues: [{ code: "unknown-error", message: "Something went wrong" }],
       } satisfies IError,
       { status: 500 },
     );
@@ -141,7 +141,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(
       {
-        errors: [{ code: "unknown-error", message: "Something went wrong" }],
+        issues: [{ code: "unknown-error", message: "Something went wrong" }],
       } satisfies IError,
       { status: 500 },
     );

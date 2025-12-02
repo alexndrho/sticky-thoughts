@@ -1,12 +1,12 @@
 import type IError from "@/types/error";
 
 export default class ServerError extends Error {
-  errors: IError["errors"];
+  issues: IError["issues"];
 
-  constructor(message: string, errors: IError["errors"]) {
+  constructor(message: string, issues: IError["issues"]) {
     super(message);
     this.name = "ServerError";
-    this.errors = errors;
+    this.issues = issues;
 
     Object.setPrototypeOf(this, ServerError.prototype);
   }
@@ -14,7 +14,7 @@ export default class ServerError extends Error {
 
 export function toServerError(
   message: string,
-  errors: IError["errors"],
+  issues: IError["issues"],
 ): ServerError {
-  return new ServerError(message, errors);
+  return new ServerError(message, issues);
 }

@@ -59,9 +59,7 @@ const sanitizeBodyHtmlOptions: IOptions = {
 
 export const createThreadServerInput = z.object({
   title: z
-    .string({
-      required_error: "Title is required",
-    })
+    .string("Title is required")
     .trim()
     .min(THREAD_TITLE_MIN_LENGTH, "Title is required")
     .max(
@@ -69,9 +67,7 @@ export const createThreadServerInput = z.object({
       `Title must be at most ${THREAD_TITLE_MAX_LENGTH.toLocaleString()} characters long`,
     ),
   body: z
-    .string({
-      required_error: "Body is required",
-    })
+    .string("Body is required")
     .trim()
     .min(THREAD_BODY_MIN_LENGTH, "Body is required")
     .max(
@@ -100,9 +96,7 @@ export const updateThreadServerInput = createThreadServerInput.pick({
 
 export const createThreadCommentServerInput = z.object({
   body: z
-    .string({
-      required_error: "Comment is required",
-    })
+    .string("Comment is required")
     .trim()
     .min(THREAD_BODY_MIN_LENGTH, "Comment is required")
     .max(
@@ -125,8 +119,7 @@ export const createThreadCommentServerInput = z.object({
     }),
 });
 
-export const updateThreadCommentServerInput = createThreadCommentServerInput.pick(
-  {
+export const updateThreadCommentServerInput =
+  createThreadCommentServerInput.pick({
     body: true,
-  },
-);
+  });

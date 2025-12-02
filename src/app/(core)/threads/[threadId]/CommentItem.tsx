@@ -207,7 +207,7 @@ function Editor({
     },
     onError: (error) => {
       if (error instanceof ServerError) {
-        updateForm.setFieldError("body", error.errors[0].message);
+        updateForm.setFieldError("body", error.issues[0].message);
       } else {
         updateForm.setFieldError("body", "Something went wrong");
       }

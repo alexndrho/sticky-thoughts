@@ -63,7 +63,7 @@ const CommentEditor = forwardRef<CommentSectionRef, CommentEditorProps>(
       },
       onError: (error) => {
         if (error instanceof ServerError) {
-          form.setFieldError("body", error.errors[0].message);
+          form.setFieldError("body", error.issues[0].message);
         } else {
           form.setFieldError("body", "Something went wrong");
         }

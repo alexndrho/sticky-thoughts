@@ -54,7 +54,7 @@ export async function GET(
     if (!thread) {
       return NextResponse.json(
         {
-          errors: [
+          issues: [
             {
               code: "not-found",
               message: "Thread post not found",
@@ -86,7 +86,7 @@ export async function GET(
 
     return NextResponse.json(
       {
-        errors: [{ code: "unknown-error", message: "Unknown error" }],
+        issues: [{ code: "unknown-error", message: "Unknown error" }],
       } satisfies IError,
       { status: 500 },
     );
@@ -105,7 +105,7 @@ export async function PUT(
     if (!session?.user?.id) {
       return NextResponse.json(
         {
-          errors: [{ code: "auth/unauthorized", message: "Unauthorized" }],
+          issues: [{ code: "auth/unauthorized", message: "Unauthorized" }],
         } satisfies IError,
         { status: 401 },
       );
@@ -138,9 +138,9 @@ export async function PUT(
   } catch (error) {
     if (error instanceof ZodError) {
       const zodError: IError = {
-        errors: error.errors.map((error) => ({
+        issues: error.issues.map((issue) => ({
           code: "validation/invalid-input",
-          message: error.message,
+          message: issue.message,
         })),
       };
 
@@ -149,7 +149,7 @@ export async function PUT(
       if (error.code === "P2015") {
         return NextResponse.json(
           {
-            errors: [
+            issues: [
               {
                 code: "not-found",
                 message: "Thread post not found",
@@ -163,7 +163,7 @@ export async function PUT(
 
     return NextResponse.json(
       {
-        errors: [{ code: "unknown-error", message: "Unknown error" }],
+        issues: [{ code: "unknown-error", message: "Unknown error" }],
       } satisfies IError,
       { status: 500 },
     );
@@ -182,7 +182,7 @@ export async function DELETE(
     if (!session?.user?.id) {
       return NextResponse.json(
         {
-          errors: [{ code: "auth/unauthorized", message: "Unauthorized" }],
+          issues: [{ code: "auth/unauthorized", message: "Unauthorized" }],
         } satisfies IError,
         { status: 401 },
       );
@@ -208,7 +208,7 @@ export async function DELETE(
       if (error.code === "P2015") {
         return NextResponse.json(
           {
-            errors: [
+            issues: [
               {
                 code: "not-found",
                 message: "Thread post not found",
@@ -222,7 +222,7 @@ export async function DELETE(
 
     return NextResponse.json(
       {
-        errors: [{ code: "unknown-error", message: "Unknown error" }],
+        issues: [{ code: "unknown-error", message: "Unknown error" }],
       } satisfies IError,
       { status: 500 },
     );

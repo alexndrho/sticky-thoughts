@@ -85,11 +85,11 @@ export default function ThreadSubmitPage() {
     },
     onError: (error) => {
       if (error instanceof ServerError) {
-        error.errors.forEach((err) => {
-          if (err.code === "thread/title-already-exists") {
-            form.setFieldError("title", err.message);
+        error.issues.forEach((issue) => {
+          if (issue.code === "thread/title-already-exists") {
+            form.setFieldError("title", issue.message);
           } else {
-            form.setFieldError("root", err.message);
+            form.setFieldError("root", issue.message);
           }
         });
       }

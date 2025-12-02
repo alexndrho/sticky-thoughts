@@ -13,7 +13,7 @@ export async function GET() {
 
     return NextResponse.json(
       {
-        errors: [
+        issues: [
           {
             code: "unknown-error",
             message: "Something went wrong",

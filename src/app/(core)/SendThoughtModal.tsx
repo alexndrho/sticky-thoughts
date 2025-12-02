@@ -10,7 +10,8 @@ import {
   Textarea,
   Tooltip,
 } from "@mantine/core";
-import { useForm, zodResolver } from "@mantine/form";
+import { useForm } from "@mantine/form";
+import { zod4Resolver } from "mantine-form-zod-resolver";
 import { notifications } from "@mantine/notifications";
 
 import RandomButton from "@/components/RandomButton";
@@ -46,7 +47,7 @@ export default function SendThoughtModal({
           : "",
       color: THOUGHT_COLORS[0] as (typeof THOUGHT_COLORS)[number],
     },
-    validate: zodResolver(createThoughtInput),
+    validate: zod4Resolver(createThoughtInput),
   });
 
   const handleRandomColor = () => {

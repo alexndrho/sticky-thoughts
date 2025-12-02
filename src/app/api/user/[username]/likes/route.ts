@@ -74,7 +74,7 @@ export async function GET(
 
     return NextResponse.json(
       {
-        errors: [{ code: "unknown-error", message: "Unknown error" }],
+        issues: [{ code: "unknown-error", message: "Unknown error" }],
       } satisfies IError,
       { status: 500 },
     );

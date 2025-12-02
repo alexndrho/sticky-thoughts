@@ -19,7 +19,7 @@ export const submitThread = async (
   const dataResponse = await response.json();
 
   if (!response.ok) {
-    throw toServerError("Failed to submit thread post", dataResponse.errors);
+    throw toServerError("Failed to submit thread post", dataResponse.issues);
   }
 
   return dataResponse;
@@ -36,7 +36,7 @@ export const getThread = async (id: string): Promise<ThreadType> => {
   const dataResponse = await response.json();
 
   if (!response.ok) {
-    throw toServerError("Failed to get thread post", dataResponse.errors);
+    throw toServerError("Failed to get thread post", dataResponse.issues);
   }
 
   return dataResponse;
@@ -68,7 +68,7 @@ export const getThreads = async ({
   const dataResponse = await response.json();
 
   if (!response.ok) {
-    throw toServerError("Failed to get thread posts", dataResponse.errors);
+    throw toServerError("Failed to get thread posts", dataResponse.issues);
   }
 
   return dataResponse;
@@ -94,7 +94,7 @@ export const updateThread = async ({
   const data = await response.json();
 
   if (!response.ok) {
-    throw toServerError("Failed to update thread post", data.errors);
+    throw toServerError("Failed to update thread post", data.issues);
   }
 
   return data;
@@ -113,7 +113,7 @@ export const deleteThread = async (
   const data = await response.json();
 
   if (!response.ok) {
-    throw toServerError("Failed to delete thread post", data.errors);
+    throw toServerError("Failed to delete thread post", data.issues);
   }
 
   return data;
@@ -131,7 +131,7 @@ export const likeThread = async (id: string): Promise<{ message: string }> => {
   const data = await response.json();
 
   if (!response.ok) {
-    throw toServerError("Failed to like thread post", data.errors);
+    throw toServerError("Failed to like thread post", data.issues);
   }
 
   return data;
@@ -150,7 +150,7 @@ export const unlikeThread = async (
   const data = await response.json();
 
   if (!response.ok) {
-    throw toServerError("Failed to unlike thread post", data.errors);
+    throw toServerError("Failed to unlike thread post", data.issues);
   }
 
   return data;
@@ -177,7 +177,7 @@ export const submitThreadComment = async ({
   const dataResponse = await response.json();
 
   if (!response.ok) {
-    throw toServerError("Failed to submit comment", dataResponse.errors);
+    throw toServerError("Failed to submit comment", dataResponse.issues);
   }
 
   return dataResponse;
@@ -206,7 +206,7 @@ export const getThreadComments = async ({
   const dataResponse = await response.json();
 
   if (!response.ok) {
-    throw toServerError("Failed to get comments", dataResponse.errors);
+    throw toServerError("Failed to get comments", dataResponse.issues);
   }
 
   return dataResponse;
@@ -237,7 +237,7 @@ export const updateThreadComment = async ({
   const dataResponse = await response.json();
 
   if (!response.ok) {
-    throw toServerError("Failed to update comment", dataResponse.errors);
+    throw toServerError("Failed to update comment", dataResponse.issues);
   }
 
   return dataResponse;
@@ -263,7 +263,7 @@ export const deleteThreadComment = async ({
   const dataResponse = await response.json();
 
   if (!response.ok) {
-    throw toServerError("Failed to delete comment", dataResponse.errors);
+    throw toServerError("Failed to delete comment", dataResponse.issues);
   }
 
   return dataResponse;
@@ -290,7 +290,7 @@ export const likeThreadComment = async ({
   const dataResponse = await response.json();
 
   if (!response.ok) {
-    throw toServerError("Failed to like comment", dataResponse.errors);
+    throw toServerError("Failed to like comment", dataResponse.issues);
   }
 
   return dataResponse;
@@ -316,7 +316,7 @@ export const unlikeThreadComment = async ({
   const dataResponse = await response.json();
 
   if (!response.ok) {
-    throw toServerError("Failed to unlike comment", dataResponse.errors);
+    throw toServerError("Failed to unlike comment", dataResponse.issues);
   }
 
   return dataResponse;

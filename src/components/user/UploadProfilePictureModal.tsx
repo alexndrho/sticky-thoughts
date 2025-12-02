@@ -74,7 +74,7 @@ export default function UploadProfilePictureModal({
     },
     onError: (err) => {
       if (err instanceof ServerError) {
-        setError(err.errors[0].message);
+        setError(err.issues[0].message);
       } else {
         setError("An error occurred while uploading the image");
       }

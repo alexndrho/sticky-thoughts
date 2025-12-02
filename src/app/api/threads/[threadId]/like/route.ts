@@ -18,7 +18,7 @@ export async function POST(
     if (!session?.user?.id) {
       return NextResponse.json(
         {
-          errors: [
+          issues: [
             {
               code: "auth/unauthorized",
               message: "You must be logged in to like a post",
@@ -57,7 +57,7 @@ export async function POST(
       if (error.code === "P2002") {
         return NextResponse.json(
           {
-            errors: [
+            issues: [
               {
                 code: "validation/unique-constraint",
                 message: "You have already liked this post",
@@ -71,7 +71,7 @@ export async function POST(
 
     return NextResponse.json(
       {
-        errors: [{ code: "unknown-error", message: "Unknown error" }],
+        issues: [{ code: "unknown-error", message: "Unknown error" }],
       } satisfies IError,
       { status: 500 },
     );
@@ -90,7 +90,7 @@ export async function DELETE(
     if (!session?.user?.id) {
       return NextResponse.json(
         {
-          errors: [
+          issues: [
             {
               code: "auth/unauthorized",
               message: "You must be logged in to unlike a post",
@@ -123,7 +123,7 @@ export async function DELETE(
       if (error.code === "P2025") {
         return NextResponse.json(
           {
-            errors: [
+            issues: [
               {
                 code: "validation/unique-constraint",
                 message: "You have not liked this post yet",
@@ -137,7 +137,7 @@ export async function DELETE(
 
     return NextResponse.json(
       {
-        errors: [{ code: "unknown-error", message: "Unknown error" }],
+        issues: [{ code: "unknown-error", message: "Unknown error" }],
       } satisfies IError,
       { status: 500 },
     );

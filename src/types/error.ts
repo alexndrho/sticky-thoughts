@@ -12,7 +12,7 @@ export type threadCode = "thread/title-already-exists";
 export type errorCode = systemCode | authCode | validationCode | threadCode;
 
 export default interface IError {
-  errors: {
+  issues: {
     code: errorCode;
     message: string;
   }[];

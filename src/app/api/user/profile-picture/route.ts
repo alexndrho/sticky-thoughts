@@ -16,7 +16,7 @@ export async function PUT(req: Request) {
   if (!session?.user?.id) {
     return NextResponse.json(
       {
-        errors: [{ code: "auth/unauthorized", message: "Unauthorized" }],
+        issues: [{ code: "auth/unauthorized", message: "Unauthorized" }],
       } satisfies IError,
       { status: 401 },
     );
@@ -32,7 +32,7 @@ export async function PUT(req: Request) {
     if (!(userImg instanceof File)) {
       return NextResponse.json(
         {
-          errors: [
+          issues: [
             {
               code: "validation/invalid-input",
               message: "Invalid or missing file",
@@ -49,7 +49,7 @@ export async function PUT(req: Request) {
     if (!allowedTypes.includes(userImg.type)) {
       return NextResponse.json(
         {
-          errors: [
+          issues: [
             { code: "validation/invalid-input", message: "Invalid file type" },
           ],
         } satisfies IError,
@@ -60,7 +60,7 @@ export async function PUT(req: Request) {
     if (userImg.size > maxSize) {
       return NextResponse.json(
         {
-          errors: [
+          issues: [
             {
               code: "validation/too-large",
               message: "File size exceeds limit",
@@ -147,7 +147,7 @@ export async function PUT(req: Request) {
       if (error.code === "P2015") {
         return NextResponse.json(
           {
-            errors: [{ code: "not-found", message: "User not found" }],
+            issues: [{ code: "not-found", message: "User not found" }],
           } satisfies IError,
           { status: 404 },
         );
@@ -156,7 +156,7 @@ export async function PUT(req: Request) {
 
     return NextResponse.json(
       {
-        errors: [{ code: "unknown-error", message: "An error occurred" }],
+        issues: [{ code: "unknown-error", message: "An error occurred" }],
       } satisfies IError,
       { status: 500 },
     );
@@ -171,7 +171,7 @@ export async function DELETE() {
   if (!session?.user?.id) {
     return NextResponse.json(
       {
-        errors: [{ code: "auth/unauthorized", message: "Unauthorized" }],
+        issues: [{ code: "auth/unauthorized", message: "Unauthorized" }],
       } satisfies IError,
       { status: 401 },
     );
@@ -180,7 +180,7 @@ export async function DELETE() {
   if (!session.user.image) {
     return NextResponse.json(
       {
-        errors: [
+        issues: [
           { code: "validation/invalid-input", message: "No image to delete" },
         ],
       } satisfies IError,
@@ -231,7 +231,7 @@ export async function DELETE() {
       if (error.code === "P2015") {
         return NextResponse.json(
           {
-            errors: [{ code: "not-found", message: "User not found" }],
+            issues: [{ code: "not-found", message: "User not found" }],
           } satisfies IError,
           { status: 404 },
         );
@@ -240,7 +240,7 @@ export async function DELETE() {
 
     return NextResponse.json(
       {
-        errors: [{ code: "unknown-error", message: "An error occurred" }],
+        issues: [{ code: "unknown-error", message: "An error occurred" }],
       } satisfies IError,
       { status: 500 },
     );

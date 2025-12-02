@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(
       {
-        errors: [
+        issues: [
           {
             code: "unknown-error",
             message: "Something went wrong",
@@ -71,9 +71,9 @@ export async function POST(req: Request) {
   } catch (error) {
     if (error instanceof ZodError) {
       const zodError: IError = {
-        errors: error.errors.map((error) => ({
+        issues: error.issues.map((issue) => ({
           code: "validation/invalid-input",
-          message: error.message,
+          message: issue.message,
         })),
       };
 
@@ -82,7 +82,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(
       {
-        errors: [
+        issues: [
           {
             code: "unknown-error",
             message: "Something went wrong",

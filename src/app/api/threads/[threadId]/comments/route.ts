@@ -22,7 +22,7 @@ export async function POST(
     if (!session?.user?.id) {
       return NextResponse.json(
         {
-          errors: [
+          issues: [
             {
               code: "auth/unauthorized",
               message: "You must be logged in to like a post",
@@ -91,9 +91,9 @@ export async function POST(
   } catch (error) {
     if (error instanceof ZodError) {
       const zodError: IError = {
-        errors: error.errors.map((err) => ({
+        issues: error.issues.map((issue) => ({
           code: "validation/invalid-input",
-          message: err.message,
+          message: issue.message,
         })),
       };
 
@@ -165,7 +165,7 @@ export async function GET(
 
     return NextResponse.json(
       {
-        errors: [{ code: "unknown-error", message: "Something went wrong" }],
+        issues: [{ code: "unknown-error", message: "Something went wrong" }],
       } satisfies IError,
       { status: 500 },
     );
