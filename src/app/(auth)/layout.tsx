@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth";
-import { Center, Container } from "@mantine/core";
+import { Container, Flex } from "@mantine/core";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -17,8 +17,16 @@ export default async function AuthLayout({
   }
 
   return (
-    <Center w="100%" h="100%">
-      <Container>{children}</Container>
-    </Center>
+    <Container w="100%" h="100%">
+      <Flex
+        w="100%"
+        h="100%"
+        direction="column"
+        justify="center"
+        align="center"
+      >
+        {children}
+      </Flex>
+    </Container>
   );
 }
