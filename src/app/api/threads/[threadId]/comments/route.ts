@@ -6,6 +6,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { createThreadCommentServerInput } from "@/lib/validations/form";
 import { THREAD_POST_COMMENT_PER_PAGE } from "@/config/thread";
+import { formatThreadComments } from "@/utils/thread";
 import type { ThreadCommentType } from "@/types/thread";
 import type IError from "@/types/error";
 
@@ -156,17 +157,7 @@ export async function GET(
       },
     });
 
-    const formattedPosts: ThreadCommentType[] = comments.map((comment) => {
-      const { likes, _count, ...restComment } = comment;
-
-      return {
-        ...restComment,
-        likes: {
-          liked: !!likes?.length,
-          count: _count.likes,
-        },
-      } satisfies ThreadCommentType;
-    });
+    const formattedPosts = formatThreadComments(comments);
 
     return NextResponse.json(formattedPosts);
   } catch (error) {

@@ -7,8 +7,8 @@ import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { THREAD_POSTS_PER_PAGE } from "@/config/thread";
 import { createThreadServerInput } from "@/lib/validations/form";
+import { formatThreads } from "@/utils/thread";
 import type IError from "@/types/error";
-import { ThreadType } from "@/types/thread";
 
 export async function POST(req: Request) {
   try {
@@ -133,20 +133,7 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    const formattedPosts: ThreadType[] = Threads.map((post) => {
-      const { likes, _count, ...rest } = post;
-
-      return {
-        ...rest,
-        likes: {
-          liked: !!likes.length,
-          count: _count.likes,
-        },
-        comments: {
-          count: _count.comments,
-        },
-      } satisfies ThreadType;
-    });
+    const formattedPosts = formatThreads(Threads);
 
     return NextResponse.json(formattedPosts, { status: 200 });
   } catch (error) {

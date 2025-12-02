@@ -3,8 +3,8 @@ import { type NextRequest, NextResponse } from "next/server";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { formatThreads } from "@/utils/thread";
 import type IError from "@/types/error";
-import { ThreadType } from "@/types/thread";
 
 export const GET = async (
   req: NextRequest,
@@ -62,20 +62,7 @@ export const GET = async (
       },
     });
 
-    const formattedThreads: ThreadType[] = threads.map((thread) => {
-      const { likes, _count, ...rest } = thread;
-
-      return {
-        ...rest,
-        likes: {
-          liked: !!likes.length,
-          count: _count.likes,
-        },
-        comments: {
-          count: _count.comments,
-        },
-      } satisfies ThreadType;
-    });
+    const formattedThreads = formatThreads(threads);
 
     return NextResponse.json(formattedThreads);
   } catch (error) {
