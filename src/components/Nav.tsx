@@ -77,6 +77,12 @@ export default function Nav() {
     });
   }, 10000);
 
+  const signOut = () => {
+    authClient.signOut();
+    const queryClient = getQueryClient();
+    queryClient.clear();
+  };
+
   return (
     <Box component="header" className={classes.nav}>
       <Container h="4rem" size="lg">
@@ -200,7 +206,7 @@ export default function Nav() {
                   <Menu.Item
                     color="red"
                     leftSection={<IconLogout size="1em" />}
-                    onClick={() => authClient.signOut()}
+                    onClick={signOut}
                   >
                     Sign out
                   </Menu.Item>

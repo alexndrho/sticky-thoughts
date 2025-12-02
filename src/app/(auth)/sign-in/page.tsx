@@ -16,8 +16,9 @@ import {
   Title,
 } from "@mantine/core";
 
-import { AuthContainer } from "../AuthContainer";
 import { authClient } from "@/lib/auth-client";
+import { getQueryClient } from "@/lib/get-query-client";
+import { AuthContainer } from "../AuthContainer";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -52,6 +53,9 @@ export default function SignInPage() {
 
         return;
       }
+
+      const queryClient = getQueryClient();
+      queryClient.clear();
 
       router.push("/");
     },
