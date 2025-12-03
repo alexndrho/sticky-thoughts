@@ -8,13 +8,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <Flex
-      h="100%"
-      py="7.5rem"
-      direction="column"
-      justify="center"
-      align="center"
-    >
+    <Flex h="100%" py="lg" direction="column" justify="center" align="center">
       <Title ta="center" c="blue">
         Get in Touch
       </Title>

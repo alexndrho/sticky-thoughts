@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <Flex py="7.5rem" align="center" gap="md">
+    <Flex h="100%" py="lg" align="center" gap="md">
       <Box>
         <Title>
           Sticky
