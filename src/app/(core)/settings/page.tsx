@@ -25,10 +25,10 @@ import {
   IconX,
 } from "@tabler/icons-react";
 
-import UploadProfilePictureModal from "@/components/user/UploadProfilePictureModal";
-import UpdateNameModal from "@/components/user/UpdateNameModal";
-import UpdateEmailModal from "@/components/user/UpdateEmailModal";
-import UpdateUsernameModal from "@/components/user/UpdateUsernameModal";
+import UploadProfilePictureModal from "./UploadProfilePictureModal";
+import UpdateNameModal from "./UpdateNameModal";
+import UpdateEmailModal from "./UpdateEmailModal";
+import UpdateUsernameModal from "./UpdateUsernameModal";
 
 import { authClient } from "@/lib/auth-client";
 import { secondsToMinutesExtended } from "@/utils/date";

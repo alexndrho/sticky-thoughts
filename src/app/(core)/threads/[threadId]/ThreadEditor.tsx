@@ -10,7 +10,7 @@ import { getQueryClient } from "@/lib/get-query-client";
 import {
   threadInfiniteOptions,
   threadOptions,
-} from "@/lib/query/options/thread";
+} from "@/app/(core)/threads/options";
 import type { ThreadType } from "@/types/thread";
 import ServerError from "@/utils/error/ServerError";
 import { useEffect } from "react";

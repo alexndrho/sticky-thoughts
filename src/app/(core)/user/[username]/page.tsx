@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 
-import { userUsernameOptions } from "@/lib/query/options/user";
+import { userUsernameOptions } from "@/app/(core)/user/options";
 import Content from "./Content";
 import ContentSkeleton from "@/components/ContentSkeleton";
 

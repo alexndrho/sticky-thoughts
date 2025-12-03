@@ -33,10 +33,7 @@ import { useThrottledCallback } from "@mantine/hooks";
 
 import { authClient } from "@/lib/auth-client";
 import { getQueryClient } from "@/lib/get-query-client";
-import {
-  thoughtInfiniteOptions,
-  thoughtOptions,
-} from "@/lib/query/options/thought";
+import { thoughtInfiniteOptions, thoughtOptions } from "@/app/(core)/options";
 import classes from "@/styles/nav.module.css";
 
 const navLinks = [

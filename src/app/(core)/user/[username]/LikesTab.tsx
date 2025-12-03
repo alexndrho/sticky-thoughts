@@ -4,8 +4,8 @@ import { Flex, Group, Loader, Tabs } from "@mantine/core";
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 
 import { authClient } from "@/lib/auth-client";
-import { userLikedThreadsInfiniteOptions } from "@/lib/query/options/user";
-import { setLikeThreadQueryData } from "@/lib/query/set-query-data/thread";
+import { userLikedThreadsInfiniteOptions } from "@/app/(core)/user/options";
+import { setLikeThreadQueryData } from "@/app/(core)/threads/set-query-data";
 import { useIsNearScrollEnd } from "@/hooks/use-is-near-scroll-end";
 import { useEffect } from "react";
 import ThreadItem from "../../threads/ThreadItem";

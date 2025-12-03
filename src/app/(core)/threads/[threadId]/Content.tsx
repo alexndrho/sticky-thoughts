@@ -32,7 +32,7 @@ import LikeButton from "@/app/(core)/threads/LikeButton";
 import CommentButton from "@/app/(core)/threads/CommentButton";
 import ShareButton from "@/app/(core)/threads/ShareButton";
 import SignInWarningModal from "@/components/SignInWarningModal";
-import { setLikeThreadQueryData } from "@/lib/query/set-query-data/thread";
+import { setLikeThreadQueryData } from "@/app/(core)/threads/set-query-data";
 import type { ThreadType } from "@/types/thread";
 
 export interface ContentProps {

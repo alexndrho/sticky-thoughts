@@ -11,13 +11,13 @@ import { authClient } from "@/lib/auth-client";
 import {
   threadInfiniteOptions,
   threadSearchInfiniteOptions,
-} from "@/lib/query/options/thread";
+} from "@/app/(core)/threads/options";
 import SignInWarningModal from "@/components/SignInWarningModal";
 import ThreadItem from "./ThreadItem";
 import { ThreadsSkeleton } from "./ThreadsSkeleton";
 import { likeThread, unlikeThread } from "@/services/thread";
 import { useIsNearScrollEnd } from "@/hooks/use-is-near-scroll-end";
-import { setLikeThreadQueryData } from "@/lib/query/set-query-data/thread";
+import { setLikeThreadQueryData } from "@/app/(core)/threads/set-query-data";
 
 export default function ThreadPage() {
   const { data: session } = authClient.useSession();

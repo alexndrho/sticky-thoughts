@@ -6,10 +6,10 @@ import { Flex, Group, Loader, Tabs } from "@mantine/core";
 
 import type { authClient } from "@/lib/auth-client";
 import ThreadItem from "../../threads/ThreadItem";
-import { userThreadsInfiniteOptions } from "@/lib/query/options/user";
+import { userThreadsInfiniteOptions } from "@/app/(core)/user/options";
 import { likeThread, unlikeThread } from "@/services/thread";
 import { useIsNearScrollEnd } from "@/hooks/use-is-near-scroll-end";
-import { setLikeThreadQueryData } from "@/lib/query/set-query-data/thread";
+import { setLikeThreadQueryData } from "@/app/(core)/threads/set-query-data";
 
 interface ThreadsTabProps {
   username: string;

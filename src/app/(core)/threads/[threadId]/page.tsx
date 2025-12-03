@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 
-import { threadOptions } from "@/lib/query/options/thread";
+import { threadOptions } from "@/app/(core)/threads/options";
 import Content from "./Content";
 import ContentSkeleton from "@/components/ContentSkeleton";
 import { NotFoundContent } from "@/app/not-found";

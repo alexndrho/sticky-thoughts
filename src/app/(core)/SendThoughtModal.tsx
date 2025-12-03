@@ -17,10 +17,7 @@ import { notifications } from "@mantine/notifications";
 import RandomButton from "@/components/RandomButton";
 import CheckColorSwatch from "@/components/CheckColorSwatch";
 import { getQueryClient } from "@/lib/get-query-client";
-import {
-  thoughtInfiniteOptions,
-  thoughtOptions,
-} from "@/lib/query/options/thought";
+import { thoughtInfiniteOptions, thoughtOptions } from "@/app/(core)/options";
 import { submitThought } from "@/services/thought";
 import { createThoughtInput } from "@/lib/validations/thought";
 import {

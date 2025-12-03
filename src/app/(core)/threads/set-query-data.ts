@@ -5,12 +5,12 @@ import {
   userThreadsInfiniteOptions,
   userOptions,
   userLikedThreadsInfiniteOptions,
-} from "../options/user";
+} from "../user/options";
 import {
   threadInfiniteOptions,
   threadCommentsInfiniteOptions,
   threadOptions,
-} from "@/lib/query/options/thread";
+} from "@/app/(core)/threads/options";
 import type { ThreadType, ThreadCommentType } from "@/types/thread";
 
 export const setLikeThreadQueryData = ({

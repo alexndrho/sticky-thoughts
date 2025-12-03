@@ -5,7 +5,7 @@ import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { Box, Center, Flex, Loader } from "@mantine/core";
 
 import { type authClient } from "@/lib/auth-client";
-import { threadCommentsInfiniteOptions } from "@/lib/query/options/thread";
+import { threadCommentsInfiniteOptions } from "@/app/(core)/threads/options";
 import {
   deleteThreadComment,
   likeThreadComment,
@@ -14,7 +14,7 @@ import {
 import {
   setDeleteThreadCommentQueryData,
   setLikeThreadCommentQueryData,
-} from "@/lib/query/set-query-data/thread";
+} from "@/app/(core)/threads/set-query-data";
 import CommentItem from "./CommentItem";
 
 export interface CommentsProps {

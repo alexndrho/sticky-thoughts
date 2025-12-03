@@ -14,14 +14,14 @@ import {
 
 import { authClient } from "@/lib/auth-client";
 import { getQueryClient } from "@/lib/get-query-client";
-import { threadInfiniteOptions } from "@/lib/query/options/thread";
+import { threadInfiniteOptions } from "@/app/(core)/threads/options";
 import { THREAD_BODY_MAX_LENGTH } from "@/lib/validations/form";
 import { submitThread } from "@/services/thread";
 import { useEffect } from "react";
 import { useTiptapEditor } from "@/hooks/use-tiptap";
 import TextEditor from "@/components/TextEditor";
 import ServerError from "@/utils/error/ServerError";
-import { userThreadsInfiniteOptions } from "@/lib/query/options/user";
+import { userThreadsInfiniteOptions } from "@/app/(core)/user/options";
 
 export default function ThreadSubmitPage() {
   const router = useRouter();
