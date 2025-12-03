@@ -1,12 +1,5 @@
 import type { Metadata } from "next";
-import {
-  Anchor,
-  Box,
-  Flex,
-  Image as MantineImage,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Box, Flex, Image as MantineImage, Text, Title } from "@mantine/core";
 import Image from "next/image";
 
 import noteImg from "@/assets/note.svg";
@@ -39,22 +32,6 @@ export default function AboutPage() {
           add.
         </Text>
         <Text mt="lg" fz="lg"></Text>
-        <Text mt="lg" fz="lg">
-          StickyThoughts is an open source project available on{" "}
-          <Anchor
-            href="https://github.com/alexndrho/sticky-thoughts"
-            target="_blank"
-            inherit
-          >
-            Github
-          </Anchor>
-          , created by{" "}
-          <Anchor href="https://alexndrho.dev" target="_blank" inherit>
-            Alexander Gabriel Ho
-          </Anchor>
-          . This online freedom wall serves as a platform to provide an
-          emotional outlet for its users.
-        </Text>
       </Box>
 
       <Box display={{ base: "none", xs: "block" }}>
