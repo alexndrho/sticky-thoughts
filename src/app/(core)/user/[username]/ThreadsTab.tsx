@@ -17,12 +17,14 @@ interface ThreadsTabProps {
   username: string;
   session: ReturnType<typeof authClient.useSession>["data"];
   openSignInWarningModal: () => void;
+  isActive: boolean;
 }
 
 export default function Threads({
   username,
   session,
   openSignInWarningModal,
+  isActive,
 }: ThreadsTabProps) {
   const isNearScrollEnd = useIsNearScrollEnd();
 
@@ -31,7 +33,10 @@ export default function Threads({
     isFetching: isThreadsFetching,
     fetchNextPage: fetchNextThreadsPage,
     hasNextPage: hasNextThreadsPage,
-  } = useInfiniteQuery(userThreadsInfiniteOptions(username));
+  } = useInfiniteQuery({
+    ...userThreadsInfiniteOptions(username),
+    enabled: isActive,
+  });
 
   const likeMutation = useMutation({
     mutationFn: async ({ id, like }: { id: string; like: boolean }) => {
@@ -54,6 +59,7 @@ export default function Threads({
   });
 
   useEffect(() => {
+    if (!isActive) return;
     if (isThreadsFetching) return;
 
     if (!isNearScrollEnd) return;
@@ -66,6 +72,7 @@ export default function Threads({
     isThreadsFetching,
     hasNextThreadsPage,
     fetchNextThreadsPage,
+    isActive,
   ]);
 
   const handleLike = ({ id, like }: { id: string; like: boolean }) => {

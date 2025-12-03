@@ -1,6 +1,8 @@
+import { useMemo } from "react";
 import { Avatar, Box, Flex, Tabs, Text, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconHeart, IconMessage } from "@tabler/icons-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import type { User } from "@/generated/prisma/client";
 import { authClient } from "@/lib/auth-client";
@@ -13,10 +15,26 @@ export interface ContentProps {
 }
 
 export default function Content({ user }: ContentProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { data: session } = authClient.useSession();
 
   const [signInWarningModalOpened, signInWarningModalHandler] =
     useDisclosure(false);
+
+  const currentTab = useMemo(() => {
+    const tab = searchParams.get("tab");
+    if (tab === "threads" || tab === "likes") return tab;
+    return "threads";
+  }, [searchParams]);
+
+  const setTab = (value: string | null) => {
+    const next = value ?? "threads";
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", next);
+    router.replace(`${pathname}?${params.toString()}`);
+  };
 
   return (
     <>
@@ -32,7 +50,7 @@ export default function Content({ user }: ContentProps) {
         </Box>
       </Flex>
 
-      <Tabs variant="outline" defaultValue="threads">
+      <Tabs variant="outline" value={currentTab} onChange={setTab}>
         <Tabs.List>
           <Tabs.Tab value="threads" leftSection={<IconMessage size="1em" />}>
             Threads
@@ -46,12 +64,14 @@ export default function Content({ user }: ContentProps) {
         <Threads
           username={user.username}
           session={session}
+          isActive={currentTab === "threads"}
           openSignInWarningModal={signInWarningModalHandler.open}
         />
 
         <LikesTab
           username={user.username}
           session={session}
+          isActive={currentTab === "likes"}
           openSignInWarningModal={signInWarningModalHandler.open}
         />
       </Tabs>

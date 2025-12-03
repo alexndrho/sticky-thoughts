@@ -16,12 +16,14 @@ export interface LikesTabProps {
   username: string;
   session: ReturnType<typeof authClient.useSession>["data"];
   openSignInWarningModal: () => void;
+  isActive: boolean;
 }
 
 export default function LikesTab({
   username,
   session,
   openSignInWarningModal,
+  isActive,
 }: LikesTabProps) {
   const isNearScrollEnd = useIsNearScrollEnd();
 
@@ -30,9 +32,13 @@ export default function LikesTab({
     isFetching: isLikedThreadsFetching,
     fetchNextPage: fetchNextLikedThreadsPage,
     hasNextPage: hasNextLikedThreadsPage,
-  } = useInfiniteQuery(userLikedThreadsInfiniteOptions(username));
+  } = useInfiniteQuery({
+    ...userLikedThreadsInfiniteOptions(username),
+    enabled: isActive,
+  });
 
   useEffect(() => {
+    if (!isActive) return;
     if (isLikedThreadsFetching) return;
 
     if (!isNearScrollEnd) return;
@@ -45,6 +51,7 @@ export default function LikesTab({
     isLikedThreadsFetching,
     hasNextLikedThreadsPage,
     fetchNextLikedThreadsPage,
+    isActive,
   ]);
 
   const likeMutation = useMutation({
