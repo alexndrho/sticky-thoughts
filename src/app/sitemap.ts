@@ -1,40 +1,50 @@
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const base = "https://stickythoughts.alexanderho.dev";
+  const today = new Date("2025-12-03");
+
   return [
     {
-      url: "https://stickythoughts.alexanderho.dev",
-      lastModified: new Date(),
-      changeFrequency: "always",
+      url: `${base}`,
+      lastModified: today,
+      changeFrequency: "daily",
       priority: 1.0,
     },
     {
-      url: "https://stickythoughts.alexanderho.dev/about",
-      lastModified: "2023-04-30",
+      url: `${base}/threads`,
+      lastModified: today,
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+
+    {
+      url: `${base}/about`,
+      lastModified: new Date("2025-12-03"),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
-      url: "https://stickythoughts.alexanderho.dev/contact",
-      lastModified: "2023-11-22",
+      url: `${base}/contact`,
+      lastModified: new Date("2023-11-22"),
       changeFrequency: "yearly",
       priority: 0.7,
     },
     {
-      url: "https://stickythoughts.alexanderho.dev/terms-and-conditions",
-      lastModified: "2024-05-07",
+      url: `${base}/terms-and-conditions`,
+      lastModified: new Date("2024-05-07"),
       changeFrequency: "yearly",
       priority: 0.5,
     },
     {
-      url: "https://stickythoughts.alexanderho.dev/privacy-policy",
-      lastModified: "2024-05-07",
+      url: `${base}/privacy-policy`,
+      lastModified: new Date("2024-05-07"),
       changeFrequency: "yearly",
       priority: 0.5,
     },
     {
-      url: "https://stickythoughts.alexanderho.dev/disclaimer",
-      lastModified: "2024-05-07",
+      url: `${base}/disclaimer`,
+      lastModified: new Date("2024-05-07"),
       changeFrequency: "yearly",
       priority: 0.5,
     },
