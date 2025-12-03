@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
-import { Flex, Group, Loader, Tabs } from "@mantine/core";
+import { Flex, Tabs } from "@mantine/core";
 
 import type { authClient } from "@/lib/auth-client";
 import ThreadItem from "../../threads/ThreadItem";
@@ -10,6 +10,8 @@ import { userThreadsInfiniteOptions } from "@/app/(core)/user/options";
 import { likeThread, unlikeThread } from "@/services/thread";
 import { useIsNearScrollEnd } from "@/hooks/use-is-near-scroll-end";
 import { setLikeThreadQueryData } from "@/app/(core)/threads/set-query-data";
+import { ThreadsSkeleton } from "../../threads/ThreadsSkeleton";
+import EmptyThreadPrompt from "./EmptyThreadPrompt";
 
 interface ThreadsTabProps {
   username: string;
@@ -78,16 +80,22 @@ export default function Threads({
   return (
     <Tabs.Panel value="threads" py="md">
       <Flex direction="column" gap="md">
-        {threads?.pages.map((page) =>
-          page.map((thread) => (
-            <ThreadItem key={thread.id} post={thread} onLike={handleLike} />
-          )),
+        {!isThreadsFetching ? (
+          threads?.pages[0].length !== 0 ? (
+            threads?.pages.map((page) =>
+              page.map((thread) => (
+                <ThreadItem key={thread.id} post={thread} onLike={handleLike} />
+              )),
+            )
+          ) : (
+            <EmptyThreadPrompt
+              isCurrentUser={session?.user.username === username}
+            />
+          )
+        ) : (
+          <ThreadsSkeleton />
         )}
       </Flex>
-
-      <Group my="xl" h="2.25rem" justify="center">
-        {isThreadsFetching && <Loader />}
-      </Group>
     </Tabs.Panel>
   );
 }

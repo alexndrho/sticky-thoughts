@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, Group, Loader, Tabs } from "@mantine/core";
+import { Flex, Tabs } from "@mantine/core";
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 
 import { authClient } from "@/lib/auth-client";
@@ -9,6 +9,7 @@ import { setLikeThreadQueryData } from "@/app/(core)/threads/set-query-data";
 import { useIsNearScrollEnd } from "@/hooks/use-is-near-scroll-end";
 import { useEffect } from "react";
 import ThreadItem from "../../threads/ThreadItem";
+import { ThreadsSkeleton } from "../../threads/ThreadsSkeleton";
 import { likeThread, unlikeThread } from "@/services/thread";
 
 export interface LikesTabProps {
@@ -78,16 +79,16 @@ export default function LikesTab({
   return (
     <Tabs.Panel value="likes" py="md">
       <Flex direction="column" gap="md">
-        {likedThreads?.pages.map((page) =>
-          page.map((thread) => (
-            <ThreadItem key={thread.id} post={thread} onLike={handleLike} />
-          )),
+        {!isLikedThreadsFetching ? (
+          likedThreads?.pages.map((page) =>
+            page.map((thread) => (
+              <ThreadItem key={thread.id} post={thread} onLike={handleLike} />
+            )),
+          )
+        ) : (
+          <ThreadsSkeleton />
         )}
       </Flex>
-
-      <Group my="xl" h="2.25rem" justify="center">
-        {isLikedThreadsFetching && <Loader />}
-      </Group>
     </Tabs.Panel>
   );
 }
