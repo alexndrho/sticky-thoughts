@@ -5,6 +5,15 @@ export const containsUrl = (text: string) => {
   return urlRegex.test(text);
 };
 
+export const apiUrl = (path: string) => {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  if (!baseUrl) {
+    throw new Error("API base URL is not defined");
+  }
+
+  return `${baseUrl}${path}`;
+};
+
 export const filterText = (text: string) => {
   try {
     return profanity.censor(text);

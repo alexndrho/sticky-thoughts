@@ -1,12 +1,13 @@
 import type { Prisma } from "@/generated/prisma/client";
 import { toServerError } from "@/utils/error/ServerError";
 import type { ThreadCommentType, ThreadType } from "@/types/thread";
+import { apiUrl } from "@/utils/text";
 
 // thread
 export const submitThread = async (
   data: Omit<Prisma.ThreadCreateInput, "author">,
 ): Promise<{ id: string }> => {
-  const response = await fetch("/api/threads", {
+  const response = await fetch(apiUrl("/api/threads"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -26,7 +27,7 @@ export const submitThread = async (
 };
 
 export const getThread = async (id: string): Promise<ThreadType> => {
-  const response = await fetch(`/api/threads/${id}`, {
+  const response = await fetch(apiUrl(`/api/threads/${id}`), {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -58,7 +59,7 @@ export const getThreads = async ({
     params.append("searchTerm", searchTerm);
   }
 
-  const response = await fetch(`/api/threads?${params}`, {
+  const response = await fetch(apiUrl(`/api/threads?${params}`), {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -81,7 +82,7 @@ export const updateThread = async ({
   id: string;
   body: Prisma.ThreadUpdateInput["body"];
 }): Promise<ThreadType> => {
-  const response = await fetch(`/api/threads/${id}`, {
+  const response = await fetch(apiUrl(`/api/threads/${id}`), {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -103,7 +104,7 @@ export const updateThread = async ({
 export const deleteThread = async (
   id: string,
 ): Promise<{ message: string }> => {
-  const response = await fetch(`/api/threads/${id}`, {
+  const response = await fetch(apiUrl(`/api/threads/${id}`), {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -121,7 +122,7 @@ export const deleteThread = async (
 
 // thread like
 export const likeThread = async (id: string): Promise<{ message: string }> => {
-  const response = await fetch(`/api/threads/${id}/like`, {
+  const response = await fetch(apiUrl(`/api/threads/${id}/like`), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -140,7 +141,7 @@ export const likeThread = async (id: string): Promise<{ message: string }> => {
 export const unlikeThread = async (
   id: string,
 ): Promise<{ message: string }> => {
-  const response = await fetch(`/api/threads/${id}/like`, {
+  const response = await fetch(apiUrl(`/api/threads/${id}/like`), {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -164,7 +165,7 @@ export const submitThreadComment = async ({
   id: string;
   body: Prisma.ThreadCreateInput["body"];
 }): Promise<ThreadCommentType> => {
-  const response = await fetch(`/api/threads/${id}/comments`, {
+  const response = await fetch(apiUrl(`/api/threads/${id}/comments`), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -196,12 +197,15 @@ export const getThreadComments = async ({
     params.append("lastId", lastId);
   }
 
-  const response = await fetch(`/api/threads/${id}/comments?${params}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
+  const response = await fetch(
+    apiUrl(`/api/threads/${id}/comments?${params}`),
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     },
-  });
+  );
 
   const dataResponse = await response.json();
 
@@ -222,7 +226,7 @@ export const updateThreadComment = async ({
   body: string;
 }): Promise<ThreadCommentType> => {
   const response = await fetch(
-    `/api/threads/${threadId}/comments/${commentId}`,
+    apiUrl(`/api/threads/${threadId}/comments/${commentId}`),
     {
       method: "PUT",
       headers: {
@@ -251,7 +255,7 @@ export const deleteThreadComment = async ({
   commentId: string;
 }) => {
   const response = await fetch(
-    `/api/threads/${threadId}/comments/${commentId}`,
+    apiUrl(`/api/threads/${threadId}/comments/${commentId}`),
     {
       method: "DELETE",
       headers: {
@@ -278,7 +282,7 @@ export const likeThreadComment = async ({
   commentId: string;
 }) => {
   const response = await fetch(
-    `/api/threads/${threadId}/comments/${commentId}/like`,
+    apiUrl(`/api/threads/${threadId}/comments/${commentId}/like`),
     {
       method: "POST",
       headers: {
@@ -304,7 +308,7 @@ export const unlikeThreadComment = async ({
   commentId: string;
 }) => {
   const response = await fetch(
-    `/api/threads/${threadId}/comments/${commentId}/like`,
+    apiUrl(`/api/threads/${threadId}/comments/${commentId}/like`),
     {
       method: "DELETE",
       headers: {

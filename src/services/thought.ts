@@ -1,6 +1,7 @@
 import type { Prisma, Thought } from "@/generated/prisma/client";
 import { convertThoughtDates, ThoughtFromServer } from "@/utils/thought";
 import { toServerError } from "@/utils/error/ServerError";
+import { apiUrl } from "@/utils/text";
 
 const getThoughts = async ({
   lastId,
@@ -20,7 +21,7 @@ const getThoughts = async ({
   }
 
   const response = await fetch(
-    `/api/thoughts${params.toString() ? `?${params.toString()}` : ""}`,
+    apiUrl(`/api/thoughts${params.toString() ? `?${params.toString()}` : ""}`),
   );
 
   const data = await response.json();
@@ -35,7 +36,7 @@ const getThoughts = async ({
 const submitThought = async (
   data: Prisma.ThoughtCreateInput,
 ): Promise<{ message: string }> => {
-  const response = await fetch("/api/thoughts", {
+  const response = await fetch(apiUrl("/api/thoughts"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -55,7 +56,7 @@ const submitThought = async (
 };
 
 const getThoughtsCount = async (): Promise<number> => {
-  const response = await fetch("/api/thoughts/count");
+  const response = await fetch(apiUrl("/api/thoughts/count"));
   const data = await response.json();
 
   if (!response.ok) {

@@ -1,9 +1,10 @@
 import type { User } from "@/generated/prisma/client";
 import { toServerError } from "@/utils/error/ServerError";
 import type { ThreadType } from "@/types/thread";
+import { apiUrl } from "@/utils/text";
 
 export const getUser = async (username: string): Promise<User> => {
-  const res = await fetch(`/api/user/${username}`);
+  const res = await fetch(apiUrl(`/api/user/${username}`));
 
   const data = await res.json();
 
@@ -17,7 +18,7 @@ export const getUser = async (username: string): Promise<User> => {
 export const uploadProfilePicture = async (
   formData: FormData,
 ): Promise<{ image: string }> => {
-  const res = await fetch("/api/user/profile-picture", {
+  const res = await fetch(apiUrl("/api/user/profile-picture"), {
     method: "PUT",
     body: formData,
   });
@@ -32,7 +33,7 @@ export const uploadProfilePicture = async (
 };
 
 export const removeProfilePicture = async (): Promise<{ message: string }> => {
-  const res = await fetch("/api/user/profile-picture", {
+  const res = await fetch(apiUrl("/api/user/profile-picture"), {
     method: "DELETE",
   });
 
@@ -60,7 +61,9 @@ export const getUserThreads = async ({
     searchParams.append("lastId", lastId);
   }
 
-  const res = await fetch(`/api/user/${username}/threads?${searchParams}`);
+  const res = await fetch(
+    apiUrl(`/api/user/${username}/threads?${searchParams}`),
+  );
 
   const data = await res.json();
 
@@ -84,7 +87,9 @@ export const getUserLikedThreads = async ({
     searchParams.append("lastId", lastId);
   }
 
-  const res = await fetch(`/api/user/${username}/likes?${searchParams}`);
+  const res = await fetch(
+    apiUrl(`/api/user/${username}/likes?${searchParams}`),
+  );
 
   const data = await res.json();
 
