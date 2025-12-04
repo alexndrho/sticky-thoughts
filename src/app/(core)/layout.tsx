@@ -1,6 +1,7 @@
 import { Box, Container, Flex } from "@mantine/core";
 
 import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
 import ScrollUpButton from "@/components/ScrollUpButton";
 
 export default function CoreLayout({
@@ -19,6 +20,7 @@ export default function CoreLayout({
       </Box>
 
       <ScrollUpButton />
+      <Footer />
     </Flex>
   );
 }
