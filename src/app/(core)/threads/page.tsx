@@ -102,7 +102,7 @@ export default function ThreadPage() {
 
   return (
     <Box my="md" w="100%">
-      <Flex w="100%" mb="lg" gap="md">
+      <Flex w="100%" mb="md" gap="md">
         <Input
           flex={1}
           placeholder="Search posts"

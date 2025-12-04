@@ -129,7 +129,7 @@ export default function HomePage() {
 
   return (
     <>
-      <Box mih="100dvh">
+      <Box>
         <Flex mt="md" direction="column" justify="center" align="center">
           <Title mb="md" ta="center">
             A place where you can freely express yourself
