@@ -70,8 +70,12 @@ export default function Footer() {
               ho.alexander.g@gmail.com
             </Anchor>
 
-            <Anchor href="https://alexndrho.dev/" target="_blank">
-              alexndrho.dev
+            <Anchor
+              href="https://alexanderho.dev"
+              target="_blank"
+              rel="noopener"
+            >
+              alexanderho.dev
             </Anchor>
           </Flex>
         </Flex>
