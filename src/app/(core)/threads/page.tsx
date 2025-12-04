@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
-import { useDebouncedState, useDisclosure } from "@mantine/hooks";
+import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
 import { Box, Button, Flex, Input, Kbd } from "@mantine/core";
 import { IconMessage, IconSearch } from "@tabler/icons-react";
 
@@ -27,6 +27,7 @@ export default function ThreadPage() {
   const isNearScrollEnd = useIsNearScrollEnd();
   const [signInWarningModalOpened, signInWarningModalHandler] =
     useDisclosure(false);
+  const searchRef = useRef<HTMLInputElement>(null);
 
   const {
     data: postsData,
@@ -66,6 +67,12 @@ export default function ThreadPage() {
     searchBarValue,
   ]);
 
+  const focusSearchBar = () => {
+    searchRef.current?.focus();
+  };
+
+  useHotkeys([["t", focusSearchBar]]);
+
   const handleClickSubmitPost = () => {
     if (!session) {
       signInWarningModalHandler.open();
@@ -104,6 +111,7 @@ export default function ThreadPage() {
     <Box my="md" w="100%">
       <Flex w="100%" mb="md" gap="md">
         <Input
+          ref={searchRef}
           flex={1}
           placeholder="Search posts"
           leftSection={<IconSearch size="1rem" />}
