@@ -127,6 +127,18 @@ export default function HomePage() {
     isSearchRefetchError,
   ]);
 
+  useEffect(() => {
+    return () => {
+      // Clean up notification on unmount
+      notifications.update({
+        id: "refetch-thoughts",
+        loading: false,
+        autoClose: 0,
+        message: "",
+      });
+    };
+  }, []);
+
   return (
     <>
       <Box>
