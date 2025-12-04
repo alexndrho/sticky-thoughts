@@ -86,15 +86,13 @@ export default function LikesTab({
   return (
     <Tabs.Panel value="likes" py="md">
       <Flex direction="column" gap="md">
-        {!isLikedThreadsFetching ? (
-          likedThreads?.pages.map((page) =>
-            page.map((thread) => (
-              <ThreadItem key={thread.id} post={thread} onLike={handleLike} />
-            )),
-          )
-        ) : (
-          <ThreadsSkeleton />
+        {likedThreads?.pages.map((page) =>
+          page.map((thread) => (
+            <ThreadItem key={thread.id} post={thread} onLike={handleLike} />
+          )),
         )}
+
+        {isLikedThreadsFetching && <ThreadsSkeleton />}
       </Flex>
     </Tabs.Panel>
   );

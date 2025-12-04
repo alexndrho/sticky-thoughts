@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { useDebouncedState, useDisclosure } from "@mantine/hooks";
-import { Box, Button, Flex, Group, Input, Kbd, Loader } from "@mantine/core";
+import { Box, Button, Flex, Input, Kbd } from "@mantine/core";
 import { IconMessage, IconSearch } from "@tabler/icons-react";
 
 import { authClient } from "@/lib/auth-client";
@@ -135,11 +135,9 @@ export default function ThreadPage() {
                   <ThreadItem key={post.id} post={post} onLike={handleLike} />
                 ))
             : isFetchingPosts && <ThreadsSkeleton />}
-      </Flex>
 
-      <Group my="xl" h="2.25rem" justify="center">
-        {(isFetchingPosts || isFetchingSearchPosts) && <Loader />}
-      </Group>
+        {(isFetchingPosts || isFetchingSearchPosts) && <ThreadsSkeleton />}
+      </Flex>
 
       {!session && (
         <SignInWarningModal

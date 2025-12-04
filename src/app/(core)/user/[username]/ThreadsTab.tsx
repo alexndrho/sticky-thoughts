@@ -87,21 +87,19 @@ export default function Threads({
   return (
     <Tabs.Panel value="threads" py="md">
       <Flex direction="column" gap="md">
-        {!isThreadsFetching ? (
-          threads?.pages[0].length !== 0 ? (
-            threads?.pages.map((page) =>
-              page.map((thread) => (
-                <ThreadItem key={thread.id} post={thread} onLike={handleLike} />
-              )),
-            )
-          ) : (
-            <EmptyThreadPrompt
-              isCurrentUser={session?.user.username === username}
-            />
+        {threads?.pages[0].length !== 0 ? (
+          threads?.pages.map((page) =>
+            page.map((thread) => (
+              <ThreadItem key={thread.id} post={thread} onLike={handleLike} />
+            )),
           )
         ) : (
-          <ThreadsSkeleton />
+          <EmptyThreadPrompt
+            isCurrentUser={session?.user.username === username}
+          />
         )}
+
+        {isThreadsFetching && <ThreadsSkeleton />}
       </Flex>
     </Tabs.Panel>
   );
