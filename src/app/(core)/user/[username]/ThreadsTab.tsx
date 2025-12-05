@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { Flex, Tabs } from "@mantine/core";
 
@@ -8,10 +7,10 @@ import type { authClient } from "@/lib/auth-client";
 import ThreadItem from "../../threads/ThreadItem";
 import { userThreadsInfiniteOptions } from "@/app/(core)/user/options";
 import { likeThread, unlikeThread } from "@/services/thread";
-import { useIsNearScrollEnd } from "@/hooks/use-is-near-scroll-end";
 import { setLikeThreadQueryData } from "@/app/(core)/threads/set-query-data";
 import { ThreadsSkeleton } from "../../threads/ThreadsSkeleton";
 import EmptyThreadPrompt from "./EmptyThreadPrompt";
+import InfiniteScroll from "@/components/InfiniteScroll";
 
 interface ThreadsTabProps {
   username: string;
@@ -26,8 +25,6 @@ export default function Threads({
   openSignInWarningModal,
   isActive,
 }: ThreadsTabProps) {
-  const isNearScrollEnd = useIsNearScrollEnd();
-
   const {
     data: threads,
     isFetching: isThreadsFetching,
@@ -58,23 +55,6 @@ export default function Threads({
     },
   });
 
-  useEffect(() => {
-    if (!isActive) return;
-    if (isThreadsFetching) return;
-
-    if (!isNearScrollEnd) return;
-
-    if (hasNextThreadsPage) {
-      fetchNextThreadsPage();
-    }
-  }, [
-    isNearScrollEnd,
-    isThreadsFetching,
-    hasNextThreadsPage,
-    fetchNextThreadsPage,
-    isActive,
-  ]);
-
   const handleLike = ({ id, like }: { id: string; like: boolean }) => {
     if (!session) {
       openSignInWarningModal();
@@ -86,21 +66,29 @@ export default function Threads({
 
   return (
     <Tabs.Panel value="threads" py="md">
-      <Flex direction="column" gap="md">
-        {threads?.pages[0].length !== 0 ? (
-          threads?.pages.map((page) =>
-            page.map((thread) => (
-              <ThreadItem key={thread.id} post={thread} onLike={handleLike} />
-            )),
-          )
-        ) : (
-          <EmptyThreadPrompt
-            isCurrentUser={session?.user.username === username}
-          />
-        )}
+      <InfiniteScroll
+        onLoadMore={() => {
+          fetchNextThreadsPage();
+        }}
+        hasNext={hasNextThreadsPage}
+        loading={isThreadsFetching}
+      >
+        <Flex direction="column" gap="md">
+          {threads?.pages[0].length !== 0 ? (
+            threads?.pages.map((page) =>
+              page.map((thread) => (
+                <ThreadItem key={thread.id} post={thread} onLike={handleLike} />
+              )),
+            )
+          ) : (
+            <EmptyThreadPrompt
+              isCurrentUser={session?.user.username === username}
+            />
+          )}
 
-        {isThreadsFetching && <ThreadsSkeleton />}
-      </Flex>
+          {isThreadsFetching && <ThreadsSkeleton />}
+        </Flex>
+      </InfiniteScroll>
     </Tabs.Panel>
   );
 }

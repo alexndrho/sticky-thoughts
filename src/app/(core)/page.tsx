@@ -21,21 +21,20 @@ import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { IconCheck, IconMessage, IconSearch, IconX } from "@tabler/icons-react";
 
-import Thoughts from "@/app/(core)/Thoughts";
-import SendThoughtModal from "./SendThoughtModal";
-import { useIsNearScrollEnd } from "@/hooks/use-is-near-scroll-end";
 import {
   thoughtCountOptions,
   thoughtInfiniteOptions,
   thoughtSearchInfiniteOptions,
 } from "@/app/(core)/options";
+import Thoughts from "@/app/(core)/Thoughts";
+import SendThoughtModal from "./SendThoughtModal";
+import InfiniteScroll from "@/components/InfiniteScroll";
 
 export default function HomePage() {
   const [messageOpen, { open, close, toggle }] = useDisclosure(false);
 
   const searchRef = useRef<HTMLInputElement>(null);
   const [searchBarValue, setSearchBarValue] = useDebouncedState("", 250);
-  const isNearScrollEnd = useIsNearScrollEnd();
 
   const {
     data: thoughtsData,
@@ -66,27 +65,6 @@ export default function HomePage() {
 
   const { data: thoughtsCountData, isFetched: thoughtsCountIsFetched } =
     useQuery(thoughtCountOptions);
-
-  //useEffect
-  useEffect(() => {
-    if (isThoughtsFetching || isSearchFetching) return;
-
-    if (!isNearScrollEnd) return;
-
-    if (searchBarValue.length > 0 && hasSearchNextPage) fetchSearchNextPage();
-
-    if (searchBarValue.length === 0 && hasThoughtsNextPage)
-      fetchThoughtsNextPage();
-  }, [
-    isNearScrollEnd,
-    isThoughtsFetching,
-    isSearchFetching,
-    fetchThoughtsNextPage,
-    fetchSearchNextPage,
-    hasThoughtsNextPage,
-    hasSearchNextPage,
-    searchBarValue.length,
-  ]);
 
   useEffect(() => {
     if (isThoughtsRefetching || isSearchRefetching) {
@@ -140,9 +118,26 @@ export default function HomePage() {
   }, []);
 
   return (
-    <>
-      <Box>
-        <Flex mt="md" direction="column" justify="center" align="center">
+    <Box py="md">
+      <InfiniteScroll
+        onLoadMore={() => {
+          if (searchBarValue.length > 0) {
+            fetchSearchNextPage();
+          } else {
+            fetchThoughtsNextPage();
+          }
+        }}
+        hasNext={
+          searchBarValue.length > 0 ? hasSearchNextPage : hasThoughtsNextPage
+        }
+        loading={isThoughtsFetching || isSearchFetching}
+        loader={
+          <Group mt="xl" justify="center">
+            <Loader />
+          </Group>
+        }
+      >
+        <Flex direction="column" justify="center" align="center">
           <Title mb="md" ta="center">
             A place where you can freely express yourself
           </Title>
@@ -202,13 +197,9 @@ export default function HomePage() {
                 )}
               />
             )}
-
-        <Group my="xl" h="2.25rem" justify="center">
-          {(isThoughtsFetching || isSearchFetching) && <Loader />}
-        </Group>
-      </Box>
+      </InfiniteScroll>
 
       <SendThoughtModal open={messageOpen} onClose={close} />
-    </>
+    </Box>
   );
 }

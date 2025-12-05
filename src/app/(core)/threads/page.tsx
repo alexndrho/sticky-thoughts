@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
@@ -12,11 +12,11 @@ import {
   threadInfiniteOptions,
   threadSearchInfiniteOptions,
 } from "@/app/(core)/threads/options";
+import InfiniteScroll from "@/components/InfiniteScroll";
 import SignInWarningModal from "@/components/SignInWarningModal";
 import ThreadItem from "./ThreadItem";
 import { ThreadsSkeleton } from "./ThreadsSkeleton";
 import { likeThread, unlikeThread } from "@/services/thread";
-import { useIsNearScrollEnd } from "@/hooks/use-is-near-scroll-end";
 import { setLikeThreadQueryData } from "@/app/(core)/threads/set-query-data";
 
 export default function ThreadPage() {
@@ -24,7 +24,6 @@ export default function ThreadPage() {
   const router = useRouter();
 
   const [searchBarValue, setSearchBarValue] = useDebouncedState("", 250);
-  const isNearScrollEnd = useIsNearScrollEnd();
   const [signInWarningModalOpened, signInWarningModalHandler] =
     useDisclosure(false);
   const searchRef = useRef<HTMLInputElement>(null);
@@ -41,31 +40,6 @@ export default function ThreadPage() {
     fetchNextPage: fetchNextSearchPostsPage,
     hasNextPage: hasNextSearchPostsPage,
   } = useInfiniteQuery(threadSearchInfiniteOptions(searchBarValue));
-
-  useEffect(() => {
-    if (isFetchingPosts || isFetchingSearchPosts) return;
-
-    if (!isNearScrollEnd) return;
-
-    if (searchBarValue) {
-      if (hasNextSearchPostsPage) {
-        fetchNextSearchPostsPage();
-      }
-    } else {
-      if (hasNextPostsPage) {
-        fetchNextPostsPage();
-      }
-    }
-  }, [
-    isNearScrollEnd,
-    isFetchingPosts,
-    isFetchingSearchPosts,
-    hasNextPostsPage,
-    hasNextSearchPostsPage,
-    fetchNextPostsPage,
-    fetchNextSearchPostsPage,
-    searchBarValue,
-  ]);
 
   const focusSearchBar = () => {
     searchRef.current?.focus();
@@ -127,25 +101,35 @@ export default function ThreadPage() {
         </Button>
       </Flex>
 
-      <Flex direction="column" gap="md">
-        {searchBarValue
-          ? searchPostsData
-            ? searchPostsData.pages
+      <InfiniteScroll
+        onLoadMore={() => {
+          if (searchBarValue.length > 0) {
+            fetchNextSearchPostsPage();
+          } else {
+            fetchNextPostsPage();
+          }
+        }}
+        hasNext={
+          searchBarValue.length > 0 ? hasNextSearchPostsPage : hasNextPostsPage
+        }
+        loading={isFetchingPosts || isFetchingSearchPosts}
+      >
+        <Flex direction="column" gap="md">
+          {searchBarValue
+            ? searchPostsData?.pages
                 .reduce((acc, page) => acc.concat(page))
                 .map((post) => (
                   <ThreadItem key={post.id} post={post} onLike={handleLike} />
                 ))
-            : isFetchingSearchPosts && <ThreadsSkeleton />
-          : postsData
-            ? postsData.pages
+            : postsData?.pages
                 .reduce((acc, page) => acc.concat(page))
                 .map((post) => (
                   <ThreadItem key={post.id} post={post} onLike={handleLike} />
-                ))
-            : isFetchingPosts && <ThreadsSkeleton />}
+                ))}
 
-        {(isFetchingPosts || isFetchingSearchPosts) && <ThreadsSkeleton />}
-      </Flex>
+          {(isFetchingPosts || isFetchingSearchPosts) && <ThreadsSkeleton />}
+        </Flex>
+      </InfiniteScroll>
 
       {!session && (
         <SignInWarningModal

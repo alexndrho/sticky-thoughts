@@ -6,11 +6,10 @@ import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth-client";
 import { userLikedThreadsInfiniteOptions } from "@/app/(core)/user/options";
 import { setLikeThreadQueryData } from "@/app/(core)/threads/set-query-data";
-import { useIsNearScrollEnd } from "@/hooks/use-is-near-scroll-end";
-import { useEffect } from "react";
 import ThreadItem from "../../threads/ThreadItem";
 import { ThreadsSkeleton } from "../../threads/ThreadsSkeleton";
 import { likeThread, unlikeThread } from "@/services/thread";
+import InfiniteScroll from "@/components/InfiniteScroll";
 
 export interface LikesTabProps {
   username: string;
@@ -25,8 +24,6 @@ export default function LikesTab({
   openSignInWarningModal,
   isActive,
 }: LikesTabProps) {
-  const isNearScrollEnd = useIsNearScrollEnd();
-
   const {
     data: likedThreads,
     isFetching: isLikedThreadsFetching,
@@ -36,23 +33,6 @@ export default function LikesTab({
     ...userLikedThreadsInfiniteOptions(username),
     enabled: isActive,
   });
-
-  useEffect(() => {
-    if (!isActive) return;
-    if (isLikedThreadsFetching) return;
-
-    if (!isNearScrollEnd) return;
-
-    if (hasNextLikedThreadsPage) {
-      fetchNextLikedThreadsPage();
-    }
-  }, [
-    isNearScrollEnd,
-    isLikedThreadsFetching,
-    hasNextLikedThreadsPage,
-    fetchNextLikedThreadsPage,
-    isActive,
-  ]);
 
   const likeMutation = useMutation({
     mutationFn: async ({ id, like }: { id: string; like: boolean }) => {
@@ -85,15 +65,23 @@ export default function LikesTab({
 
   return (
     <Tabs.Panel value="likes" py="md">
-      <Flex direction="column" gap="md">
-        {likedThreads?.pages.map((page) =>
-          page.map((thread) => (
-            <ThreadItem key={thread.id} post={thread} onLike={handleLike} />
-          )),
-        )}
+      <InfiniteScroll
+        onLoadMore={() => {
+          fetchNextLikedThreadsPage();
+        }}
+        hasNext={hasNextLikedThreadsPage}
+        loading={isLikedThreadsFetching}
+      >
+        <Flex direction="column" gap="md">
+          {likedThreads?.pages.map((page) =>
+            page.map((thread) => (
+              <ThreadItem key={thread.id} post={thread} onLike={handleLike} />
+            )),
+          )}
 
-        {isLikedThreadsFetching && <ThreadsSkeleton />}
-      </Flex>
+          {isLikedThreadsFetching && <ThreadsSkeleton />}
+        </Flex>
+      </InfiniteScroll>
     </Tabs.Panel>
   );
 }
