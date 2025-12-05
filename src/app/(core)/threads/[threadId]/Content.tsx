@@ -88,7 +88,7 @@ export default function Content({ id, thread }: ContentProps) {
   };
 
   return (
-    <Box my="lg" w="100%">
+    <Box my="xl" w="100%">
       <Flex mb="xs" justify="space-between">
         <Flex align="center">
           <Avatar src={thread.author.image} mr="xs" />
