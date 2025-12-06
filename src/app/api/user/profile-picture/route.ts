@@ -201,7 +201,6 @@ export async function DELETE() {
     await auth.api.updateUser({
       headers: await headers(),
       body: {
-        // @ts-expect-error - Auth library expects string but allows null to clear image
         image: null,
       },
     });

@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { threadOptions } from "@/app/(core)/threads/options";
 import Content from "./Content";
 import ContentSkeleton from "@/components/ContentSkeleton";
-import { NotFoundContent } from "@/app/not-found";
+import NotFoundContent from "@/components/NotFoundContent";
 
 export default function PostPage() {
   const params = useParams<{ threadId: string }>();

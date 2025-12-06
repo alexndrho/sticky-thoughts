@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import { userUsernameOptions } from "@/app/(core)/user/options";
 import Content from "./Content";
 import ContentSkeleton from "@/components/ContentSkeleton";
-import { NotFoundContent } from "@/app/not-found";
+import NotFoundContent from "@/components/NotFoundContent";
 
 export default function UserPage() {
   const params = useParams<{ username: string }>();
