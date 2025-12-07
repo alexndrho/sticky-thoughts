@@ -43,17 +43,12 @@ export default function UpdateNameModal({
   });
 
   return (
-    <Modal
-      title={<label htmlFor="name">Name</label>}
-      opened={opened}
-      onClose={onClose}
-      centered
-    >
+    <Modal title="Update Name" opened={opened} onClose={onClose} centered>
       <form onSubmit={form.onSubmit((values) => mutation.mutate(values))}>
-        <Group align="start">
+        <Group align="end">
           <TextInput
-            id="name"
             flex={1}
+            label="Name:"
             placeholder="Enter your name"
             {...form.getInputProps("name")}
           />

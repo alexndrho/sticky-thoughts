@@ -81,9 +81,10 @@ export default function UpdateEmailModal({
   return (
     <Modal opened={opened} onClose={onClose} title="Update email" centered>
       <form onSubmit={form.onSubmit((values) => mutation.mutate(values))}>
-        <Group align="start">
+        <Group align="end">
           <TextInput
             flex={1}
+            label="Email:"
             placeholder="Enter your email"
             {...form.getInputProps("email")}
           />
