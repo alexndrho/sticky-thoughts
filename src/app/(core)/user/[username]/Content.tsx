@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Avatar, Box, Flex, Tabs, Text, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconHeart, IconMessage } from "@tabler/icons-react";
+import { IconHeartFilled, IconMessage } from "@tabler/icons-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import type { User } from "@/generated/prisma/client";
@@ -62,7 +62,7 @@ export default function Content({ user }: ContentProps) {
             Threads
           </Tabs.Tab>
 
-          <Tabs.Tab value="likes" leftSection={<IconHeart size="1em" />}>
+          <Tabs.Tab value="likes" leftSection={<IconHeartFilled size="1em" />}>
             Likes
           </Tabs.Tab>
         </Tabs.List>
