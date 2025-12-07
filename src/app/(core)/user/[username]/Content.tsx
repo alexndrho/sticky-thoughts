@@ -47,6 +47,12 @@ export default function Content({ user }: ContentProps) {
           </Title>
 
           <Text size="lg">@{user.username}</Text>
+
+          {user.bio && (
+            <Text size="sm" c="dimmed">
+              {user.bio}
+            </Text>
+          )}
         </Box>
       </Flex>
 

@@ -25,6 +25,7 @@ model User {
   updatedAt          DateTime
   username           String
   displayUsername    String?
+  bio                String?
   sessions           Session[]
   accounts           Account[]
   threads            Thread[]

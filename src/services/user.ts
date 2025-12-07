@@ -1,7 +1,8 @@
 import type { User } from "@/generated/prisma/client";
 import { toServerError } from "@/utils/error/ServerError";
-import type { ThreadType } from "@/types/thread";
 import { apiUrl } from "@/utils/text";
+import type { UserProfile } from "@/types/user";
+import type { ThreadType } from "@/types/thread";
 
 export const getUser = async (username: string): Promise<User> => {
   const res = await fetch(apiUrl(`/api/user/${username}`));
@@ -10,6 +11,36 @@ export const getUser = async (username: string): Promise<User> => {
 
   if (!res.ok) {
     throw toServerError("User fetch error", data.issues);
+  }
+
+  return data;
+};
+
+export const getUserProfile = async (): Promise<UserProfile> => {
+  const res = await fetch(apiUrl("/api/user/bio"));
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw toServerError("User profile fetch error", data.issues);
+  }
+
+  return data;
+};
+
+export const updateUserBio = async (bio: string): Promise<{ bio: string }> => {
+  const res = await fetch(apiUrl("/api/user/bio"), {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ bio }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw toServerError("User bio update error", data.issues);
   }
 
   return data;

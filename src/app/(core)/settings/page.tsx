@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDisclosure } from "@mantine/hooks";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 import {
   Avatar,
@@ -34,6 +34,8 @@ import { authClient } from "@/lib/auth-client";
 import { secondsToMinutesExtended } from "@/utils/date";
 import { removeProfilePicture } from "@/services/user";
 import { useTimer } from "@/hooks/use-timer";
+import { userProfileOptions } from "./options";
+import UpdateBioModal from "./UpdateBioModal";
 import classes from "@/styles/settings.module.css";
 
 export default function SettingsPage() {
@@ -44,6 +46,9 @@ export default function SettingsPage() {
     isPending: isSessionPending,
     refetch: refetchSession,
   } = authClient.useSession();
+
+  const { data: userProfile, isLoading: isUserProfileLoading } =
+    useQuery(userProfileOptions);
 
   useEffect(() => {
     if (!isSessionPending && !session) {
@@ -78,6 +83,11 @@ export default function SettingsPage() {
   const [
     updateUsernameModalOpened,
     { open: openUpdateUsernameModal, close: closeUpdateUsernameModal },
+  ] = useDisclosure(false);
+
+  const [
+    updateBioModalOpened,
+    { open: openUpdateBioModal, close: closeUpdateBioModal },
   ] = useDisclosure(false);
 
   const handleRemoveProfilePicture = async () => {
@@ -122,6 +132,7 @@ export default function SettingsPage() {
     {
       label: "Name",
       value: session?.user?.name,
+      loading: isSessionPending,
       rightSection: (
         <Button
           variant="default"
@@ -134,6 +145,7 @@ export default function SettingsPage() {
     },
     {
       label: "Email",
+      loading: isSessionPending,
       description: "This will not be shown to other users",
       value: (
         <>
@@ -173,11 +185,26 @@ export default function SettingsPage() {
     {
       label: "Username",
       value: session?.user?.username,
+      loading: isSessionPending,
       rightSection: (
         <Button
           variant="default"
           size="compact-md"
           onClick={openUpdateUsernameModal}
+        >
+          Edit
+        </Button>
+      ),
+    },
+    {
+      label: "Bio",
+      value: userProfile?.bio,
+      loading: isUserProfileLoading,
+      rightSection: (
+        <Button
+          variant="default"
+          size="compact-md"
+          onClick={openUpdateBioModal}
         >
           Edit
         </Button>
@@ -234,13 +261,13 @@ export default function SettingsPage() {
                   </Text>
                 )}
 
-                <Skeleton w="auto" miw={150} visible={isSessionPending}>
+                <Skeleton w="auto" miw={150} visible={item.loading}>
                   <Text
-                    truncate
                     style={{
                       display: "flex",
                       alignItems: "center",
                       gap: "0.25rem",
+                      wordBreak: "break-word",
                     }}
                   >
                     {item.value || "No value set"}
@@ -248,7 +275,7 @@ export default function SettingsPage() {
                 </Skeleton>
               </Box>
 
-              <Skeleton w="auto" visible={isSessionPending}>
+              <Skeleton w="auto" visible={item.loading}>
                 <Flex w={125} justify="end" gap="sm">
                   {item.rightSection}
                 </Flex>
@@ -313,6 +340,12 @@ export default function SettingsPage() {
       <UpdateUsernameModal
         opened={updateUsernameModalOpened}
         onClose={closeUpdateUsernameModal}
+      />
+
+      <UpdateBioModal
+        opened={updateBioModalOpened}
+        onClose={closeUpdateBioModal}
+        defaultValue={userProfile?.bio || ""}
       />
     </Box>
   );

@@ -1,0 +1,17 @@
+import z from "zod";
+
+import { USER_BIO_MAX_LENGTH } from "@/config/user";
+
+export const updateUserBioInput = z.object({
+  bio: z
+    .string("Bio is required")
+    .transform((val) => val.trim().replace(/\s+/g, " "))
+    .pipe(
+      z
+        .string()
+        .max(
+          USER_BIO_MAX_LENGTH,
+          `Bio must be at most ${USER_BIO_MAX_LENGTH} characters long`,
+        ),
+    ),
+});
