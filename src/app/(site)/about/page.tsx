@@ -5,7 +5,7 @@ import Image from "next/image";
 import noteImg from "@/assets/note.svg";
 
 export const metadata: Metadata = {
-  title: "About - StickyThoughts | Online Freedom Wall",
+  title: "About",
 };
 
 export default function AboutPage() {

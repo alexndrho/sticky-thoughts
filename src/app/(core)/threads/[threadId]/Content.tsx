@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { useDisclosure } from "@mantine/hooks";
 import {
   ActionIcon,
@@ -23,6 +23,7 @@ import { formatDistance } from "date-fns";
 import { IconDots, IconEdit, IconTrash } from "@tabler/icons-react";
 
 import { authClient } from "@/lib/auth-client";
+import { threadOptions } from "../options";
 import ThreadEditor from "./ThreadEditor";
 import CommentEditor, { type CommentSectionRef } from "./CommentEditor";
 import Comments from "./Comments";
@@ -33,14 +34,12 @@ import CommentButton from "@/app/(core)/threads/CommentButton";
 import ShareButton from "@/app/(core)/threads/ShareButton";
 import SignInWarningModal from "@/components/SignInWarningModal";
 import { setLikeThreadQueryData } from "@/app/(core)/threads/set-query-data";
-import type { ThreadType } from "@/types/thread";
 
 export interface ContentProps {
   id: string;
-  thread: ThreadType;
 }
 
-export default function Content({ id, thread }: ContentProps) {
+export default function Content({ id }: ContentProps) {
   const router = useRouter();
 
   const { data: session } = authClient.useSession();
@@ -51,6 +50,8 @@ export default function Content({ id, thread }: ContentProps) {
   const [deleteModalOpened, deleteModalHandlers] = useDisclosure(false);
 
   const commentSectionRef = useRef<CommentSectionRef>(null);
+
+  const { data: thread } = useSuspenseQuery(threadOptions(id));
 
   useEffect(() => {
     const interval = setInterval(() => {

@@ -27,7 +27,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "StickyThoughts | Online Freedom Wall",
+  title: {
+    default: "StickyThoughts | Online Freedom Wall",
+    template: "%s - StickyThoughts | Online Freedom Wall",
+  },
   description:
     "StickyThoughts is an online freedom wall where you can express yourself freely and share your thoughts and experiences with others.",
 };

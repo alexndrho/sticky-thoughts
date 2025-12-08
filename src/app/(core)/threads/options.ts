@@ -7,10 +7,10 @@ export const threadBaseOptions = queryOptions({
   queryKey: ["thread"],
 });
 
-export const threadOptions = (id: string) => {
+export const threadOptions = (id: string, cookie?: string) => {
   return queryOptions({
     queryKey: [...threadBaseOptions.queryKey, id],
-    queryFn: () => getThread(id),
+    queryFn: () => getThread(id, cookie),
   });
 };
 

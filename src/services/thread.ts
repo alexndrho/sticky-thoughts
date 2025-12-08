@@ -26,11 +26,15 @@ export const submitThread = async (
   return dataResponse;
 };
 
-export const getThread = async (id: string): Promise<ThreadType> => {
+export const getThread = async (
+  id: string,
+  cookie?: string,
+): Promise<ThreadType> => {
   const response = await fetch(apiUrl(`/api/threads/${id}`), {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
+      ...(cookie ? { Cookie: cookie } : {}),
     },
   });
 

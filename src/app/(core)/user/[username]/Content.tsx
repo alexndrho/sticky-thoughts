@@ -1,20 +1,23 @@
+"use client";
+
 import { useMemo } from "react";
 import { Avatar, Box, Flex, Tabs, Text, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconHeartFilled, IconMessage } from "@tabler/icons-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import type { User } from "@/generated/prisma/client";
 import { authClient } from "@/lib/auth-client";
 import Threads from "./ThreadsTab";
 import SignInWarningModal from "@/components/SignInWarningModal";
 import LikesTab from "./LikesTab";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { userUsernameOptions } from "../options";
 
 export interface ContentProps {
-  user: User;
+  username: string;
 }
 
-export default function Content({ user }: ContentProps) {
+export default function Content({ username }: ContentProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -22,6 +25,8 @@ export default function Content({ user }: ContentProps) {
 
   const [signInWarningModalOpened, signInWarningModalHandler] =
     useDisclosure(false);
+
+  const { data: user } = useSuspenseQuery(userUsernameOptions(username));
 
   const currentTab = useMemo(() => {
     const tab = searchParams.get("tab");

@@ -4,8 +4,15 @@ import { apiUrl } from "@/utils/text";
 import type { UserProfile } from "@/types/user";
 import type { ThreadType } from "@/types/thread";
 
-export const getUser = async (username: string): Promise<User> => {
-  const res = await fetch(apiUrl(`/api/user/${username}`));
+export const getUser = async (
+  username: string,
+  cookie?: string,
+): Promise<User> => {
+  const res = await fetch(apiUrl(`/api/user/${username}`), {
+    headers: {
+      ...(cookie ? { cookie } : {}),
+    },
+  });
 
   const data = await res.json();
 

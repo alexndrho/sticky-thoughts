@@ -1,23 +1,54 @@
-"use client";
+import { headers } from "next/headers";
+import { notFound } from "next/navigation";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
-import { useParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-
-import { threadOptions } from "@/app/(core)/threads/options";
 import Content from "./Content";
-import ContentSkeleton from "@/components/ContentSkeleton";
-import NotFoundContent from "@/components/NotFoundContent";
+import { getQueryClient } from "@/lib/get-query-client";
+import { threadOptions } from "@/app/(core)/threads/options";
 
-export default function PostPage() {
-  const params = useParams<{ threadId: string }>();
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ threadId: string }>;
+}) {
+  const { threadId } = await params;
+  const headerList = await headers();
+  const cookie = headerList.get("cookie");
+  const queryClient = getQueryClient();
 
-  const query = useQuery(threadOptions(params.threadId));
-
-  if (query.data) {
-    return <Content id={query.data.id} thread={query.data} />;
-  } else if (query.isLoading) {
-    return <ContentSkeleton />;
-  } else {
-    return <NotFoundContent />;
+  try {
+    const thread = await queryClient.ensureQueryData(
+      threadOptions(threadId, cookie ?? undefined),
+    );
+    return {
+      title: `${thread.title}`,
+    };
+  } catch {
+    notFound();
   }
+}
+
+export default async function PostPage({
+  params,
+}: {
+  params: Promise<{ threadId: string }>;
+}) {
+  const { threadId } = await params;
+  const headerList = await headers();
+  const cookie = headerList.get("cookie");
+  const queryClient = getQueryClient();
+
+  try {
+    await queryClient.ensureQueryData(
+      threadOptions(threadId, cookie ?? undefined),
+    );
+  } catch {
+    notFound();
+  }
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Content id={threadId} />
+    </HydrationBoundary>
+  );
 }
