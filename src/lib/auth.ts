@@ -3,6 +3,7 @@ import { APIError } from "better-auth/api";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 import { emailOTP, username } from "better-auth/plugins";
+import { generateUsername } from "unique-username-generator";
 
 import { prisma } from "./db";
 import { resend } from "./email";
@@ -41,18 +42,52 @@ export const auth = betterAuth({
       },
     },
   },
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
+  },
   databaseHooks: {
     user: {
       create: {
-        before: async (user) => {
+        before: async (user, ctx) => {
           const username =
             (user as unknown as { username: string }).username || "";
 
           if (!username) {
-            throw new APIError("BAD_REQUEST", {
-              message: "Username is required",
-            });
+            const maxAttempts = 10;
+            let generatedUsername = "";
+            let existingUser = null;
+
+            for (let attempt = 0; attempt < maxAttempts; attempt++) {
+              generatedUsername = generateUsername();
+              existingUser = await ctx?.context.adapter.findOne({
+                model: "user",
+                where: [
+                  {
+                    field: "username",
+                    value: generatedUsername.toLowerCase(),
+                  },
+                ],
+              });
+
+              if (!existingUser) {
+                break;
+              }
+            }
+
+            if (existingUser) {
+              throw new APIError("INTERNAL_SERVER_ERROR", {
+                message:
+                  "Failed to generate a unique username. Please try again.",
+              });
+            }
+
+            user = { ...user, username: generatedUsername.toLowerCase() };
           }
+
+          return { data: user };
         },
       },
     },

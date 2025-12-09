@@ -9,16 +9,19 @@ import {
   Box,
   Button,
   Checkbox,
+  Divider,
   Group,
   PasswordInput,
   Text,
   TextInput,
   Title,
 } from "@mantine/core";
+import { IconBrandGoogleFilled, IconX } from "@tabler/icons-react";
 
 import { authClient } from "@/lib/auth-client";
 import { getQueryClient } from "@/lib/get-query-client";
 import { AuthContainer } from "../AuthContainer";
+import { notifications } from "@mantine/notifications";
 
 export default function Content() {
   const router = useRouter();
@@ -64,6 +67,31 @@ export default function Content() {
       form.setFieldError("root", "An error occurred. Please try again.");
     },
   });
+
+  const signInWithGoogle = async () => {
+    try {
+      const data = await authClient.signIn.social({
+        provider: "google",
+      });
+
+      if (data.error) {
+        notifications.show({
+          icon: <IconX size="1em" />,
+          title: "Error",
+          message: data.error.message,
+          color: "red",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      notifications.show({
+        icon: <IconX size="1em" />,
+        title: "Error",
+        message: "An error occurred. Please try again.",
+        color: "red",
+      });
+    }
+  };
 
   return (
     <>
@@ -115,6 +143,17 @@ export default function Content() {
             Sign in
           </Button>
         </form>
+
+        <Divider my="md" label="Or continue with email" />
+
+        <Button
+          fullWidth
+          variant="default"
+          leftSection={<IconBrandGoogleFilled size="1em" />}
+          onClick={signInWithGoogle}
+        >
+          Sign in with Google
+        </Button>
       </AuthContainer>
     </>
   );

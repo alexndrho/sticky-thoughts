@@ -1,18 +1,21 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
 import { isEmail, isNotEmpty, useForm } from "@mantine/form";
-import Link from "next/link";
+import { notifications } from "@mantine/notifications";
 import {
   Anchor,
   Box,
   Button,
+  Divider,
   PasswordInput,
   Text,
   TextInput,
   Title,
 } from "@mantine/core";
+import { IconBrandGoogleFilled, IconX } from "@tabler/icons-react";
 
 import { authClient } from "@/lib/auth-client";
 import { AuthContainer } from "../AuthContainer";
@@ -50,6 +53,31 @@ export default function Content() {
       form.setFieldError("root", "An error occurred. Please try again.");
     },
   });
+
+  const signInWithGoogle = async () => {
+    try {
+      const data = await authClient.signIn.social({
+        provider: "google",
+      });
+
+      if (data.error) {
+        notifications.show({
+          icon: <IconX size="1em" />,
+          title: "Error",
+          message: data.error.message,
+          color: "red",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      notifications.show({
+        icon: <IconX size="1em" />,
+        title: "Error",
+        message: "An error occurred. Please try again.",
+        color: "red",
+      });
+    }
+  };
 
   return (
     <>
@@ -102,6 +130,17 @@ export default function Content() {
             Sign up
           </Button>
         </form>
+
+        <Divider my="md" label="Or continue with email" />
+
+        <Button
+          fullWidth
+          variant="default"
+          leftSection={<IconBrandGoogleFilled size="1em" />}
+          onClick={signInWithGoogle}
+        >
+          Sign in with Google
+        </Button>
       </AuthContainer>
     </>
   );
