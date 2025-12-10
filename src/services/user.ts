@@ -1,13 +1,12 @@
-import type { User } from "@/generated/prisma/client";
 import { toServerError } from "@/utils/error/ServerError";
 import { apiUrl } from "@/utils/text";
-import type { UserProfile } from "@/types/user";
+import type { UserProfileSettings, UserPublicProfile } from "@/types/user";
 import type { ThreadType } from "@/types/thread";
 
 export const getUser = async (
   username: string,
   cookie?: string,
-): Promise<User> => {
+): Promise<UserPublicProfile> => {
   const res = await fetch(apiUrl(`/api/user/${username}`), {
     headers: {
       ...(cookie ? { cookie } : {}),
@@ -23,17 +22,18 @@ export const getUser = async (
   return data;
 };
 
-export const getUserProfile = async (): Promise<UserProfile> => {
-  const res = await fetch(apiUrl("/api/user/bio"));
+export const getUserProfileSettings =
+  async (): Promise<UserProfileSettings> => {
+    const res = await fetch(apiUrl("/api/user/bio"));
 
-  const data = await res.json();
+    const data = await res.json();
 
-  if (!res.ok) {
-    throw toServerError("User profile fetch error", data.issues);
-  }
+    if (!res.ok) {
+      throw toServerError("User profile fetch error", data.issues);
+    }
 
-  return data;
-};
+    return data;
+  };
 
 export const updateUserBio = async (bio: string): Promise<{ bio: string }> => {
   const res = await fetch(apiUrl("/api/user/bio"), {
