@@ -25,7 +25,6 @@ export default function Content() {
 
   const form = useForm({
     initialValues: {
-      name: "",
       email: "",
       username: "",
       password: "",
@@ -39,7 +38,7 @@ export default function Content() {
 
   const mutation = useMutation({
     mutationFn: (values: typeof form.values) =>
-      authClient.signUp.email({ ...values, callbackURL: "/" }),
+      authClient.signUp.email({ name: "", ...values, callbackURL: "/" }),
     onSuccess: ({ error }) => {
       if (error) {
         form.setFieldError("root", error.message);
@@ -96,8 +95,6 @@ export default function Content() {
 
       <AuthContainer>
         <form onSubmit={form.onSubmit((values) => mutation.mutate(values))}>
-          <TextInput label="Name" {...form.getInputProps("name")} />
-
           <TextInput
             mt="md"
             label="Email"
