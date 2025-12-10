@@ -24,7 +24,7 @@ export const getUser = async (
 
 export const getUserProfileSettings =
   async (): Promise<UserProfileSettings> => {
-    const res = await fetch(apiUrl("/api/user/bio"));
+    const res = await fetch(apiUrl("/api/user/settings"));
 
     const data = await res.json();
 

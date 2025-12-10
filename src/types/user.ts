@@ -12,7 +12,15 @@ export type UserPublicProfile = Prisma.UserGetPayload<{
 }>;
 
 export type UserProfileSettings = Prisma.UserGetPayload<{
-  select: {
-    bio: true;
+  omit: {
+    id: true;
+    name: true;
+    displayUsername: true;
+    username: true;
+    email: true;
+    emailVerified: true;
+    image: true;
+    createdAt: true;
+    updatedAt: true;
   };
 }>;
