@@ -11,7 +11,6 @@ import { getQueryClient } from "@/lib/get-query-client";
 import { userOptions } from "../user/options";
 import ServerError from "@/utils/error/ServerError";
 import { USER_BIO_MAX_LENGTH } from "@/config/user";
-import { useEffect } from "react";
 
 export interface UpdateEmailModalProps {
   opened: boolean;
@@ -50,10 +49,6 @@ export default function UpdateBioModal({
       }
     },
   });
-
-  useEffect(() => {
-    form.setValues({ bio: defaultValue });
-  }, [defaultValue]);
 
   return (
     <Modal title="Update Bio" opened={opened} onClose={onClose} centered>
