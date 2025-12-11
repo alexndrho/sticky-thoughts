@@ -20,7 +20,9 @@ export async function getSearchResults<T extends SearchSegmentType = "all">(
   T extends keyof SearchResultMap ? SearchResultMap[T] : SearchAllType[]
 > {
   if (!query.trim()) {
-    return [] as any;
+    return [] as unknown as T extends keyof SearchResultMap
+      ? SearchResultMap[T]
+      : SearchAllType[];
   }
 
   const params = new URLSearchParams();
