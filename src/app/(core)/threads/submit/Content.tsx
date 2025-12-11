@@ -14,7 +14,10 @@ import {
 
 import { authClient } from "@/lib/auth-client";
 import { getQueryClient } from "@/lib/get-query-client";
-import { threadInfiniteOptions } from "@/app/(core)/threads/options";
+import {
+  searchBaseOptions,
+  threadInfiniteOptions,
+} from "@/app/(core)/threads/options";
 import { THREAD_BODY_MAX_LENGTH } from "@/lib/validations/form";
 import { submitThread } from "@/services/thread";
 import { useEffect } from "react";
@@ -71,15 +74,21 @@ export default function Content() {
   const mutation = useMutation({
     mutationFn: submitThread,
     onSuccess: ({ id }) => {
-      getQueryClient().invalidateQueries({
+      const queryClient = getQueryClient();
+
+      queryClient.invalidateQueries({
         queryKey: threadInfiniteOptions.queryKey,
       });
 
       if (session?.user.username) {
-        getQueryClient().invalidateQueries({
+        queryClient.invalidateQueries({
           queryKey: userThreadsInfiniteOptions(session.user.username).queryKey,
         });
       }
+
+      queryClient.invalidateQueries({
+        queryKey: searchBaseOptions.queryKey,
+      });
 
       router.push(`/threads/${id}`);
     },

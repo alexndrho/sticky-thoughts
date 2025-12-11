@@ -49,18 +49,13 @@ export const getThread = async (
 
 export const getThreads = async ({
   lastId,
-  searchTerm,
 }: {
   lastId?: string;
-  searchTerm?: string;
 }): Promise<ThreadType[]> => {
   const params = new URLSearchParams();
 
   if (lastId) {
     params.append("lastId", lastId);
-  }
-  if (searchTerm) {
-    params.append("searchTerm", searchTerm);
   }
 
   const response = await fetch(apiUrl(`/api/threads?${params}`), {

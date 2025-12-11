@@ -1,20 +1,18 @@
 "use client";
 
-import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
-import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
-import { Box, Button, Flex, Input, Kbd } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { spotlight } from "@mantine/spotlight";
+import { Box, Button, Flex, Pill } from "@mantine/core";
 import { IconMessage, IconSearch } from "@tabler/icons-react";
 
 import { authClient } from "@/lib/auth-client";
-import {
-  threadInfiniteOptions,
-  threadSearchInfiniteOptions,
-} from "@/app/(core)/threads/options";
+import { threadInfiniteOptions } from "@/app/(core)/threads/options";
 import InfiniteScroll from "@/components/InfiniteScroll";
 import SignInWarningModal from "@/components/SignInWarningModal";
 import ThreadItem from "./ThreadItem";
+import SearchSpotlight from "./SearchSpotlight";
 import { ThreadsSkeleton } from "./ThreadsSkeleton";
 import { likeThread, unlikeThread } from "@/services/thread";
 import { setLikeThreadQueryData } from "@/app/(core)/threads/set-query-data";
@@ -23,10 +21,8 @@ export default function Content() {
   const { data: session } = authClient.useSession();
   const router = useRouter();
 
-  const [searchBarValue, setSearchBarValue] = useDebouncedState("", 250);
   const [signInWarningModalOpened, signInWarningModalHandler] =
     useDisclosure(false);
-  const searchRef = useRef<HTMLInputElement>(null);
 
   const {
     data: postsData,
@@ -34,18 +30,6 @@ export default function Content() {
     fetchNextPage: fetchNextPostsPage,
     hasNextPage: hasNextPostsPage,
   } = useInfiniteQuery(threadInfiniteOptions);
-  const {
-    data: searchPostsData,
-    isFetching: isFetchingSearchPosts,
-    fetchNextPage: fetchNextSearchPostsPage,
-    hasNextPage: hasNextSearchPostsPage,
-  } = useInfiniteQuery(threadSearchInfiniteOptions(searchBarValue));
-
-  const focusSearchBar = () => {
-    searchRef.current?.focus();
-  };
-
-  useHotkeys([["t", focusSearchBar]]);
 
   const handleClickSubmitPost = () => {
     if (!session) {
@@ -84,14 +68,21 @@ export default function Content() {
   return (
     <Box my="md" w="100%">
       <Flex w="100%" mb="md" gap="md">
-        <Input
-          ref={searchRef}
+        <Button
           flex={1}
-          placeholder="Search posts"
-          leftSection={<IconSearch size="1rem" />}
-          rightSection={<Kbd>t</Kbd>}
-          onChange={(e) => setSearchBarValue(e.currentTarget.value)}
-        />
+          variant="default"
+          justify="space-between"
+          c="var(--mantine-color-dimmed)"
+          leftSection={<IconSearch size="1em" />}
+          rightSection={<Pill>Ctrl + K</Pill>}
+          onClick={spotlight.open}
+          styles={{
+            label: { flex: 1 },
+          }}
+          aria-label="Open search"
+        >
+          Search...
+        </Button>
 
         <Button
           rightSection={<IconMessage size="1em" />}
@@ -102,34 +93,22 @@ export default function Content() {
       </Flex>
 
       <InfiniteScroll
-        onLoadMore={() => {
-          if (searchBarValue.length > 0) {
-            fetchNextSearchPostsPage();
-          } else {
-            fetchNextPostsPage();
-          }
-        }}
-        hasNext={
-          searchBarValue.length > 0 ? hasNextSearchPostsPage : hasNextPostsPage
-        }
-        loading={isFetchingPosts || isFetchingSearchPosts}
+        onLoadMore={fetchNextPostsPage}
+        hasNext={hasNextPostsPage}
+        loading={isFetchingPosts}
       >
         <Flex direction="column" gap="md">
-          {searchBarValue
-            ? searchPostsData?.pages
-                .reduce((acc, page) => acc.concat(page))
-                .map((post) => (
-                  <ThreadItem key={post.id} post={post} onLike={handleLike} />
-                ))
-            : postsData?.pages
-                .reduce((acc, page) => acc.concat(page))
-                .map((post) => (
-                  <ThreadItem key={post.id} post={post} onLike={handleLike} />
-                ))}
+          {postsData?.pages
+            .reduce((acc, page) => acc.concat(page))
+            .map((post) => (
+              <ThreadItem key={post.id} post={post} onLike={handleLike} />
+            ))}
 
-          {(isFetchingPosts || isFetchingSearchPosts) && <ThreadsSkeleton />}
+          {isFetchingPosts && <ThreadsSkeleton />}
         </Flex>
       </InfiniteScroll>
+
+      <SearchSpotlight />
 
       {!session && (
         <SignInWarningModal

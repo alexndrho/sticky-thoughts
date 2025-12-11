@@ -79,7 +79,6 @@ export async function POST(req: Request) {
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
-  const searchTerm = searchParams.get("searchTerm");
   const lastId = searchParams.get("lastId");
 
   try {
@@ -93,14 +92,6 @@ export async function GET(req: NextRequest) {
       cursor: lastId
         ? {
             id: lastId,
-          }
-        : undefined,
-      where: searchTerm
-        ? {
-            title: {
-              contains: searchTerm,
-              mode: "insensitive",
-            },
           }
         : undefined,
       include: {

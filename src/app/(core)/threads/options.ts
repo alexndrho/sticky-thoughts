@@ -1,6 +1,8 @@
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 
 import { getThreadComments, getThread, getThreads } from "@/services/thread";
+import type { SearchSegmentType } from "@/types/search";
+import { getSearchResults } from "@/services/search";
 
 // thread
 export const threadBaseOptions = queryOptions({
@@ -26,27 +28,6 @@ export const threadInfiniteOptions = infiniteQueryOptions({
   },
 });
 
-export const threadSearchInfiniteOptions = (search: string) => {
-  return infiniteQueryOptions({
-    queryKey: [...threadInfiniteOptions.queryKey, "search", search],
-    enabled: Boolean(search),
-    initialPageParam: undefined,
-    queryFn: async ({ pageParam }: { pageParam: string | undefined }) => {
-      if (!search) return [];
-
-      return await getThreads({
-        lastId: pageParam,
-        searchTerm: search,
-      });
-    },
-    getNextPageParam: (posts) => {
-      if (posts.length === 0) return undefined;
-
-      return posts[posts.length - 1].id;
-    },
-  });
-};
-
 // thread comments
 export const threadCommentsInfiniteOptions = (threadId: string) => {
   return infiniteQueryOptions({
@@ -59,5 +40,23 @@ export const threadCommentsInfiniteOptions = (threadId: string) => {
 
       return comments[comments.length - 1].id;
     },
+  });
+};
+
+// search
+export const searchBaseOptions = queryOptions({
+  queryKey: ["search"],
+});
+
+export const searchOptions = ({
+  query,
+  type,
+}: {
+  query: string;
+  type?: SearchSegmentType;
+}) => {
+  return queryOptions({
+    queryKey: [...searchBaseOptions.queryKey, query, type],
+    queryFn: () => getSearchResults(query, type),
   });
 };
