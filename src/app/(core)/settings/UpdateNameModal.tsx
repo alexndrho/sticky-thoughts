@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Button, Group, Modal, TextInput } from "@mantine/core";
 
 import { authClient } from "@/lib/auth-client";
-import { isNotEmpty, useForm } from "@mantine/form";
+import { useForm } from "@mantine/form";
 
 export interface UpdateNameModalProps {
   opened: boolean;
@@ -20,9 +20,6 @@ export default function UpdateNameModal({
   const form = useForm({
     initialValues: {
       name: defaultValue,
-    },
-    validate: {
-      name: isNotEmpty("Name is required"),
     },
   });
 
@@ -53,11 +50,7 @@ export default function UpdateNameModal({
             {...form.getInputProps("name")}
           />
 
-          <Button
-            type="submit"
-            loading={mutation.isPending}
-            disabled={!form.values.name}
-          >
+          <Button type="submit" loading={mutation.isPending}>
             Update
           </Button>
         </Group>
