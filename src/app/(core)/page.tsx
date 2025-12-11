@@ -181,7 +181,7 @@ export default function HomePage() {
 
         <VisuallyHidden component="h1">Posts</VisuallyHidden>
 
-        {searchRef.current?.value
+        {searchBarValue.length > 0
           ? searchData && (
               <Thoughts
                 thoughts={searchData.pages.reduce((acc, page) =>
