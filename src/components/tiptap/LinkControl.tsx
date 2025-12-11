@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { Button, Flex, Input, Popover } from "@mantine/core";
 import { RichTextEditor, useRichTextEditorContext } from "@mantine/tiptap";
@@ -10,16 +10,17 @@ export default function LinkControl() {
   const [opened, setOpened] = useState(false);
   const [value, setValue] = useState("");
 
+  const handleOpen = () => {
+    setOpened(true);
+    if (editor?.isActive("link")) {
+      setValue(editor.getAttributes("link").href || "");
+    }
+  };
+
   const handleClose = () => {
     setOpened(false);
     setValue("");
   };
-
-  useEffect(() => {
-    if (editor?.isActive("link")) {
-      setValue(editor.getAttributes("link").href || "");
-    }
-  }, [editor]);
 
   return (
     <Popover opened={opened} onClose={handleClose}>
@@ -27,7 +28,7 @@ export default function LinkControl() {
         <RichTextEditor.Control
           aria-label="Link"
           title="Link"
-          onClick={() => setOpened((o) => !o)}
+          onClick={handleOpen}
           active={editor?.isActive("link")}
         >
           <IconLink size="1em" />

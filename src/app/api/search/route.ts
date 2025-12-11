@@ -1,11 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/db";
-import type {
-  SearchAllType,
-  SearchThreadType,
-  SearchUserType,
-} from "@/types/search";
+import type { SearchAllType } from "@/types/search";
 import type IError from "@/types/error";
 
 const MAX_RESULTS = 10;

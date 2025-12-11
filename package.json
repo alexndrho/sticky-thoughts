@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "email": "email dev --dir src/components/emails",
-    "lint": "next lint",
+    "lint": "eslint .",
     "postinstall": "prisma migrate deploy && prisma generate"
   },
   "dependencies": {
@@ -45,7 +45,6 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
     "@react-email/preview-server": "^4.2.12",
     "@tanstack/eslint-plugin-query": "^5.78.0",
     "@types/node": "^20",

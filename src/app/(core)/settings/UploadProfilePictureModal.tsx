@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import {
   Avatar,
@@ -35,21 +35,21 @@ export default function UploadProfilePictureModal({
   const { refetch: refetchSession } = authClient.useSession();
 
   const [image, setImage] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Create preview URL from image using useMemo
+  const previewUrl = useMemo(() => {
+    return image ? URL.createObjectURL(image) : null;
+  }, [image]);
 
   // Clean up object URL to prevent memory leaks
   useEffect(() => {
-    if (image) {
-      const url = URL.createObjectURL(image);
-      setPreviewUrl(url);
-      return () => {
-        URL.revokeObjectURL(url);
-      };
-    } else {
-      setPreviewUrl(null);
-    }
-  }, [image]);
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   const mutation = useMutation({
     mutationFn: uploadProfilePicture,
@@ -59,7 +59,6 @@ export default function UploadProfilePictureModal({
       onClose();
 
       setImage(null);
-      setPreviewUrl(null);
       setError(null);
 
       const queryClient = getQueryClient();

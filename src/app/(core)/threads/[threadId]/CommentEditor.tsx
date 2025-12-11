@@ -24,8 +24,6 @@ export interface CommentSectionRef {
 
 const CommentEditor = forwardRef<CommentSectionRef, CommentEditorProps>(
   ({ threadId }, ref) => {
-    useImperativeHandle(ref, () => ({ editor }));
-
     const form = useForm({
       initialValues: {
         body: "<p></p>",
@@ -43,6 +41,8 @@ const CommentEditor = forwardRef<CommentSectionRef, CommentEditorProps>(
       },
       shouldRerenderOnTransaction: false,
     });
+
+    useImperativeHandle(ref, () => ({ editor }));
 
     const commentMutation = useMutation({
       mutationFn: (values: typeof form.values) =>
