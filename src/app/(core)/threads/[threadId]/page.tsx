@@ -5,6 +5,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import Content from "./Content";
 import { getQueryClient } from "@/lib/get-query-client";
 import { threadOptions } from "@/app/(core)/threads/options";
+import { getThread } from "@/services/thread";
 
 export async function generateMetadata({
   params,
@@ -17,9 +18,10 @@ export async function generateMetadata({
   const queryClient = getQueryClient();
 
   try {
-    const thread = await queryClient.ensureQueryData(
-      threadOptions(threadId, cookie ?? undefined),
-    );
+    const thread = await queryClient.ensureQueryData({
+      ...threadOptions(threadId),
+      queryFn: () => getThread(threadId, cookie ?? undefined),
+    });
     return {
       title: `${thread.title}`,
     };
@@ -39,9 +41,10 @@ export default async function PostPage({
   const queryClient = getQueryClient();
 
   try {
-    await queryClient.ensureQueryData(
-      threadOptions(threadId, cookie ?? undefined),
-    );
+    await queryClient.prefetchQuery({
+      ...threadOptions(threadId),
+      queryFn: () => getThread(threadId, cookie ?? undefined),
+    });
   } catch {
     notFound();
   }

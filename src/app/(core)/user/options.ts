@@ -6,10 +6,10 @@ export const userOptions = queryOptions({
   queryKey: ["user"],
 });
 
-export const userUsernameOptions = (username: string, cookie?: string) => {
+export const userUsernameOptions = (username: string) => {
   return queryOptions({
     queryKey: [...userOptions.queryKey, username],
-    queryFn: () => getUser(username, cookie),
+    queryFn: () => getUser(username),
   });
 };
 

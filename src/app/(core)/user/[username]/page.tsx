@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { userUsernameOptions } from "@/app/(core)/user/options";
 import { getQueryClient } from "@/lib/get-query-client";
+import { getUser } from "@/services/user";
 import Content from "./Content";
 
 export async function generateMetadata({
@@ -18,9 +19,10 @@ export async function generateMetadata({
   const queryClient = getQueryClient();
 
   try {
-    const user = await queryClient.fetchQuery(
-      userUsernameOptions(username, cookie ?? undefined),
-    );
+    const user = await queryClient.ensureQueryData({
+      ...userUsernameOptions(username),
+      queryFn: () => getUser(username, cookie ?? undefined),
+    });
 
     return {
       title: `${user.name || user.username} (@${user.username})`,
@@ -42,9 +44,10 @@ export default async function UserPage({
   const queryClient = getQueryClient();
 
   try {
-    await queryClient.ensureQueryData(
-      userUsernameOptions(username, cookie ?? undefined),
-    );
+    await queryClient.prefetchQuery({
+      ...userUsernameOptions(username),
+      queryFn: () => getUser(username, cookie ?? undefined),
+    });
   } catch {
     notFound();
   }
