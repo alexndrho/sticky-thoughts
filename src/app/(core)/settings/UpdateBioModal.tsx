@@ -40,7 +40,7 @@ export default function UpdateBioModal({
       onClose();
       form.reset();
     },
-    onError: (error: any) => {
+    onError: (error) => {
       if (error instanceof ServerError) {
         form.setErrors({ bio: error.issues[0].message });
       } else {
