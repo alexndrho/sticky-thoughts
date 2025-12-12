@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useEffectEvent } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
@@ -29,6 +30,15 @@ export default function UpdateBioModal({
     },
     validate: zod4Resolver(updateUserBioInput),
   });
+
+  const setFormBio = useEffectEvent((bio?: string) => {
+    form.setInitialValues({ bio: bio || "" });
+    form.setValues({ bio: bio || "" });
+  });
+
+  useEffect(() => {
+    setFormBio(defaultValue);
+  }, [defaultValue]);
 
   const mutation = useMutation({
     mutationFn: updateUserBio,

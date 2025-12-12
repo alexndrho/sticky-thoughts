@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useEffectEvent } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { isEmail, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
@@ -31,6 +32,15 @@ export default function UpdateEmailModal({
       email: isEmail("Invalid email address"),
     },
   });
+
+  const setFormEmail = useEffectEvent((email?: string) => {
+    form.setInitialValues({ email: email || "" });
+    form.setValues({ email: email || "" });
+  });
+
+  useEffect(() => {
+    setFormEmail(defaultValue);
+  }, [defaultValue]);
 
   const [timerLeft, start] = useTimer({
     duration: 3 * 60, // 3 minutes
@@ -85,7 +95,7 @@ export default function UpdateEmailModal({
           <TextInput
             flex={1}
             label="Email:"
-            placeholder="Enter your email"
+            placeholder={defaultValue || "Enter your email"}
             {...form.getInputProps("email")}
           />
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useEffectEvent } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "@mantine/form";
 import { Button, Group, Modal, TextInput } from "@mantine/core";
@@ -22,6 +23,15 @@ export default function UpdateUsernameModal({
       username: defaultValue,
     },
   });
+
+  const setFormUsername = useEffectEvent((username?: string) => {
+    form.setInitialValues({ username: username || "" });
+    form.setValues({ username: username || "" });
+  });
+
+  useEffect(() => {
+    setFormUsername(defaultValue);
+  }, [defaultValue]);
 
   const mutation = useMutation({
     mutationFn: (values: typeof form.values) => authClient.updateUser(values),
@@ -46,7 +56,7 @@ export default function UpdateUsernameModal({
           <TextInput
             flex={1}
             label="Username:"
-            placeholder="Enter your username"
+            placeholder={defaultValue || "Enter your username"}
             {...form.getInputProps("username")}
           />
 

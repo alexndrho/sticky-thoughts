@@ -327,25 +327,28 @@ export default function Content() {
       />
 
       <UpdateNameModal
+        defaultValue={session?.user?.name}
         opened={updateNameModalOpened}
         onClose={closeUpdateNameModal}
       />
 
       <UpdateEmailModal
+        defaultValue={session?.user?.email}
         opened={updateEmailModalOpened}
         onClose={closeUpdateEmailModal}
         session={session}
       />
 
       <UpdateUsernameModal
+        defaultValue={session?.user?.username ?? undefined}
         opened={updateUsernameModalOpened}
         onClose={closeUpdateUsernameModal}
       />
 
       <UpdateBioModal
+        defaultValue={userProfile?.bio ?? undefined}
         opened={updateBioModalOpened}
         onClose={closeUpdateBioModal}
-        defaultValue={userProfile?.bio || ""}
       />
     </Box>
   );
