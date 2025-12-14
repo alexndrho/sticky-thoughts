@@ -32,7 +32,7 @@ export default function TermsAndConditionsPage() {
         These Terms of Service (“Terms”, “Terms of Service”) govern your use of
         our website located at{" "}
         <Text span fw="bold">
-          https://stickythoughts.alexndrho.dev/
+          https://stickythoughts.alexanderho.dev/
         </Text>{" "}
         (together or individually “Service”) operated by{" "}
         <Text span fw="bold">
@@ -540,7 +540,7 @@ export default function TermsAndConditionsPage() {
         </Anchor>{" "}
         were created for{" "}
         <Text span fw="bold" inherit>
-          https://stickythoughts.alexndrho.dev/
+          https://stickythoughts.alexanderho.dev/
         </Text>{" "}
         by{" "}
         <Anchor href="https://policymaker.io" inherit>
