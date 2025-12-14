@@ -3,6 +3,9 @@ import { Anchor, Text, Title } from "@mantine/core";
 
 export const metadata: Metadata = {
   title: "Disclaimer",
+  alternates: {
+    canonical: "/disclaimer",
+  },
 };
 
 export default function DisclaimerPage() {

@@ -4,6 +4,9 @@ import Content from "./Content";
 
 export const metadata: Metadata = {
   title: "Submit a Thread",
+  alternates: {
+    canonical: `/threads/submit`,
+  },
 };
 
 export default function ThreadSubmitPage() {

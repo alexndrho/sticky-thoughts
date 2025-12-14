@@ -35,6 +35,7 @@ export const metadata: Metadata = {
   },
   description:
     "StickyThoughts is an online freedom wall where you can express yourself freely and share your thoughts and experiences with others.",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL!),
 };
 
 export default function RootLayout({

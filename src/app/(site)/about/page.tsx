@@ -6,6 +6,9 @@ import noteImg from "@/assets/note.svg";
 
 export const metadata: Metadata = {
   title: "About",
+  alternates: {
+    canonical: "/about",
+  },
 };
 
 export default function AboutPage() {

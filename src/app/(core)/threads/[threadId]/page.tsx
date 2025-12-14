@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
@@ -11,7 +12,7 @@ export async function generateMetadata({
   params,
 }: {
   params: Promise<{ threadId: string }>;
-}) {
+}): Promise<Metadata> {
   const { threadId } = await params;
   const headerList = await headers();
   const cookie = headerList.get("cookie");
@@ -24,6 +25,9 @@ export async function generateMetadata({
     });
     return {
       title: `${thread.title}`,
+      alternates: {
+        canonical: `/threads/${threadId}`,
+      },
     };
   } catch {
     notFound();

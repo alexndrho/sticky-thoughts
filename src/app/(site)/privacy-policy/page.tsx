@@ -3,6 +3,9 @@ import { Anchor, Text, Title } from "@mantine/core";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
+  alternates: {
+    canonical: "/privacy-policy",
+  },
 };
 
 export default function PrivacyPolicyPage() {

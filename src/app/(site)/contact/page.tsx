@@ -4,6 +4,9 @@ import { IconMail } from "@tabler/icons-react";
 
 export const metadata: Metadata = {
   title: "Contact",
+  alternates: {
+    canonical: "/contact",
+  },
 };
 
 export default function ContactPage() {

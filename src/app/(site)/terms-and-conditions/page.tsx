@@ -3,6 +3,9 @@ import { Anchor, Text, Title } from "@mantine/core";
 
 export const metadata: Metadata = {
   title: "Terms and Conditions",
+  alternates: {
+    canonical: "/terms-and-conditions",
+  },
 };
 
 export default function TermsAndConditionsPage() {

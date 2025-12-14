@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import { Metadata } from "next";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { notFound } from "next/navigation";
 
@@ -9,10 +10,13 @@ import Content from "./Content";
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ username: string }>;
-}) {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}): Promise<Metadata> {
   const { username } = await params;
+  const resolvedSearchParams = await searchParams;
   const headerList = await headers();
   const cookie = headerList.get("cookie");
 
@@ -24,8 +28,17 @@ export async function generateMetadata({
       queryFn: () => getUser(username, cookie ?? undefined),
     });
 
+    const tabParam = resolvedSearchParams.tab || "";
+    let canonical = `/user/${username}`;
+    if (tabParam === "likes") {
+      canonical = `/user/${username}?tab=likes`;
+    }
+
     return {
       title: `${user.name || user.username} (@${user.username})`,
+      alternates: {
+        canonical,
+      },
     };
   } catch {
     notFound();
