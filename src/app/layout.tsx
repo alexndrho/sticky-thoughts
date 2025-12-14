@@ -6,8 +6,9 @@ import {
   mantineHtmlProps,
   MantineProvider,
 } from "@mantine/core";
-import { Analytics } from "@vercel/analytics/next";
 import { Notifications } from "@mantine/notifications";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "@mantine/core/styles.css";
 import "@mantine/spotlight/styles.css";
 import "@mantine/notifications/styles.css";
@@ -50,8 +51,10 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <MantineProvider defaultColorScheme="auto" theme={theme}>
           <Providers>{children}</Providers>
-          <Analytics />
           <Notifications />
+
+          <Analytics />
+          <SpeedInsights />
         </MantineProvider>
       </body>
     </html>
