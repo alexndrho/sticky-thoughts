@@ -15,7 +15,6 @@ import {
   Text,
   Title,
   Tooltip,
-  VisuallyHidden,
 } from "@mantine/core";
 import { useDebouncedState, useDisclosure, useHotkeys } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
@@ -178,8 +177,6 @@ export default function HomePage() {
             </Button>
           </Tooltip>
         </Flex>
-
-        <VisuallyHidden component="h1">Posts</VisuallyHidden>
 
         {searchBarValue.length > 0
           ? searchData && (
