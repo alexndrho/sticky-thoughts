@@ -27,7 +27,7 @@ export default function Footer() {
           <Box>
             <Title order={2} size="h3">
               Sticky
-              <Text span c="blue.6" inherit>
+              <Text span c="blue" inherit>
                 Thoughts
               </Text>
             </Title>

@@ -17,7 +17,7 @@ export default function AboutPage() {
       <Box>
         <Title>
           Sticky
-          <Text span c="blue.6" inherit>
+          <Text span c="blue" inherit>
             Thoughts
           </Text>
           <Text span display="block" fz="xl" fs="italic">

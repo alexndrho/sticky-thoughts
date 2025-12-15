@@ -147,7 +147,7 @@ export default function Content() {
 
               <Text fz="md" fw="bold">
                 {thoughtsCountData?.toLocaleString()}{" "}
-                <Text span c="blue.6" inherit>
+                <Text span c="blue" inherit>
                   thoughts
                 </Text>{" "}
                 submitted

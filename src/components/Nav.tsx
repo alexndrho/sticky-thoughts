@@ -97,7 +97,7 @@ export default function Nav() {
             }}
           >
             Sticky
-            <Text span c="blue.6" inherit>
+            <Text span c="blue" inherit>
               Thoughts
             </Text>
           </Text>
