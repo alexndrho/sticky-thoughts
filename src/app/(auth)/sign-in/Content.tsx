@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
-import { isNotEmpty, useForm } from "@mantine/form";
+import { isEmail, isNotEmpty, useForm } from "@mantine/form";
 import {
   Anchor,
   Box,
@@ -28,26 +28,40 @@ export default function Content() {
 
   const form = useForm({
     initialValues: {
-      username: "",
+      emailOrUsername: "",
       password: "",
       rememberMe: false,
     },
     validate: {
-      username: isNotEmpty("Username is required"),
+      emailOrUsername: isNotEmpty("Email or username is required"),
       password: isNotEmpty("Password is required"),
     },
   });
 
   const mutation = useMutation({
-    mutationFn: async (values: typeof form.values) =>
-      authClient.signIn.username({
-        ...values,
-      }),
+    mutationFn: async (values: typeof form.values) => {
+      if (isEmail()(values.emailOrUsername) === null) {
+        return authClient.signIn.email({
+          email: values.emailOrUsername,
+          password: values.password,
+          rememberMe: values.rememberMe,
+        });
+      } else {
+        return authClient.signIn.username({
+          username: values.emailOrUsername,
+          password: values.password,
+          rememberMe: values.rememberMe,
+        });
+      }
+    },
     onSuccess: ({ error }) => {
       if (error) {
-        if (error.code === "INVALID_USERNAME_OR_PASSWORD") {
+        if (
+          error.code === "INVALID_EMAIL_OR_PASSWORD" ||
+          error.code === "INVALID_USERNAME_OR_PASSWORD"
+        ) {
           form.setErrors({
-            username: error.message,
+            emailOrUsername: error.message,
             password: error.message,
           });
         } else {
@@ -110,9 +124,9 @@ export default function Content() {
       <AuthContainer>
         <form onSubmit={form.onSubmit((values) => mutation.mutate(values))}>
           <TextInput
-            label="Username"
+            label="Email or Username"
             withAsterisk
-            {...form.getInputProps("username")}
+            {...form.getInputProps("emailOrUsername")}
           />
 
           <PasswordInput
@@ -121,6 +135,12 @@ export default function Content() {
             withAsterisk
             {...form.getInputProps("password")}
           />
+
+          {form.errors.root && (
+            <Text mt="xs" size="xs" c="red.8">
+              {form.errors.root}
+            </Text>
+          )}
 
           <Group mt="md" justify="space-between">
             <Checkbox
@@ -132,12 +152,6 @@ export default function Content() {
               Forgot Password?
             </Anchor>
           </Group>
-
-          {form.errors.root && (
-            <Text mt="xs" size="xs" c="red.8">
-              {form.errors.root}
-            </Text>
-          )}
 
           <Button fullWidth mt="lg" type="submit" loading={mutation.isPending}>
             Sign in
