@@ -68,7 +68,12 @@ export default function CommentItem({
   return (
     <Box>
       <Flex gap="md" align="center">
-        <Avatar src={comment.author.image} />
+        <Avatar
+          component={Link}
+          src={comment.author.image}
+          href={`/user/${comment.author.username}`}
+          aria-label={`View profile of ${comment.author.username}`}
+        />
 
         <div>
           <Flex>

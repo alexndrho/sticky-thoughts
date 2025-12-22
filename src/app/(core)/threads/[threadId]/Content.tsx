@@ -86,7 +86,12 @@ export default function Content({ id }: ContentProps) {
     <Box my="xl" w="100%">
       <Flex mb="xs" justify="space-between">
         <Flex align="center">
-          <Avatar src={thread.author.image} mr="xs" />
+          <Avatar
+            component={Link}
+            href={`/user/${thread.author.username}`}
+            src={thread.author.image}
+            mr="xs"
+          />
 
           <div>
             <Anchor
