@@ -4,6 +4,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { formatThreads } from "@/utils/thread";
+import { THREAD_POSTS_PER_PAGE } from "@/config/thread";
 import type IError from "@/types/error";
 
 export const GET = async (
@@ -21,6 +22,7 @@ export const GET = async (
     const { username } = await params;
 
     const threads = await prisma.thread.findMany({
+      take: THREAD_POSTS_PER_PAGE,
       skip: lastId ? 1 : 0,
       cursor: lastId
         ? {
