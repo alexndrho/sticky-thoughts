@@ -1,32 +1,19 @@
 .thread {
   transition: all 0.3s ease;
-  position: relative;
 }
 
 .thread:hover {
   transform: translateY(calc(-1 * var(--mantine-spacing-xs)));
-  /* background-color: var(--mantine-color-default-hover); */
 }
 
-.thread__content {
-  text-decoration: none;
-  color: inherit;
-  padding: var(--mantine-spacing-lg);
-
-  /* create a space for the button container with calculation
-    padding + height of the button + margin
-   */
-  padding-bottom: calc(
-    var(--mantine-spacing-lg) +
-      calc(1.625rem * var(--mantine-scale) + var(--mantine-spacing-md))
-  );
-}
-
-.thread__action-container {
+.thread__main-link {
   position: absolute;
-  /* padding of the container */
-  bottom: var(--mantine-spacing-lg);
-  left: var(--mantine-spacing-lg);
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
 
-  height: var(--button-height-compact-sm);
+.thread__link {
+  color: var(--mantine-color-text);
 }
