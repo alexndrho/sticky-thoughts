@@ -81,8 +81,8 @@ export default function Nav() {
   };
 
   return (
-    <Box component="header" className={classes.nav}>
-      <Container h="4rem" size="lg">
+    <Box component="header" py="md" className={classes.nav}>
+      <Container size="lg">
         <Group h="100%" justify="space-between">
           <Text
             component={Link}
