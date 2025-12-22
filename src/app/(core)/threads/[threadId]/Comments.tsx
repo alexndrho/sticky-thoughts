@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
-import { Box, Center, Flex, Loader } from "@mantine/core";
+import { Center, Flex, Loader } from "@mantine/core";
 
 import { type authClient } from "@/lib/auth-client";
 import { threadCommentsInfiniteOptions } from "@/app/(core)/threads/options";
@@ -15,6 +14,7 @@ import {
   setDeleteThreadCommentQueryData,
   setLikeThreadCommentQueryData,
 } from "@/app/(core)/threads/set-query-data";
+import InfiniteScroll from "@/components/InfiniteScroll";
 import CommentItem from "./CommentItem";
 
 export interface CommentsProps {
@@ -34,6 +34,7 @@ export default function Comments({
 }: CommentsProps) {
   const {
     data: commentsData,
+    isLoading: isLoadingComments,
     isFetching: isFetchingComments,
     isRefetching: isRefetchingComments,
     fetchNextPage: fetchNextCommentsPage,
@@ -56,33 +57,6 @@ export default function Comments({
       });
     },
   });
-
-  useEffect(() => {
-    function handleScroll() {
-      if (isFetchingComments || isRefetchingComments) return;
-
-      const isNearBottom =
-        window.innerHeight + window.scrollY >=
-        document.documentElement.scrollHeight - 500;
-
-      if (!isNearBottom) return;
-
-      if (hasNextCommentsPage) {
-        fetchNextCommentsPage();
-      }
-    }
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [
-    isFetchingComments,
-    isRefetchingComments,
-    hasNextCommentsPage,
-    fetchNextCommentsPage,
-  ]);
 
   const commentLikeMutation = useMutation({
     mutationFn: async ({
@@ -135,30 +109,32 @@ export default function Comments({
   };
 
   return (
-    <Box>
-      {commentsData ? (
-        <Flex mt="lg" direction="column" gap="lg">
-          {commentsData.pages
-            .reduce((acc, page) => acc.concat(page))
-            .map((comment) => (
-              <CommentItem
-                key={comment.id}
-                session={session}
-                comment={comment}
-                dateNow={dateNow}
-                isThreadOwner={threadAuthor === comment.author.id}
-                onLike={handleLike}
-                onDelete={deleteMutation.mutate}
-              />
-            ))}
-        </Flex>
-      ) : (
-        isFetchingComments && (
-          <Center mt="lg" h={250}>
+    <InfiniteScroll
+      onLoadMore={fetchNextCommentsPage}
+      hasNext={hasNextCommentsPage}
+      loading={isFetchingComments || isRefetchingComments}
+    >
+      <Flex mt="lg" direction="column" gap="lg">
+        {commentsData?.pages
+          .reduce((acc, page) => acc.concat(page))
+          .map((comment) => (
+            <CommentItem
+              key={comment.id}
+              session={session}
+              comment={comment}
+              dateNow={dateNow}
+              isThreadOwner={threadAuthor === comment.author.id}
+              onLike={handleLike}
+              onDelete={deleteMutation.mutate}
+            />
+          ))}
+
+        {isFetchingComments && (
+          <Center mt="lg" h={isLoadingComments ? 250 : undefined}>
             <Loader />
           </Center>
-        )
-      )}
-    </Box>
+        )}
+      </Flex>
+    </InfiniteScroll>
   );
 }
