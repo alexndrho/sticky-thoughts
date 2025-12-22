@@ -80,6 +80,7 @@ export async function POST(req: Request) {
       return NextResponse.json(zodError, { status: 400 });
     }
 
+    console.error(error);
     return NextResponse.json(
       {
         issues: [

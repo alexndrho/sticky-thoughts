@@ -68,6 +68,7 @@ export async function POST(req: Request) {
       }
     }
 
+    console.error(error);
     return NextResponse.json(
       {
         issues: [{ code: "unknown-error", message: "Something went wrong" }],

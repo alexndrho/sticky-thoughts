@@ -99,6 +99,14 @@ export async function POST(
 
       return NextResponse.json(zodError, { status: 400 });
     }
+
+    console.error(error);
+    return NextResponse.json(
+      {
+        issues: [{ code: "unknown-error", message: "Something went wrong" }],
+      } satisfies IError,
+      { status: 500 },
+    );
   }
 }
 

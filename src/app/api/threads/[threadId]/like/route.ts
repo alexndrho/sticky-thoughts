@@ -69,6 +69,7 @@ export async function POST(
       }
     }
 
+    console.error(error);
     return NextResponse.json(
       {
         issues: [{ code: "unknown-error", message: "Unknown error" }],
@@ -135,6 +136,7 @@ export async function DELETE(
       }
     }
 
+    console.error(error);
     return NextResponse.json(
       {
         issues: [{ code: "unknown-error", message: "Unknown error" }],

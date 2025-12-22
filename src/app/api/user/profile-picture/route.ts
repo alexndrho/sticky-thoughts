@@ -241,10 +241,9 @@ export async function DELETE() {
       }
     } else if (error instanceof Error) {
       console.error("Error message:", error.stack);
-    } else {
-      console.error("Error deleting profile picture:", error);
     }
 
+    console.error("Error deleting profile picture:", error);
     return NextResponse.json(
       {
         issues: [{ code: "unknown-error", message: "An error occurred" }],
