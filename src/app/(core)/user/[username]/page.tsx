@@ -37,7 +37,9 @@ export async function generateMetadata({
     }
 
     return {
-      title: `${user.name || user.username} (@${user.username})`,
+      title: user.name
+        ? `${user.name} (@${user.username})`
+        : `@${user.username}`,
       alternates: {
         canonical,
       },
