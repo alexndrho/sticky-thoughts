@@ -1,15 +1,20 @@
 "use client";
 
 import { useMemo } from "react";
-import { Avatar, Box, Flex, Tabs, Text, Title } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { IconHeartFilled, IconMessage } from "@tabler/icons-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useDisclosure } from "@mantine/hooks";
+import { Avatar, Box, Flex, Tabs, Text, Title } from "@mantine/core";
+import {
+  IconHeartFilled,
+  IconMessage,
+  IconMessageCircle,
+} from "@tabler/icons-react";
 
 import { authClient } from "@/lib/auth-client";
-import Threads from "./ThreadsTab";
-import SignInWarningModal from "@/components/SignInWarningModal";
+import ThreadsTab from "./ThreadsTab";
 import LikesTab from "./LikesTab";
+import CommentsTab from "./CommentsTab";
+import SignInWarningModal from "@/components/SignInWarningModal";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { userUsernameOptions } from "../options";
 
@@ -30,7 +35,7 @@ export default function Content({ username }: ContentProps) {
 
   const currentTab = useMemo(() => {
     const tab = searchParams.get("tab");
-    if (tab === "threads" || tab === "likes") return tab;
+    if (tab === "threads" || tab === "comments" || tab === "likes") return tab;
     return "threads";
   }, [searchParams]);
 
@@ -67,15 +72,29 @@ export default function Content({ username }: ContentProps) {
             Threads
           </Tabs.Tab>
 
+          <Tabs.Tab
+            value="comments"
+            leftSection={<IconMessageCircle size="1em" />}
+          >
+            Comments
+          </Tabs.Tab>
+
           <Tabs.Tab value="likes" leftSection={<IconHeartFilled size="1em" />}>
             Likes
           </Tabs.Tab>
         </Tabs.List>
 
-        <Threads
+        <ThreadsTab
           username={user.username}
           session={session}
           isActive={currentTab === "threads"}
+          openSignInWarningModal={signInWarningModalHandler.open}
+        />
+
+        <CommentsTab
+          username={user.username}
+          session={session}
+          isActive={currentTab === "comments"}
           openSignInWarningModal={signInWarningModalHandler.open}
         />
 

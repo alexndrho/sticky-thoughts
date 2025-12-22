@@ -1,0 +1,19 @@
+.comment {
+  transition: all 0.3s ease;
+}
+
+.comment:hover {
+  transform: translateY(calc(-1 * var(--mantine-spacing-xs)));
+}
+
+.comment__main-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.comment__link {
+  color: var(--mantine-color-text);
+}

@@ -42,17 +42,23 @@ export default function Comments({
   } = useInfiniteQuery(threadCommentsInfiniteOptions(threadId));
 
   const deleteMutation = useMutation({
-    mutationFn: async (commentId: string) => {
+    mutationFn: async ({
+      threadId,
+      commentId,
+    }: {
+      threadId: string;
+      commentId: string;
+    }) => {
       await deleteThreadComment({
         threadId,
         commentId,
       });
 
-      return { commentId };
+      return { threadId, commentId };
     },
     onSuccess: (data) => {
       setDeleteThreadCommentQueryData({
-        threadId,
+        threadId: data.threadId,
         commentId: data.commentId,
       });
     },
@@ -60,10 +66,14 @@ export default function Comments({
 
   const commentLikeMutation = useMutation({
     mutationFn: async ({
+      threadId,
       commentId,
+      username,
       like,
     }: {
+      threadId: string;
       commentId: string;
+      username: string;
       like: boolean;
     }) => {
       if (like) {
@@ -78,22 +88,27 @@ export default function Comments({
         });
       }
 
-      return { commentId, like };
+      return { commentId, username, like };
     },
     onSuccess: (data) => {
       setLikeThreadCommentQueryData({
         threadId,
         commentId: data.commentId,
+        username: data.username,
         like: data.like,
       });
     },
   });
 
   const handleLike = ({
+    threadId,
     commentId,
+    username,
     like,
   }: {
+    threadId: string;
     commentId: string;
+    username: string;
     like: boolean;
   }) => {
     if (!session) {
@@ -103,7 +118,9 @@ export default function Comments({
     }
 
     commentLikeMutation.mutate({
+      threadId,
       commentId,
+      username,
       like,
     });
   };

@@ -32,9 +32,27 @@ export interface CommentItemProps {
   session: ReturnType<typeof authClient.useSession>["data"];
   comment: ThreadCommentType;
   dateNow: Date;
-  isThreadOwner: boolean;
-  onLike: ({ commentId, like }: { commentId: string; like: boolean }) => void;
-  onDelete: (commentId: string) => void;
+  isThreadOwner?: boolean;
+  onLike: ({
+    threadId,
+    commentId,
+    username,
+    like,
+  }: {
+    threadId: string;
+    commentId: string;
+    username: string;
+    like: boolean;
+  }) => void;
+  onDelete: ({
+    threadId,
+    commentId,
+    username,
+  }: {
+    threadId: string;
+    commentId: string;
+    username: string;
+  }) => void;
 }
 
 export default function CommentItem({
@@ -115,7 +133,13 @@ export default function CommentItem({
                 <Menu.Item
                   color="red"
                   leftSection={<IconTrash size="1em" />}
-                  onClick={() => onDelete(comment.id)}
+                  onClick={() =>
+                    onDelete({
+                      threadId: comment.threadId,
+                      commentId: comment.id,
+                      username: comment.author.username,
+                    })
+                  }
                 >
                   Delete
                 </Menu.Item>
@@ -141,7 +165,9 @@ export default function CommentItem({
               size="compact-sm"
               onLike={() =>
                 onLike({
+                  threadId: comment.threadId,
                   commentId: comment.id,
+                  username: comment.author.username,
                   like: !comment.likes.liked,
                 })
               }

@@ -1,8 +1,10 @@
 import type {
   BaseThreadCommentType,
   BaseThreadType,
+  BaseUserThreadCommentType,
   ThreadCommentType,
   ThreadType,
+  UserThreadCommentType,
 } from "@/types/thread";
 
 export function formatThreads(threads: BaseThreadType[]): ThreadType[] {
@@ -35,5 +37,21 @@ export function formatThreadComments(
         count: _count.likes,
       },
     } satisfies ThreadCommentType;
+  });
+}
+
+export function formatUserThreadComments(
+  comments: BaseUserThreadCommentType[],
+): UserThreadCommentType[] {
+  return comments.map((comment) => {
+    const { likes, _count, ...rest } = comment;
+
+    return {
+      ...rest,
+      likes: {
+        liked: !!(likes && likes.length),
+        count: _count.likes,
+      },
+    };
   });
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
@@ -24,6 +24,7 @@ import { IconDots, IconEdit, IconTrash } from "@tabler/icons-react";
 
 import { authClient } from "@/lib/auth-client";
 import { threadOptions } from "../options";
+import { useDateNow } from "@/hooks/use-date-now";
 import ThreadEditor from "./ThreadEditor";
 import CommentEditor, { type CommentSectionRef } from "./CommentEditor";
 import Comments from "./Comments";
@@ -43,7 +44,6 @@ export default function Content({ id }: ContentProps) {
   const router = useRouter();
 
   const { data: session } = authClient.useSession();
-  const [dateNow, setDateNow] = useState(new Date());
   const [isEditable, setIsEditable] = useState(false);
   const [signInWarningModalOpened, signInWarningModalHandlers] =
     useDisclosure(false);
@@ -53,13 +53,7 @@ export default function Content({ id }: ContentProps) {
 
   const { data: thread } = useSuspenseQuery(threadOptions(id));
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDateNow(new Date());
-    }, 1000 * 60);
-
-    return () => clearInterval(interval);
-  }, []);
+  const dateNow = useDateNow();
 
   // Like
   const handleLikeMutation = useMutation({

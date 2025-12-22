@@ -1,7 +1,7 @@
 import { toServerError } from "@/utils/error/ServerError";
 import { apiUrl } from "@/utils/text";
 import type { UserProfileSettings, UserPublicProfile } from "@/types/user";
-import type { ThreadType } from "@/types/thread";
+import type { ThreadType, UserThreadCommentType } from "@/types/thread";
 
 export const getUser = async (
   username: string,
@@ -110,6 +110,32 @@ export const getUserThreads = async ({
   }
 
   return data;
+};
+
+export const getUserComments = async ({
+  username,
+  lastId,
+}: {
+  username: string;
+  lastId?: string;
+}): Promise<UserThreadCommentType[]> => {
+  const searchParams = new URLSearchParams();
+
+  if (lastId) {
+    searchParams.append("lastId", lastId);
+  }
+
+  const response = await fetch(
+    apiUrl(`/api/user/${username}/comments?${searchParams}`),
+  );
+
+  const dataResponse = await response.json();
+
+  if (!response.ok) {
+    throw toServerError("Failed to get comments", dataResponse.issues);
+  }
+
+  return dataResponse;
 };
 
 export const getUserLikedThreads = async ({

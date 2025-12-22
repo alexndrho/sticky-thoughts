@@ -5,6 +5,7 @@ import {
   userThreadsInfiniteOptions,
   userOptions,
   userLikedThreadsInfiniteOptions,
+  userCommentsInfiniteOptions,
 } from "../user/options";
 import {
   threadInfiniteOptions,
@@ -294,10 +295,12 @@ export const setDeleteThreadCommentQueryData = ({
 export const setLikeThreadCommentQueryData = ({
   threadId,
   commentId,
+  username,
   like,
 }: {
   threadId: string;
   commentId: string;
+  username: string;
   like: boolean;
 }) => {
   const queryClient = getQueryClient();
@@ -329,8 +332,40 @@ export const setLikeThreadCommentQueryData = ({
     },
   );
 
+  queryClient.setQueryData<InfiniteData<ThreadCommentType[]>>(
+    userCommentsInfiniteOptions(username).queryKey,
+    (oldData) => {
+      if (!oldData) return oldData;
+
+      return {
+        ...oldData,
+        pages: oldData.pages.map((page) =>
+          page.map((comment) =>
+            comment.id === commentId
+              ? ({
+                  ...comment,
+                  likes: {
+                    ...comment.likes,
+                    liked: like,
+                    count: like
+                      ? comment.likes.count + 1
+                      : comment.likes.count - 1,
+                  },
+                } satisfies ThreadCommentType)
+              : comment,
+          ),
+        ),
+      };
+    },
+  );
+
   queryClient.invalidateQueries({
     queryKey: threadCommentsInfiniteOptions(threadId).queryKey,
+    refetchType: "none",
+  });
+
+  queryClient.invalidateQueries({
+    queryKey: userCommentsInfiniteOptions(username).queryKey,
     refetchType: "none",
   });
 };

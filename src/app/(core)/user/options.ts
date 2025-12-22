@@ -1,6 +1,11 @@
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 
-import { getUser, getUserLikedThreads, getUserThreads } from "@/services/user";
+import {
+  getUser,
+  getUserComments,
+  getUserLikedThreads,
+  getUserThreads,
+} from "@/services/user";
 
 export const userOptions = queryOptions({
   queryKey: ["user"],
@@ -25,6 +30,22 @@ export const userThreadsInfiniteOptions = (username: string) => {
     getNextPageParam: (posts) => {
       if (posts.length === 0) return undefined;
 
+      return posts[posts.length - 1].id;
+    },
+  });
+};
+
+export const userCommentsInfiniteOptions = (username: string) => {
+  return infiniteQueryOptions({
+    queryKey: [...userOptions.queryKey, username, "comments"],
+    initialPageParam: undefined,
+    queryFn: async ({ pageParam }: { pageParam: string | undefined }) =>
+      getUserComments({
+        username,
+        lastId: pageParam,
+      }),
+    getNextPageParam: (posts) => {
+      if (posts.length === 0) return undefined;
       return posts[posts.length - 1].id;
     },
   });

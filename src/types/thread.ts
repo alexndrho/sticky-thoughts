@@ -78,3 +78,49 @@ export type ThreadCommentType = Omit<
     count: number;
   };
 };
+
+type PrismaBaseUserThreadComment = Prisma.ThreadCommentGetPayload<{
+  include: {
+    thread: {
+      select: {
+        title: true;
+      };
+    };
+    author: {
+      select: {
+        id: true;
+        name: true;
+        username: true;
+        image: true;
+      };
+    };
+    likes?: {
+      select: {
+        userId: true;
+      };
+    };
+    _count: {
+      select: {
+        likes: true;
+      };
+    };
+  };
+}>;
+
+export type BaseUserThreadCommentType = Omit<
+  PrismaBaseUserThreadComment,
+  "likes" | "_count"
+> & {
+  likes?: { userId: string }[];
+  _count: { likes: number };
+};
+
+export type UserThreadCommentType = Omit<
+  BaseUserThreadCommentType,
+  "likes" | "_count"
+> & {
+  likes: {
+    liked: boolean;
+    count: number;
+  };
+};
