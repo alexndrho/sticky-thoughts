@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { APIError } from "better-auth/api";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
-import { emailOTP, username } from "better-auth/plugins";
+import { captcha, emailOTP, username } from "better-auth/plugins";
 import { generateUsername } from "unique-username-generator";
 
 import { prisma } from "./db";
@@ -93,6 +93,7 @@ export const auth = betterAuth({
     },
   },
   plugins: [
+    nextCookies(),
     username({
       usernameValidator: (username) => {
         if (
@@ -116,7 +117,10 @@ export const auth = betterAuth({
         return true;
       },
     }),
-    nextCookies(),
+    captcha({
+      provider: "cloudflare-turnstile",
+      secretKey: process.env.CLOUDFLARE_TURNSTILE_SECRET_KEY!,
+    }),
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
         await resend.emails.send({

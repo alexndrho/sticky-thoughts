@@ -1,8 +1,10 @@
 "use client";
 
+import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
+import { Turnstile, TurnstileInstance } from "@marsidev/react-turnstile";
 import { isEmail, isNotEmpty, useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import {
@@ -16,18 +18,21 @@ import {
   Title,
 } from "@mantine/core";
 import { IconBrandGoogleFilled, IconX } from "@tabler/icons-react";
+import classes from "../captcha.module.css";
 
 import { authClient } from "@/lib/auth-client";
 import { AuthContainer } from "../AuthContainer";
 
 export default function Content() {
   const router = useRouter();
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   const form = useForm({
     initialValues: {
       email: "",
       username: "",
       password: "",
+      turnstileToken: "",
     },
     validate: {
       email: isEmail("Invalid email"),
@@ -38,10 +43,23 @@ export default function Content() {
 
   const mutation = useMutation({
     mutationFn: (values: typeof form.values) =>
-      authClient.signUp.email({ name: "", ...values, callbackURL: "/" }),
+      authClient.signUp.email({
+        name: "",
+        ...values,
+        callbackURL: "/",
+        fetchOptions: {
+          headers: {
+            "x-captcha-response": values.turnstileToken,
+          },
+        },
+      }),
+
     onSuccess: ({ error }) => {
       if (error) {
         form.setFieldError("root", error.message);
+
+        form.setFieldValue("turnstileToken", "");
+        turnstileRef.current?.reset();
         return;
       }
 
@@ -117,13 +135,33 @@ export default function Content() {
             {...form.getInputProps("password")}
           />
 
-          {form.errors.root && (
+          <Turnstile
+            ref={turnstileRef}
+            siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY!}
+            className={classes.captcha}
+            onSuccess={(token) => form.setFieldValue("turnstileToken", token)}
+            onExpire={() => turnstileRef.current?.reset()}
+            onError={() =>
+              form.setFieldError(
+                "turnstileToken",
+                "Captcha verification failed",
+              )
+            }
+          />
+
+          {(form.errors.root || form.errors.turnstileToken) && (
             <Text mt="xs" size="xs" c="red.8">
-              {form.errors.root}
+              {form.errors.root || form.errors.turnstileToken}
             </Text>
           )}
 
-          <Button fullWidth mt="lg" type="submit" loading={mutation.isPending}>
+          <Button
+            fullWidth
+            mt="lg"
+            type="submit"
+            loading={mutation.isPending}
+            disabled={form.values.turnstileToken === ""}
+          >
             Sign up
           </Button>
         </form>

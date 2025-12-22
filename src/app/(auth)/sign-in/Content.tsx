@@ -1,8 +1,10 @@
 "use client";
 
+import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { isEmail, isNotEmpty, useForm } from "@mantine/form";
 import {
   Anchor,
@@ -16,20 +18,23 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { IconBrandGoogleFilled, IconX } from "@tabler/icons-react";
 
 import { authClient } from "@/lib/auth-client";
 import { getQueryClient } from "@/lib/get-query-client";
 import { AuthContainer } from "../AuthContainer";
-import { notifications } from "@mantine/notifications";
+import classes from "../captcha.module.css";
 
 export default function Content() {
   const router = useRouter();
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   const form = useForm({
     initialValues: {
       emailOrUsername: "",
       password: "",
+      turnstileToken: "",
       rememberMe: false,
     },
     validate: {
@@ -45,12 +50,22 @@ export default function Content() {
           email: values.emailOrUsername,
           password: values.password,
           rememberMe: values.rememberMe,
+          fetchOptions: {
+            headers: {
+              "x-captcha-response": values.turnstileToken,
+            },
+          },
         });
       } else {
         return authClient.signIn.username({
           username: values.emailOrUsername,
           password: values.password,
           rememberMe: values.rememberMe,
+          fetchOptions: {
+            headers: {
+              "x-captcha-response": values.turnstileToken,
+            },
+          },
         });
       }
     },
@@ -68,6 +83,8 @@ export default function Content() {
           form.setFieldError("root", error.message);
         }
 
+        form.setFieldValue("turnstileToken", "");
+        turnstileRef.current?.reset();
         return;
       }
 
@@ -136,9 +153,23 @@ export default function Content() {
             {...form.getInputProps("password")}
           />
 
-          {form.errors.root && (
+          <Turnstile
+            ref={turnstileRef}
+            siteKey={process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY!}
+            className={classes.captcha}
+            onSuccess={(token) => form.setFieldValue("turnstileToken", token)}
+            onExpire={() => turnstileRef.current?.reset()}
+            onError={() =>
+              form.setFieldError(
+                "turnstileToken",
+                "Captcha verification failed",
+              )
+            }
+          />
+
+          {(form.errors.root || form.errors.turnstileToken) && (
             <Text mt="xs" size="xs" c="red.8">
-              {form.errors.root}
+              {form.errors.root || form.errors.turnstileToken}
             </Text>
           )}
 
@@ -153,7 +184,13 @@ export default function Content() {
             </Anchor>
           </Group>
 
-          <Button fullWidth mt="lg" type="submit" loading={mutation.isPending}>
+          <Button
+            fullWidth
+            mt="lg"
+            type="submit"
+            loading={mutation.isPending}
+            disabled={form.values.turnstileToken === ""}
+          >
             Sign in
           </Button>
         </form>

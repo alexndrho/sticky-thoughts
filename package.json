@@ -19,6 +19,7 @@
     "@mantine/notifications": "^8.3.9",
     "@mantine/spotlight": "^8.3.9",
     "@mantine/tiptap": "^8.3.9",
+    "@marsidev/react-turnstile": "^1.4.0",
     "@prisma/adapter-pg": "^7.0.1",
     "@prisma/client": "^7.0.1",
     "@prisma/extension-accelerate": "^3.0.0",
