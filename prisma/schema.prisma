@@ -13,6 +13,8 @@ model Thought {
   message   String
   color     String
   createdAt DateTime @default(now())
+
+  @@index([createdAt(sort: Desc)])
 }
 
 model User {
@@ -96,6 +98,7 @@ model Thread {
   updatedAt DateTime @updatedAt
 
   @@unique([authorId, title])
+  @@index([createdAt(sort: Desc)])
 }
 
 model ThreadLike {
@@ -121,6 +124,8 @@ model ThreadComment {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([createdAt(sort: Desc)])
 }
 
 model ThreadCommentLike {
