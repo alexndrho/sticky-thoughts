@@ -33,7 +33,7 @@ model User {
   threads            Thread[]
   threadLikes        ThreadLike[]
   threadComments     ThreadComment[]
-  ThreadCommentLikes ThreadCommentLike[]
+  threadCommentLikes ThreadCommentLike[]
 
   @@unique([email])
   @@unique([username])
